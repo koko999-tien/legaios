@@ -1,0 +1,54 @@
+name: Apply Stage 2d activity-workspace extraction
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2d-activity-workspace.mjs'
+      - '.github/workflows/apply-stage2d-activity-workspace.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract-activity-workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Extract activity/workspace UI
+        run: node tools/apply-stage2d-activity-workspace.mjs
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+      - name: Verify Stage 2d.2 structure
+        shell: bash
+        run: |
+          test -s assets/js/activity-workspace.js
+          grep -q 'src="assets/js/activity-workspace.js"' index.html
+          grep -q 'function currentPage(' assets/js/activity-workspace.js
+          grep -q 'function renderWorkspaceStats(' assets/js/activity-workspace.js
+          grep -q 'function renderUpdates(' assets/js/app.js
+          if grep -q 'function currentPage(' assets/js/app.js; then
+            echo 'activity/workspace UI still exists in app.js' >&2
+            exit 1
+          fi
+          git diff --check
+      - name: Commit Stage 2d.2 extraction
+        shell: bash
+        run: |
+          git add index.html assets/js/app.js assets/js/activity-workspace.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2d.2 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: isolate activity comparison and workspace UI'
+          git push origin HEAD:dev
