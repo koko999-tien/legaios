@@ -1,3 +1,4 @@
+/* LegalOS V14 — application boot and event wiring. */
 document.addEventListener("click",e=>{const stat=e.target.closest("[data-core-stat]");if(stat){e.preventDefault();renderCoreKbStatDetail(stat.dataset.coreStat)}});
 
 
