@@ -47,6 +47,7 @@ async function assertNoHorizontalOverflow(label) {
     return { viewport, scrollWidth, offenders };
   });
   assert(report.scrollWidth <= report.viewport + 2, `${label}: horizontal overflow ${report.scrollWidth}px > ${report.viewport}px; offenders: ${report.offenders.join(', ') || 'unknown'}`);
+  assert(report.offenders.length === 0, `${label}: visible elements are clipped outside the viewport: ${report.offenders.join(', ')}`);
 }
 
 try {
