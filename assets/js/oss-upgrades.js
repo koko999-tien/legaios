@@ -49,6 +49,15 @@
     return payload;
   }
   window.LEGALOS_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
+  function installDiagnosticsCommand(){
+    document.addEventListener('click',e=>{
+      const item=e.target.closest?.('[data-cmd^="diag:"]');
+      if(!item)return;
+      e.preventDefault();e.stopImmediatePropagation();
+      document.getElementById('cmdBg')?.classList.remove('on');
+      downloadDiagnostics().catch(err=>recordDiagError('diagnostics-export',err?.message||err));
+    },true);
+  }
 
   function ensureManifest(){
     if(document.querySelector('link[rel="manifest"]'))return;
@@ -196,6 +205,7 @@
   }
 
   installDiagnosticsCapture();
+  installDiagnosticsCommand();
   ensureManifest();
   registerServiceWorker();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
