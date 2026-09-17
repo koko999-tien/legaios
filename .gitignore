@@ -1,0 +1,16 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Local temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Node tooling (if added later)
+node_modules/
+coverage/
