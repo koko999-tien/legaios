@@ -1,0 +1,37 @@
+/* V14 mobile viewport hardening — 2026-09-17 */
+@media (max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden}
+  header.site .site-in{width:100%;min-width:0;gap:6px}
+  header.site .brand{min-width:0;flex:1 1 auto;overflow:hidden}
+  header.site .brand>span:last-child{min-width:0;overflow:hidden}
+  header.site .brand small{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  header.site .nav-tools{flex:0 0 auto;gap:4px}
+  header.site #topSearch,header.site #quickNoteBtn,header.site #settingsBtn{display:none!important}
+  header.site .ib{width:38px;height:38px;flex:0 0 38px}
+
+  main>.page>.wrap{width:100%!important;max-width:100%!important;min-width:0!important}
+  .home113-v123,.compact-home-hero,.compact-home-hero>*,.home113-intro,.compact-home-search{min-width:0!important;max-width:100%!important}
+  .compact-home-hero{grid-template-columns:minmax(0,1fr)!important;padding:15px!important;overflow:hidden}
+  .home113-intro h1{font-size:27px!important;line-height:1.12!important;max-width:100%!important;overflow-wrap:break-word}
+  .home113-intro .lead{font-size:15px;line-height:1.5}
+
+  .home113-tools.quick-actions-line{display:flex;max-width:100%;flex-wrap:wrap!important;overflow:visible!important;gap:6px}
+  .home113-tools.quick-actions-line button{flex:0 0 auto;white-space:nowrap}
+
+  .home113-search-main{width:100%;min-width:0;grid-template-columns:28px minmax(0,1fr)!important}
+  .home113-search-main input{min-width:0;width:100%}
+  .home113-search-main .btn{grid-column:1/-1;width:100%}
+  .home-search-subgrid{grid-template-columns:1fr!important;min-width:0}
+  .home113-search-all{min-width:0;width:100%}
+
+  .home113-primary-grid,.home113-support-grid{min-width:0}
+  .home113-primary-card,.home113-tile{min-width:0;max-width:100%}
+}
+@media (max-width:390px){
+  header.site .site-in{padding-left:12px!important;padding-right:12px!important}
+  header.site .brand{gap:8px}
+  header.site .brand small{max-width:145px!important;font-size:9px}
+  header.site .mark{width:30px;height:30px;flex:0 0 30px}
+  .compact-home-hero{padding:13px!important}
+  .home113-intro h1{font-size:25px!important}
+}
