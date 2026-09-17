@@ -36,6 +36,16 @@ Run locally with:
 node tools/check-html.mjs
 ```
 
+## Split-file preview
+
+`tools/extract-single-file.mjs` generates a disposable refactor preview that extracts inline `<style>` and executable inline `<script>` blocks while preserving their position in the HTML. It does **not** modify production `index.html`.
+
+```bash
+node tools/extract-single-file.mjs index.html .tmp/refactor-preview
+```
+
+GitHub Actions generates and validates this preview automatically. This gives us a safer path to the future multi-file V14 structure before production is changed.
+
 ## Refactor rule
 
 Code refactoring must not silently rewrite, correct, or replace legal content. Legal-data verification is a separate task from code/architecture refactoring.
