@@ -1,0 +1,51 @@
+name: Apply mobile import toolbar fix
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/apply-mobile-import-fix.yml'
+      - 'tools/mobile-import-fix.css'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Append mobile import toolbar hardening
+        shell: bash
+        run: |
+          if grep -Fq '/* V14 mobile import toolbar hardening — 2026-09-17 */' assets/css/app.css; then
+            echo 'Mobile import fix already present.'
+          else
+            printf '\n' >> assets/css/app.css
+            cat tools/mobile-import-fix.css >> assets/css/app.css
+            printf '\n' >> assets/css/app.css
+          fi
+
+      - name: Validate
+        run: |
+          node tools/check-html.mjs index.html
+          node tools/check-v14-structure.mjs
+          git diff --check
+
+      - name: Commit mobile import toolbar fix
+        shell: bash
+        run: |
+          git add assets/css/app.css
+          if git diff --cached --quiet; then
+            echo 'No CSS change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: constrain mobile import toolbar'
+          git push origin HEAD:dev
