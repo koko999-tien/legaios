@@ -64,15 +64,6 @@ function readingProgressUpdate(){
 }
 
 
-let compareSelected=[];
-let currentCaseId=null;
-let currentUpdateYear="all";
-let searchTimer=null;
-let legalSearchMode=STORE.get("v11_search_mode","smart");
-let legalSearchHistory=STORE.get("v11_search_history",[]);
-let currentArticleDocId=null;
-let coreKbTheme="all";
-
 function currentPage(){
   return document.querySelector(".page.on")?.id||"home";
 }

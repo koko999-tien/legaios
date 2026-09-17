@@ -21,4 +21,12 @@ let quickNote=STORE.get("v8_quick_note","");
 let uiPrefs=STORE.get("v8_ui_prefs",{scale:"normal",density:"comfortable",sidebar:false});
 let wizardState={pid:null,index:0};
 
-
+/* Shared view/search state used across classic-script modules. */
+let compareSelected=[];
+let currentCaseId=null;
+let currentUpdateYear="all";
+let searchTimer=null;
+let legalSearchMode=STORE.get("v11_search_mode","smart");
+let legalSearchHistory=STORE.get("v11_search_history",[]);
+let currentArticleDocId=null;
+let coreKbTheme="all";
