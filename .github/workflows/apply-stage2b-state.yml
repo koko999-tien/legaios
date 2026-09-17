@@ -1,0 +1,53 @@
+name: Apply Stage 2b shared-state extraction
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2b-state.mjs'
+      - '.github/workflows/apply-stage2b-state.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract-state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Extract shared state
+        run: node tools/apply-stage2b-state.mjs
+
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+
+      - name: Verify Stage 2b.3 structure
+        shell: bash
+        run: |
+          test -s assets/js/state.js
+          grep -q 'src="assets/js/state.js"' index.html
+          head -n 3 assets/js/app.js | grep -q "const IMPORT_DB_NAME='legalos_v9_documents';"
+          git diff --check
+
+      - name: Commit Stage 2b.3 extraction
+        shell: bash
+        run: |
+          git add index.html assets/js/app.js assets/js/state.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2b.3 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: isolate shared application state'
+          git push origin HEAD:dev
