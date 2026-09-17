@@ -1,13 +1,13 @@
 # LegalOS V14 architecture
 
-LegalOS is being migrated from one large HTML file into ordered, testable static modules without changing production behavior prematurely.
+LegalOS is being migrated from one large HTML file into ordered, testable static modules while production behavior remains isolated on `main`.
 
 ## Deployment model
 
-- `main` is production and is deployed to `https://legalos-vn.netlify.app`.
-- `dev` is the refactor branch.
-- Pull request #1 provides a Netlify Deploy Preview before anything is merged to production.
-- Structural changes must pass `.github/workflows/validate.yml` and the Netlify preview before merge.
+- `main` is production and deploys to `https://legalos-vn.netlify.app`.
+- `dev` is the V14 refactor branch.
+- Pull request #1 provides the Netlify Deploy Preview at `https://deploy-preview-1--legalos-vn.netlify.app`.
+- Structural changes must pass `.github/workflows/validate.yml` before merge.
 
 ## Current dev structure
 
@@ -25,41 +25,71 @@ assets/
     search-data.js         # structured clause/trail search data
     search-runtime.js      # legal search, clause rendering, citation memo
     ui-shell.js            # shell UI, drawers, preferences, procedure wizard
+    ui-utils.js            # shared UI rendering/utilities
     activity-workspace.js  # recent activity, comparison, workspace summary
-    project-tools.js       # update feed, screening helpers, case export
+    project-tools.js       # update feed, case helpers and exports
     library.js             # library filters, saved/recent docs, article reader
     procedures.js          # procedure checklist/progress/detail runtime
-    app.js                 # remaining workspace, legal-pack, expert, boot/events
+    workspace.js           # workspace and command-palette runtime
+    legal-hub.js           # legal-pack, data-vault and update-hub runtime
+    expert.js              # expert dossier review runtime
+    navigation.js          # page navigation runtime
+    library-search.js      # document-library search result rendering
+    classifier.js          # project screening/classifier runtime
+    boot.js                # final application initialization and event wiring
 ```
 
-The scripts intentionally remain **ordered classic scripts** for now. This preserves the existing global lexical model while responsibilities are made explicit. ES modules should only be introduced after cross-module dependencies are mapped and stabilized.
+`assets/js/app.js` has been fully retired on `dev`.
+
+The scripts intentionally remain **ordered classic scripts** for V14. This preserves the existing global lexical model while responsibilities are made explicit. ES modules should only be introduced after runtime behavior is stable and the cross-module dependencies are intentionally redesigned.
 
 ## Migration stages
 
 ### Completed on `dev`
 
-1. Externalized CSS from the single-file application.
+1. Externalized CSS from the original single-file application.
 2. Externalized the original JavaScript runtime.
-3. Added structural/security validation and Netlify preview deployment.
-4. Isolated core legal data and legal knowledge-base data.
+3. Added structural/security validation and Netlify Deploy Preview.
+4. Isolated legal data and knowledge-base data.
 5. Isolated persistent/shared state and the document-import subsystem.
-6. Isolated legal-search utilities, structured search data, and search/memo runtime.
-7. Isolated shell UI, activity/comparison/workspace summary, project tools, document library/reader, and procedure runtime.
+6. Isolated search utilities, structured search data, search runtime and citation memo.
+7. Isolated shell UI, UI utilities, activity/comparison UI, project tools, library/reader and procedure runtime.
+8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
+9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
+10. Added `tools/check-v14-structure.mjs`, which locks the 20-script load order, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
 
-### Remaining before V14 merge
+## Remaining before V14 merge
 
-1. Split the remaining `app.js` by responsibility: workspace + command palette, legal-pack/data-vault, expert review, other domain UI, and boot/event delegation.
-2. Regenerate the dependency inventory after the final split.
-3. Run manual smoke tests in the Netlify Deploy Preview on desktop and mobile.
-4. Merge only after the preview behaves like production for the supported flows.
+1. Refresh `docs/JS_DEPENDENCIES.md` against the final 20-module structure.
+2. Run a full manual smoke test in the Netlify Deploy Preview on desktop and mobile, including existing local browser data.
+3. Confirm the latest GitHub validation and Netlify Deploy Preview are both green.
+4. Keep PR #1 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
 
 ## Safety rules
 
 - Never refactor legal content and verify legal accuracy in the same change set.
-- Legal-data verification is tracked separately in Issue #2.
-- One-time write-enabled GitHub Actions workflows are deleted immediately after their successful extraction commit.
-- Prefer byte/marker-preserving moves before semantic rewrites.
-- Do not merge the draft PR merely because syntax/CI passes; manual behavior testing is still required.
+- Legal-data verification remains tracked separately in Issue #2.
+- Temporary write-enabled extraction workflows are removed immediately after their successful extraction commit.
+- Prefer marker/byte-preserving moves before semantic rewrites.
+- `main` remains production-only during the V14 refactor.
+- Do not merge merely because syntax/CI passes; browser behavior must still be manually checked.
+
+## Automated validation
+
+The permanent validator currently checks:
+
+- HTML basics, duplicate IDs and referenced local assets;
+- JavaScript syntax for every local classic script;
+- selected unsafe execution patterns (`eval`, `new Function`, `document.write`, string timers, `javascript:` URLs);
+- the reviewed `innerHTML` sink ceiling;
+- exact V14 JavaScript load order;
+- required module files and key runtime markers;
+- absence of legacy `assets/js/app.js`;
+- absence of temporary `apply-stage*` workflows;
+- a self-contained static preview copy;
+- whitespace errors.
+
+This is structural validation, not a browser end-to-end test.
 
 ## Minimum manual smoke test
 
@@ -72,7 +102,9 @@ Before a production merge, verify:
 - dark/light theme;
 - workspace save/load and notes;
 - procedure progress;
-- case screening;
-- imported document flows;
+- project screening;
+- expert dossier workflow;
+- imported PDF/Word document flows;
+- command palette and keyboard shortcuts;
 - mobile navigation;
 - browser refresh with existing local data.
