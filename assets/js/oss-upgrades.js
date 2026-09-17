@@ -97,11 +97,42 @@
     render();
   }
 
+  function showAppUpdate(){
+    if(document.querySelector('.oss-update-status'))return;
+    const box=document.createElement('div');
+    box.className='oss-update-status';
+    box.setAttribute('role','status');
+    box.setAttribute('aria-live','polite');
+    const text=document.createElement('span');
+    text.textContent='LegalOS có bản mới';
+    const reload=document.createElement('button');
+    reload.type='button';
+    reload.textContent='Tải lại';
+    reload.addEventListener('click',()=>location.reload());
+    const close=document.createElement('button');
+    close.type='button';
+    close.className='oss-update-close';
+    close.setAttribute('aria-label','Đóng thông báo cập nhật');
+    close.textContent='×';
+    close.addEventListener('click',()=>box.remove());
+    box.append(text,reload,close);
+    document.body.appendChild(box);
+  }
+
   function registerServiceWorker(){
     if(!('serviceWorker' in navigator))return;
     if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')return;
+    const hadController=Boolean(navigator.serviceWorker.controller);
+    if(hadController){
+      let notified=false;
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{
+        if(notified)return;
+        notified=true;
+        showAppUpdate();
+      });
+    }
     window.addEventListener('load',()=>{
-      navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(err=>console.warn('LegalOS service worker registration failed:',err));
+      navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(reg=>reg.update().catch(()=>{})).catch(err=>console.warn('LegalOS service worker registration failed:',err));
     },{once:true});
   }
 
