@@ -27,16 +27,18 @@ async function audit(page, label) {
 }
 
 try {
-  const desktop = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const desktop = await desktopContext.newPage();
   await desktop.goto(baseURL, { waitUntil: 'networkidle' });
   await audit(desktop, 'desktop home');
 
   await desktop.evaluate(() => window.go?.('lib'));
   await desktop.waitForFunction(() => document.getElementById('lib')?.classList.contains('on'));
   await audit(desktop, 'desktop library');
-  await desktop.close();
+  await desktopContext.close();
 
-  const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const mobile = await mobileContext.newPage();
   await mobile.goto(baseURL, { waitUntil: 'networkidle' });
   await audit(mobile, 'mobile home');
 
@@ -54,7 +56,7 @@ try {
     await audit(mobile, 'mobile article');
   }
 
-  await mobile.close();
+  await mobileContext.close();
   console.log('\nLegalOS accessibility smoke test completed without critical violations.');
 } finally {
   await browser.close();
