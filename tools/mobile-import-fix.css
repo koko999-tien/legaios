@@ -1,0 +1,10 @@
+/* V14 mobile import toolbar hardening — 2026-09-17 */
+@media (max-width:700px){
+  .import-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  .import-toolbar>*{min-width:0!important;max-width:100%!important;width:100%!important}
+  .import-toolbar input{grid-column:1/-1!important}
+}
+@media (max-width:480px){
+  .import-toolbar{grid-template-columns:1fr!important}
+  .import-toolbar input{grid-column:auto!important}
+}
