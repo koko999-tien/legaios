@@ -1,0 +1,19 @@
+{
+  "name": "LegalOS — Pháp luật môi trường",
+  "short_name": "LegalOS",
+  "description": "Tra cứu pháp luật môi trường, quản lý hồ sơ và theo dõi thủ tục.",
+  "lang": "vi",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2783de",
+  "icons": [
+    {
+      "src": "/assets/icons/legalos.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
