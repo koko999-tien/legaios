@@ -1,0 +1,53 @@
+name: Apply Stage 2f classifier extraction
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2f-classifier.mjs'
+      - '.github/workflows/apply-stage2f-classifier.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract-classifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Extract classifier runtime
+        run: node tools/apply-stage2f-classifier.mjs
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+      - name: Verify Stage 2f.5 structure
+        shell: bash
+        run: |
+          test -s assets/js/classifier.js
+          grep -q 'src="assets/js/classifier.js"' index.html
+          grep -q 'function analyze()' assets/js/classifier.js
+          grep -q 'document.addEventListener("click",e=>{const stat=' assets/js/app.js
+          if grep -q 'function analyze()' assets/js/app.js; then
+            echo 'classifier runtime still exists in app.js' >&2
+            exit 1
+          fi
+          git diff --check
+      - name: Commit Stage 2f.5 extraction
+        shell: bash
+        run: |
+          git add index.html assets/js/app.js assets/js/classifier.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2f.5 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: isolate project screening classifier runtime'
+          git push origin HEAD:dev
