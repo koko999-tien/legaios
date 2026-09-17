@@ -21,6 +21,13 @@
     script.dataset.legalosFuzzy='js';
     document.head.appendChild(script);
   }
+  if(!document.querySelector('script[data-legalos-idb]')){
+    const script=document.createElement('script');
+    script.src='assets/js/idb-resilience.js';
+    script.async=false;
+    script.dataset.legalosIdb='js';
+    document.head.appendChild(script);
+  }
 })();
 
 (function installMobileArticleFixes(){
