@@ -28,6 +28,12 @@ try{
   assert(!text.includes(sentinel),'Diagnostics leaked workspace/note content');
   assert(!Object.prototype.hasOwnProperty.call(snapshot,'localStorage'),'Diagnostics must not serialize localStorage contents');
 
+  await page.locator('#settingsBtn').click();
+  await page.waitForTimeout(80);
+  assert(await page.locator('#diagExportBtn').count()===1,'Diagnostics export button is missing from settings');
+  assert(await page.locator('#diagExportBtn').isVisible(),'Diagnostics export button is not visible in settings');
+  await page.locator('#settingsClose').click();
+
   await page.locator('#cmdOpen').click();
   await page.locator('#cmdQ').fill('chẩn đoán');
   await page.waitForTimeout(80);
@@ -41,6 +47,7 @@ try{
   console.log('LegalOS diagnostics smoke test passed.');
   console.log('  captures technical browser errors');
   console.log('  excludes workspace/note content');
+  console.log('  settings exposes diagnostics export');
   console.log('  command-palette export downloads JSON');
 }finally{
   await context.close();
