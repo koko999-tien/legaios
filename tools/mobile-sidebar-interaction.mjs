@@ -63,14 +63,17 @@ try {
   // Use a real Playwright click, not DOM .click(), so an overlay would make this fail.
   await page.locator('#nav [data-go="lib"]').click();
   await page.waitForFunction(() => document.getElementById('lib')?.classList.contains('on'));
+  await page.waitForFunction(() => !document.getElementById('navScrim')?.classList.contains('on'));
   assert(!(await page.locator('#nav').evaluate(el => el.classList.contains('open'))), 'Sidebar stayed open after choosing a menu item');
+  assert(!(await page.locator('#navScrim').evaluate(el => el.classList.contains('on'))), 'Scrim stayed visible after choosing a menu item');
 
   await page.locator('#menuBtn').click();
   await waitForSidebarOpen();
   await page.mouse.click(380, 300);
   await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
+  await page.waitForFunction(() => !document.getElementById('navScrim')?.classList.contains('on'));
 
-  console.log('Mobile sidebar is visible, outside the scrim, and accepts real taps.');
+  console.log('Mobile sidebar opens cleanly, accepts real taps, and closes without a stale scrim.');
 } finally {
   await browser.close();
 }
