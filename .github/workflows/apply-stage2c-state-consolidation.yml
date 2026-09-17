@@ -1,0 +1,57 @@
+name: Apply Stage 2c state consolidation
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2c-state-consolidation.mjs'
+      - '.github/workflows/apply-stage2c-state-consolidation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate-state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Consolidate shared state
+        run: node tools/apply-stage2c-state-consolidation.mjs
+
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+
+      - name: Verify Stage 2c.4 structure
+        shell: bash
+        run: |
+          grep -q 'let compareSelected=\[\];' assets/js/state.js
+          grep -q 'let legalSearchMode=STORE.get' assets/js/state.js
+          grep -q 'function currentPage()' assets/js/app.js
+          if grep -q 'let compareSelected=\[\];' assets/js/app.js; then
+            echo 'compareSelected still exists in app.js' >&2
+            exit 1
+          fi
+          git diff --check
+
+      - name: Commit Stage 2c.4 consolidation
+        shell: bash
+        run: |
+          git add assets/js/app.js assets/js/state.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2c.4 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: consolidate shared view and search state'
+          git push origin HEAD:dev
