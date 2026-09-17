@@ -1,5 +1,5 @@
 /* LegalOS V14 — small native service worker inspired by Workbox caching patterns. */
-const CACHE_NAME='legalos-v14-shell-20260917-1';
+const CACHE_NAME='legalos-v14-shell-20260917-2';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -53,15 +53,15 @@ async function networkFirstNavigation(request){
   }
 }
 
-async function staleWhileRevalidate(request){
+async function networkFirstAsset(request){
   const cache=await caches.open(CACHE_NAME);
-  const cached=await cache.match(request);
-  const network=fetch(request).then(response=>{
+  try{
+    const response=await fetch(request);
     if(response&&response.ok)cache.put(request,response.clone());
     return response;
-  }).catch(()=>null);
-  if(cached){network.catch(()=>{});return cached}
-  return (await network) || Response.error();
+  }catch{
+    return (await cache.match(request)) || Response.error();
+  }
 }
 
 self.addEventListener('fetch',event=>{
@@ -73,5 +73,5 @@ self.addEventListener('fetch',event=>{
     event.respondWith(networkFirstNavigation(request));
     return;
   }
-  event.respondWith(staleWhileRevalidate(request));
+  event.respondWith(networkFirstAsset(request));
 });
