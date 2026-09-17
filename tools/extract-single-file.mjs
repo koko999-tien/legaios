@@ -5,9 +5,18 @@ import vm from 'node:vm';
 const sourcePath = process.argv[2] && !process.argv[2].startsWith('-') ? process.argv[2] : 'index.html';
 const outputArg = process.argv[3] && !process.argv[3].startsWith('-') ? process.argv[3] : '.tmp/refactor-preview';
 const outDir = path.resolve(outputArg);
-const source = fs.readFileSync(sourcePath, 'utf8');
+const absoluteSourcePath = path.resolve(sourcePath);
+const sourceDir = path.dirname(absoluteSourcePath);
+const sourceAssetsDir = path.join(sourceDir, 'assets');
+const source = fs.readFileSync(absoluteSourcePath, 'utf8');
 
 fs.rmSync(outDir, { recursive: true, force: true });
+
+// Preserve already-extracted/static assets so the preview remains self-contained
+// as the production source gradually moves from inline code to external files.
+if (fs.existsSync(sourceAssetsDir)) {
+  fs.cpSync(sourceAssetsDir, path.join(outDir, 'assets'), { recursive: true });
+}
 fs.mkdirSync(path.join(outDir, 'assets', 'css'), { recursive: true });
 fs.mkdirSync(path.join(outDir, 'assets', 'js'), { recursive: true });
 
@@ -71,10 +80,24 @@ for (const item of extracted) {
   if (fs.statSync(absolute).size === 0) throw new Error(`Extracted file is empty: ${item.file}`);
 }
 
+// Check local assets referenced by the generated HTML. This catches cases where
+// an externalized production asset is linked but was not copied to the preview.
+const assetRefs = new Set();
+for (const match of html.matchAll(/\b(?:href|src)\s*=\s*(["'])(assets\/[^"']+)\1/gi)) {
+  assetRefs.add(match[2]);
+}
+for (const ref of assetRefs) {
+  const absolute = path.join(outDir, ...ref.split('/'));
+  if (!fs.existsSync(absolute)) throw new Error(`Preview references a missing local asset: ${ref}`);
+  if (fs.statSync(absolute).isFile() && fs.statSync(absolute).size === 0) {
+    throw new Error(`Preview references an empty local asset: ${ref}`);
+  }
+}
+
 fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');
 fs.writeFileSync(
   path.join(outDir, 'manifest.json'),
-  JSON.stringify({ source: sourcePath, generatedAt: new Date().toISOString(), styleCount, scriptCount, extracted }, null, 2) + '\n',
+  JSON.stringify({ source: sourcePath, generatedAt: new Date().toISOString(), styleCount, scriptCount, extracted, preservedAssetRefs: [...assetRefs] }, null, 2) + '\n',
   'utf8'
 );
 
@@ -82,4 +105,5 @@ console.log(`Generated refactor preview in ${outDir}`);
 console.log(`  extracted ${styleCount} style block(s)`);
 console.log(`  extracted ${scriptCount} executable inline script block(s)`);
 console.log(`  verified ${extracted.length} extracted asset(s)`);
+console.log(`  verified ${assetRefs.size} referenced local asset(s)`);
 console.log('Production index.html was not modified.');
