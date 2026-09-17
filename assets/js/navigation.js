@@ -1,4 +1,21 @@
 /* LegalOS V14 — page navigation and route activation. */
+(function loadOpenSourceUpgrades(){
+  if(!document.querySelector('link[data-legalos-oss]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='assets/css/oss-upgrades.css';
+    link.dataset.legalosOss='css';
+    document.head.appendChild(link);
+  }
+  if(!document.querySelector('script[data-legalos-oss]')){
+    const script=document.createElement('script');
+    script.src='assets/js/oss-upgrades.js';
+    script.async=false;
+    script.dataset.legalosOss='js';
+    document.head.appendChild(script);
+  }
+})();
+
 (function installMobileArticleFixes(){
   if(document.getElementById('legalosMobileArticleFixes'))return;
   const style=document.createElement('style');
