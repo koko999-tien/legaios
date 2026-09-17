@@ -58,6 +58,27 @@
       downloadDiagnostics().catch(err=>recordDiagError('diagnostics-export',err?.message||err));
     },true);
   }
+  function installDiagnosticsSettings(){
+    const body=document.querySelector('#settingsDrawer .drawer-body');
+    if(!body||document.getElementById('diagExportBtn'))return;
+    const group=document.createElement('div');
+    group.className='setting-group';
+    const title=document.createElement('b');
+    title.textContent='Chẩn đoán kỹ thuật';
+    const note=document.createElement('p');
+    note.textContent='Xuất trạng thái trình duyệt, PWA và lỗi kỹ thuật gần nhất. Không xuất nội dung hồ sơ, ghi chú hoặc tên tài liệu.';
+    const button=document.createElement('button');
+    button.className='btn bs';
+    button.id='diagExportBtn';
+    button.type='button';
+    button.textContent='Xuất file chẩn đoán';
+    button.addEventListener('click',()=>downloadDiagnostics().catch(err=>{
+      recordDiagError('diagnostics-export',err?.message||err);
+      if(typeof window.toast==='function')window.toast('Không thể xuất chẩn đoán');
+    }));
+    group.append(title,note,button);
+    body.appendChild(group);
+  }
 
   function ensureManifest(){
     if(document.querySelector('link[rel="manifest"]'))return;
@@ -200,6 +221,7 @@
     installNavigationA11y();
     installDrawerA11y();
     installOfflineStatus();
+    installDiagnosticsSettings();
     ensureThemeMeta();
     document.body.classList.add('oss-upgrades-ready');
   }
