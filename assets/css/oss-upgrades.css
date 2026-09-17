@@ -47,6 +47,29 @@
   outline-offset:3px!important;
 }
 
+/* WCAG AA contrast hardening for small metadata text in the light theme. */
+body:not([data-theme="dark"]) .nav-label,
+body:not([data-theme="dark"]) .crumb>span,
+body:not([data-theme="dark"]) .library-wrap-v11 .section-head .lead,
+body:not([data-theme="dark"]) button[data-searchmode="ref"],
+body:not([data-theme="dark"]) button[data-searchmode="number"],
+body:not([data-theme="dark"]) #searchCoach p,
+body:not([data-theme="dark"]) .recent-search-box>span,
+body:not([data-theme="dark"]) #recentSearches>span{
+  color:#586174!important;
+}
+body:not([data-theme="dark"]) button[data-searchmode="smart"]{
+  color:#1e58c7!important;
+}
+body:not([data-theme="dark"]) .update-chip-v1323,
+body:not([data-theme="dark"]) .doc-state,
+body:not([data-theme="dark"]) .ok{
+  color:#0f6b4c!important;
+}
+body:not([data-theme="dark"]) .coverage-pill{
+  color:#8a4300!important;
+}
+
 @media(max-width:960px){
   button,
   .btn,
