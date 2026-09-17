@@ -90,10 +90,14 @@ body:not([data-theme="dark"]) button[data-searchmode="ref"],
 body:not([data-theme="dark"]) button[data-searchmode="number"],
 body:not([data-theme="dark"]) #searchCoach p,
 body:not([data-theme="dark"]) .recent-search-box>span,
-body:not([data-theme="dark"]) #recentSearches>span{
+body:not([data-theme="dark"]) #recentSearches>span,
+body:not([data-theme="dark"]) .legal-badge,
+body:not([data-theme="dark"]) .role-badge{
   color:#586174!important;
 }
-body:not([data-theme="dark"]) button[data-searchmode="smart"]{
+body:not([data-theme="dark"]) button[data-searchmode="smart"],
+body:not([data-theme="dark"]) #art .legal-tip b,
+body:not([data-theme="dark"]) #art .tag{
   color:#1e58c7!important;
 }
 body:not([data-theme="dark"]) .update-chip-v1323,
@@ -173,6 +177,11 @@ body:not([data-theme="dark"]) .coverage-pill{
   header.site #settingsBtn{
     display:grid!important;
     place-items:center;
+  }
+
+  /* Tiny 8px legal metadata was hard to read on phones; retain compactness without micro-text. */
+  .tag,.legal-badge,.role-badge,.doc-state{
+    font-size:10px!important;
   }
 
   input,
