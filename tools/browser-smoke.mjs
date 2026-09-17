@@ -31,10 +31,22 @@ async function assertNoHorizontalOverflow(label) {
   const report = await page.evaluate(() => {
     const viewport = window.innerWidth;
     const scrollWidth = document.documentElement.scrollWidth;
+    const isIntentionallyOffCanvas = el => {
+      if (el.closest('nav.links.side-nav:not(.open)')) return true;
+      if (el.closest('.right-drawer:not(.on), .cmd-bg:not(.on), .drawer-scrim:not(.on), .nav-scrim:not(.on)')) return true;
+      let parent = el.parentElement;
+      while (parent && parent !== document.body) {
+        const ps = getComputedStyle(parent);
+        if (/(auto|scroll)/.test(ps.overflowX) && parent.scrollWidth > parent.clientWidth + 2) return true;
+        parent = parent.parentElement;
+      }
+      return false;
+    };
     const offenders = [...document.querySelectorAll('body *')]
       .filter(el => {
         const style = getComputedStyle(el);
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+        if (isIntentionallyOffCanvas(el)) return false;
         const rect = el.getBoundingClientRect();
         if (rect.width <= 0 || rect.height <= 0) return false;
         return rect.right > viewport + 2 || rect.left < -2;
@@ -48,6 +60,27 @@ async function assertNoHorizontalOverflow(label) {
   });
   assert(report.scrollWidth <= report.viewport + 2, `${label}: horizontal overflow ${report.scrollWidth}px > ${report.viewport}px; offenders: ${report.offenders.join(', ') || 'unknown'}`);
   assert(report.offenders.length === 0, `${label}: visible elements are clipped outside the viewport: ${report.offenders.join(', ')}`);
+}
+
+async function assertHomeMobileGeometry(width) {
+  const selectors = [
+    'header.site',
+    '#home .home113',
+    '#home .compact-home-hero',
+    '#home .home113-search-main',
+    '#home .home113-primary-card',
+    '#home .home113-tile'
+  ];
+  for (const selector of selectors) {
+    const boxes = await page.locator(selector).evaluateAll(elements => elements.map(el => {
+      const r = el.getBoundingClientRect();
+      return { left: r.left, right: r.right, width: r.width, height: r.height };
+    }));
+    for (const box of boxes) {
+      if (box.width <= 0 || box.height <= 0) continue;
+      assert(box.left >= -2 && box.right <= width + 2, `mobile ${width}px: ${selector} is clipped [${Math.round(box.left)}, ${Math.round(box.right)}]`);
+    }
+  }
 }
 
 try {
@@ -101,8 +134,8 @@ try {
       await page.waitForTimeout(20);
       await assertNoHorizontalOverflow(`mobile ${width}px / ${id}`);
     }
-    const headerBox = await page.locator('header.site').boundingBox();
-    assert(headerBox && headerBox.x >= -1 && headerBox.x + headerBox.width <= width + 1, `mobile ${width}px: header exceeds viewport`);
+    await go('home');
+    await assertHomeMobileGeometry(width);
   }
 
   const mobileLibrary = page.locator('#mobileQuick [data-go="lib"]');
@@ -121,7 +154,7 @@ try {
   console.log('  theme persistence checked');
   console.log('  command palette checked');
   console.log('  mobile quick navigation checked');
-  console.log('  mobile horizontal-overflow checks passed at 390px and 360px');
+  console.log('  mobile clipping/overflow checks passed at 390px and 360px');
 } finally {
   await browser.close();
 }
