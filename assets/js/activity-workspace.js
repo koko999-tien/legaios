@@ -72,14 +72,54 @@ function updateCompareBar(){
 function clearCompare(){
   compareSelected=[];updateCompareBar();
 }
+function compareValue(value){
+  const s=String(value??"").trim();return s||"Chưa có dữ liệu";
+}
+function compareFactRow(label,a,b){
+  const av=compareValue(a),bv=compareValue(b),same=foldVN(av)===foldVN(bv);
+  return `<div class="compare-fact-row ${same?'same':'different'}"><b>${esc(label)}</b><span>${esc(av)}</span><span>${esc(bv)}</span></div>`;
+}
+function compareRefColumn(title,refs,kind=""){
+  return `<div class="compare-ref-col ${kind}"><b>${esc(title)}</b>${refs.length?`<div>${refs.slice(0,18).map(r=>`<span class="ref-chip">${esc(r)}</span>`).join("")}</div>`:'<small>Không có tham chiếu trong chỉ mục hiện tại.</small>'}</div>`;
+}
 function showCompare(){
   if(compareSelected.length!==2){toast("Chọn đúng 2 văn bản để so sánh");return}
   const a=D.find(x=>x.id===compareSelected[0]),b=D.find(x=>x.id===compareSelected[1]);
   if(!a||!b)return;
-  $("compareBody").innerHTML=`<div class="compare-grid">
-    <div class="compare-col"><div class="meta"><span class="tag">${a.k}</span><span class="tag">${topicName(a.t)}</span></div><h3>${a.ttl}</h3>${a.b}</div>
-    <div class="compare-col"><div class="meta"><span class="tag">${b.k}</span><span class="tag">${topicName(b.t)}</span></div><h3>${b.ttl}</h3>${b.b}</div>
-  </div>`;
+  const am=metaOf(a.id),bm=metaOf(b.id);
+  const refsA=[...new Set([...extractLegalRefs(a.b),...coreRefsForDoc(a.id)])];
+  const refsB=[...new Set([...extractLegalRefs(b.b),...coreRefsForDoc(b.id)])];
+  const key=x=>foldVN(x);
+  const bKeys=new Set(refsB.map(key)),aKeys=new Set(refsA.map(key));
+  const common=refsA.filter(x=>bKeys.has(key(x)));
+  const onlyA=refsA.filter(x=>!bKeys.has(key(x)));
+  const onlyB=refsB.filter(x=>!aKeys.has(key(x)));
+  const sourceA=am.src?'Có nguồn chính thức':'Chưa gắn nguồn';
+  const sourceB=bm.src?'Có nguồn chính thức':'Chưa gắn nguồn';
+
+  $("compareBody").innerHTML=`
+    <section class="compare-structured">
+      <div class="compare-structured-head"><div><div class="section-kicker">Đối chiếu có cấu trúc</div><h3>Khác nhau ở đâu?</h3></div><small>Ưu tiên metadata và chỉ mục pháp lý trước khi đọc phần tóm tắt.</small></div>
+      <div class="compare-facts">
+        <div class="compare-fact-row compare-fact-head"><b>Thuộc tính</b><span>${esc(a.ttl)}</span><span>${esc(b.ttl)}</span></div>
+        ${compareFactRow('Loại văn bản',a.k,b.k)}
+        ${compareFactRow('Lĩnh vực',topicName(a.t),topicName(b.t))}
+        ${compareFactRow('Vai trò',roleLabel(lawRole(a)),roleLabel(lawRole(b)))}
+        ${compareFactRow('Ban hành',am.issued,bm.issued)}
+        ${compareFactRow('Hiệu lực',am.eff,bm.eff)}
+        ${compareFactRow('Nguồn',sourceA,sourceB)}
+        ${compareFactRow('Quan hệ pháp lý',am.rel,bm.rel)}
+      </div>
+      <div class="compare-ref-summary">
+        ${compareRefColumn(`Tham chiếu chung · ${common.length}`,common,'common')}
+        ${compareRefColumn(`Chỉ văn bản trái · ${onlyA.length}`,onlyA,'left-only')}
+        ${compareRefColumn(`Chỉ văn bản phải · ${onlyB.length}`,onlyB,'right-only')}
+      </div>
+    </section>
+    <div class="compare-grid">
+      <div class="compare-col"><div class="meta"><span class="tag">${esc(a.k)}</span><span class="tag">${esc(topicName(a.t))}</span></div><h3>${esc(a.ttl)}</h3>${a.b}</div>
+      <div class="compare-col"><div class="meta"><span class="tag">${esc(b.k)}</span><span class="tag">${esc(topicName(b.t))}</span></div><h3>${esc(b.ttl)}</h3>${b.b}</div>
+    </div>`;
   $("compareModal").classList.add("on");
 }
 function closeCompare(){$("compareModal").classList.remove("on")}
