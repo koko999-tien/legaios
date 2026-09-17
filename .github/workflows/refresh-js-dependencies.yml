@@ -1,0 +1,44 @@
+name: Refresh V14 dependency inventory
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/analyze-app-js.mjs'
+      - '.github/workflows/refresh-js-dependencies.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate dependency inventory
+        run: node tools/analyze-app-js.mjs index.html docs/JS_DEPENDENCIES.md
+      - name: Validate application
+        run: |
+          node tools/check-html.mjs index.html
+          node tools/check-v14-structure.mjs
+          git diff --check
+      - name: Commit refreshed inventory
+        shell: bash
+        run: |
+          git add docs/JS_DEPENDENCIES.md
+          if git diff --cached --quiet; then
+            echo 'Dependency inventory is already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: refresh V14 JavaScript dependency inventory'
+          git push origin HEAD:dev
