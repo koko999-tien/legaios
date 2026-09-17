@@ -10,7 +10,9 @@ function assert(condition, message) {
 
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
-  await page.locator('[data-go="lib"]').first().click();
+  const libraryTrigger = page.locator('[data-go="lib"]').first();
+  assert(await libraryTrigger.count(), 'Library navigation trigger is missing');
+  await libraryTrigger.evaluate(el => el.click());
   await page.waitForFunction(() => document.getElementById('lib')?.classList.contains('on'));
   await page.locator('#q').fill('72/2020/QH14');
   await page.locator('#qBtn').click();
