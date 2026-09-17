@@ -27,6 +27,28 @@ async function go(id) {
   assert(await activePage(id), `Page ${id} did not become active`);
 }
 
+async function assertNoHorizontalOverflow(label) {
+  const report = await page.evaluate(() => {
+    const viewport = window.innerWidth;
+    const scrollWidth = document.documentElement.scrollWidth;
+    const offenders = [...document.querySelectorAll('body *')]
+      .filter(el => {
+        const style = getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        const rect = el.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return false;
+        return rect.right > viewport + 2 || rect.left < -2;
+      })
+      .slice(0, 8)
+      .map(el => {
+        const r = el.getBoundingClientRect();
+        return `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}${el.classList.length ? `.${[...el.classList].slice(0,2).join('.')}` : ''} [${Math.round(r.left)}, ${Math.round(r.right)}]`;
+      });
+    return { viewport, scrollWidth, offenders };
+  });
+  assert(report.scrollWidth <= report.viewport + 2, `${label}: horizontal overflow ${report.scrollWidth}px > ${report.viewport}px; offenders: ${report.offenders.join(', ') || 'unknown'}`);
+}
+
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   assert((await page.title()).includes('LegalOS'), 'Document title does not contain LegalOS');
@@ -69,9 +91,19 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.getElementById('cmdBg')?.classList.contains('on'));
 
-  // Mobile quick navigation should still route correctly after the refactor.
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.reload({ waitUntil: 'networkidle' });
+  // Mobile route/navigation and geometry checks.
+  for (const width of [390, 360]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.reload({ waitUntil: 'networkidle' });
+    for (const id of routes) {
+      await go(id);
+      await page.waitForTimeout(20);
+      await assertNoHorizontalOverflow(`mobile ${width}px / ${id}`);
+    }
+    const headerBox = await page.locator('header.site').boundingBox();
+    assert(headerBox && headerBox.x >= -1 && headerBox.x + headerBox.width <= width + 1, `mobile ${width}px: header exceeds viewport`);
+  }
+
   const mobileLibrary = page.locator('#mobileQuick [data-go="lib"]');
   assert(await mobileLibrary.count(), 'Mobile library navigation is missing');
   await mobileLibrary.evaluate(el => el.click());
@@ -88,6 +120,7 @@ try {
   console.log('  theme persistence checked');
   console.log('  command palette checked');
   console.log('  mobile quick navigation checked');
+  console.log('  mobile horizontal-overflow checks passed at 390px and 360px');
 } finally {
   await browser.close();
 }
