@@ -3271,3 +3271,17 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   nav.links.side-nav{pointer-events:auto!important}
 }
 
+
+/* V14 mobile sidebar hit-area fix — 2026-09-17 */
+@media (max-width:960px){
+  /* Keep the dismiss scrim only outside the drawer. This prevents the scrim from
+     intercepting taps inside the sidebar regardless of stacking-context quirks. */
+  .nav-scrim{
+    left:min(320px,86vw)!important;
+    right:0!important;
+    top:var(--head)!important;
+    bottom:0!important;
+    width:auto!important;
+  }
+}
+
