@@ -21,6 +21,11 @@ async function audit(page, label) {
   console.log(`  serious/critical: ${serious.length}`);
   for (const v of serious) {
     console.log(`  - [${v.impact}] ${v.id}: ${v.help} (${v.nodes.length} node(s))`);
+    for (const node of v.nodes.slice(0, 8)) {
+      const target = Array.isArray(node.target) ? node.target.join(' > ') : String(node.target || 'unknown');
+      const summary = String(node.failureSummary || '').replace(/\s+/g, ' ').trim();
+      console.log(`      ${target}${summary ? ` :: ${summary}` : ''}`);
+    }
   }
 
   assert(critical.length === 0, `${label}: critical accessibility violations found: ${critical.map(v => v.id).join(', ')}`);
