@@ -1,26 +1,3 @@
-function analyze(){
-  if(!validateClassifier())return;
-  const kind=$("kind").value,cap=+$("cap").value||0,area=+$("area").value||0,ww=+$("ww").value||0,tr=+$("tr").value||0,hz=+$("hz").value||0,air=+$("air").value||0,sens=$("sens").value==="yes";
-  const kindLabel=$("kind").selectedOptions[0].textContent;
-  const branches=[];const refs=new Set(["l72","nd08","nd48"]);
-  branches.push(["Phân nhóm dự án / ĐTM","Phải tra đúng loại hình trong Phụ lục NĐ 08 đã được sửa; Không tự gán Nhóm I–IV chỉ từ công suất hoặc diện tích."]);
-  if(ww>0){branches.push(["Nước thải & GPMT",`Có khai báo ${ww.toLocaleString("vi-VN")} m³/ngày nước thải. Cần xác định loại nước thải, nơi tiếp nhận, QCVN áp dụng và đối tượng GPMT.`]);refs.add("q40");}
-  if(ww>0&&tr<ww)branches.push(["Năng lực XLNT",`Công suất XLNT nhập (${tr.toLocaleString("vi-VN")}) thấp hơn lưu lượng nước thải (${ww.toLocaleString("vi-VN")}); cần kiểm tra cân bằng nước và thiết kế, không tự kết luận vi phạm chỉ từ hai ô số.`]);
-  if(air>0){branches.push(["Khí thải",`Có khai báo ${air.toLocaleString("vi-VN")} m³/giờ khí thải. Cần xác định nguồn, thông số, QCVN, GPMT và chế độ quan trắc theo đối tượng.`]);refs.add("q19");}
-  if(hz>0){branches.push(["Chất thải nguy hại",`Có khai báo ${hz.toLocaleString("vi-VN")} kg/tháng CTNH. Cần kiểm tra phân định, lưu giữ, chuyển giao và nội dung hồ sơ môi trường; khối lượng không phải tiêu chí duy nhất để xác định một chất là CTNH.`]);refs.add("q07");}
-  if(sens)branches.push(["Yếu tố nhạy cảm","Có khai báo yếu tố nhạy cảm. Cần tách từng yếu tố và kiểm chứng bằng hồ sơ/bản đồ: rừng, khu bảo tồn, nguồn nước, đất lúa, đô thị…"]);
-  if(kind==="mining"){branches.push(["Khoáng sản","Mở thêm Luật Địa chất và Khoáng sản, phục hồi/ký quỹ, đất đai, nước và môi trường. Không đồng nhất 'khoáng sản nhóm IV' với 'dự án nhóm IV'."]);refs.add("l54");}
-  if(kind==="chem"){branches.push(["Hóa chất","Mở thêm Luật Hóa chất 2025 và bộ nghị định 24–26/2026; nghĩa vụ hóa chất chạy song song với môi trường."]);refs.add("lhc");}
-  if(kind==="solar"){branches.push(["Điện / năng lượng tái tạo","Dự án năng lượng tái tạo không mặc nhiên được miễn ĐTM/GPMT; phải rà theo loại dự án, vị trí và yếu tố nhạy cảm."]);refs.add("ldl");}
-  if(kind==="waste"){branches.push(["Xử lý chất thải","Cần xác định loại chất thải tiếp nhận, công nghệ, phạm vi xử lý và các giấy phép/nội dung môi trường tương ứng."]);refs.add("nd08");}
-  const input={kind:kindLabel,cap,area,ww,tr,hz,air,sens:sens?"Có":"Không"};
-  const notes=branches.map(x=>x[0]+": "+x[1]);
-  lastAnalysis={group:"Chưa kết luận",dtm:null,gp:null,notes,input,refs:[...refs]};
-  $("out").innerHTML=`<div class="card"><div class="k">Kết quả sàng lọc</div><div class="result-grid"><div class="result-card"><small>Nhóm I–IV</small><span class="no-conclusion">Chưa kết luận</span></div><div class="result-card"><small>ĐTM</small><b>Phải tra phụ lục theo loại dự án</b></div><div class="result-card"><small>GPMT</small><b>Phải xác định đối tượng + nguồn thải</b></div></div><div class="why"><b>Dữ liệu đã nhập</b><p style="color:var(--m);font-size:13px">${kindLabel} · công suất ${cap.toLocaleString("vi-VN")} · diện tích ${area.toLocaleString("vi-VN")} ha · nước thải ${ww.toLocaleString("vi-VN")} m³/ngày · CTNH ${hz.toLocaleString("vi-VN")} kg/tháng · khí thải ${air.toLocaleString("vi-VN")} m³/giờ.</p></div><div class="why"><b>Nội dung cần kiểm tra tiếp</b><div class="screening-branches">${branches.map(x=>`<div class="screening-branch"><b>${x[0]}</b><p>${x[1]}</p></div>`).join("")}</div></div><div class="sourcebox"><b>Vì sao chưa kết luận Nhóm I/II/III/IV?</b> Vì pháp luật phân nhóm theo loại hình và tiêu chí trong phụ lục cụ thể. Một công thức chung dùng công suất, diện tích, nước thải hoặc CTNH có thể tạo kết luận sai, đặc biệt khi nhầm ngưỡng quản lý/thẩm quyền với tiêu chí xác định đối tượng.</div><div class="why"><b>Căn cứ mở tiếp</b><div class="row" style="margin-top:8px">${[...refs].filter(id=>D.some(d=>d.id===id)).map(id=>{const d=D.find(x=>x.id===id);return `<button class="tiny" data-open="${id}" type="button">${d.ttl.replace(/ —.*/,"")}</button>`}).join("")}</div></div><div class="row"><button class="btn bp" id="saveCase" type="button">Lưu checklist vào Hồ sơ</button><button class="btn bs" id="copyResult" type="button">Sao chép</button></div></div>`;
-  $("saveCase").onclick=()=>{const name=$("caseName").value.trim()||`Hồ sơ ${new Date().toLocaleString("vi-VN")}`;const c={id:"c"+Date.now(),name,createdAt:new Date().toISOString(),input,result:{group:"Chưa kết luận",dtm:null,gp:null,notes,screening:true,refs:[...refs]}};cases=[c,...cases];STORE.set("w3_cases",cases);renderWorkspace();updStats();logActivity("case",c.id,c.name);toast("Đã lưu checklist")};
-  $("copyResult").onclick=async()=>{const tx=`${$("caseName").value||"LegalOS.4"}\nNhóm I–IV: Chưa kết luận\nNội dung cần kiểm tra:\n${notes.map(x=>"- "+x).join("\n")}`;try{await navigator.clipboard.writeText(tx);toast("Đã sao chép")}catch{toast("Không thể sao chép tự động")}};
-}
-
 document.addEventListener("click",e=>{const stat=e.target.closest("[data-core-stat]");if(stat){e.preventDefault();renderCoreKbStatDetail(stat.dataset.coreStat)}});
 
 
