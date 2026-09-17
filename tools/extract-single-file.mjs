@@ -52,6 +52,25 @@ html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (full, rawAttrs =
   return `<script${attrs ? ` ${attrs}` : ''} src="assets/js/${file}"></script>`;
 });
 
+if (/<style\b/i.test(html)) {
+  throw new Error('Refactor preview still contains an inline <style> block.');
+}
+
+for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+  const attrs = match[1] || '';
+  const body = match[2] || '';
+  if (/\bsrc\s*=/i.test(attrs) || !body.trim()) continue;
+  const type = attrs.match(/\btype\s*=\s*(["'])(.*?)\1/i)?.[2]?.trim().toLowerCase() || '';
+  const executable = !type || type === 'text/javascript' || type === 'application/javascript' || type === 'module';
+  if (executable) throw new Error('Refactor preview still contains executable inline JavaScript.');
+}
+
+for (const item of extracted) {
+  const absolute = path.join(outDir, ...item.file.split('/'));
+  if (!fs.existsSync(absolute)) throw new Error(`Missing extracted file: ${item.file}`);
+  if (fs.statSync(absolute).size === 0) throw new Error(`Extracted file is empty: ${item.file}`);
+}
+
 fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');
 fs.writeFileSync(
   path.join(outDir, 'manifest.json'),
@@ -62,4 +81,5 @@ fs.writeFileSync(
 console.log(`Generated refactor preview in ${outDir}`);
 console.log(`  extracted ${styleCount} style block(s)`);
 console.log(`  extracted ${scriptCount} executable inline script block(s)`);
+console.log(`  verified ${extracted.length} extracted asset(s)`);
 console.log('Production index.html was not modified.');
