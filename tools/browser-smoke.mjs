@@ -83,6 +83,47 @@ async function assertHomeMobileGeometry(width) {
   }
 }
 
+async function assertMobileSidebarScrollable(width) {
+  await go('home');
+  await page.locator('#menuBtn').click();
+  await page.waitForFunction(() => document.getElementById('nav')?.classList.contains('open'));
+  const navInfo = await page.locator('#nav').evaluate(el => {
+    const style = getComputedStyle(el);
+    const before = el.scrollTop;
+    el.scrollTop = Math.min(180, Math.max(0, el.scrollHeight - el.clientHeight));
+    return {
+      before,
+      after: el.scrollTop,
+      scrollHeight: el.scrollHeight,
+      clientHeight: el.clientHeight,
+      overflowY: style.overflowY,
+      touchAction: style.touchAction
+    };
+  });
+  assert(navInfo.scrollHeight > navInfo.clientHeight, `mobile ${width}px: sidebar content is not taller than its viewport; scroll behavior cannot be verified`);
+  assert(navInfo.after > navInfo.before, `mobile ${width}px: sidebar does not scroll`);
+  assert(/auto|scroll/.test(navInfo.overflowY), `mobile ${width}px: sidebar overflow-y is ${navInfo.overflowY}`);
+  assert(navInfo.touchAction.includes('pan-y') || navInfo.touchAction === 'auto', `mobile ${width}px: sidebar touch-action is ${navInfo.touchAction}`);
+  await page.locator('#navScrim').click();
+  await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
+}
+
+async function assertCompactMobileText(width) {
+  await go('lib');
+  const suggest = page.locator('.search-suggest-row > span').first();
+  if (await suggest.count()) {
+    const box = await suggest.boundingBox();
+    assert(box && box.width >= Math.min(180, width - 80), `mobile ${width}px: library suggestion label collapsed to ${Math.round(box?.width || 0)}px`);
+  }
+
+  await go('expert');
+  const quality = page.locator('.compact-principles summary > small').first();
+  if (await quality.count()) {
+    const box = await quality.boundingBox();
+    assert(box && box.width >= Math.min(160, width - 120), `mobile ${width}px: expert quality text collapsed to ${Math.round(box?.width || 0)}px`);
+  }
+}
+
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   assert((await page.title()).includes('LegalOS'), 'Document title does not contain LegalOS');
@@ -136,6 +177,8 @@ try {
     }
     await go('home');
     await assertHomeMobileGeometry(width);
+    await assertMobileSidebarScrollable(width);
+    await assertCompactMobileText(width);
   }
 
   const mobileLibrary = page.locator('#mobileQuick [data-go="lib"]');
@@ -154,6 +197,8 @@ try {
   console.log('  theme persistence checked');
   console.log('  command palette checked');
   console.log('  mobile quick navigation checked');
+  console.log('  mobile sidebar scroll checked');
+  console.log('  compact mobile text widths checked');
   console.log('  mobile clipping/overflow checks passed at 390px and 360px');
 } finally {
   await browser.close();
