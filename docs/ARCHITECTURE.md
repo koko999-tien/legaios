@@ -23,6 +23,7 @@ That file is the working baseline and should remain recoverable throughout the r
 - Add automated structural and JavaScript syntax validation.
 - Add Netlify configuration and response security headers.
 - Document rollback and test workflow.
+- Generate a disposable split-file preview in CI before production files are reorganized.
 
 ### Stage 1 — extract static CSS
 
@@ -91,15 +92,22 @@ Only after the front-end split is stable:
 - AI features;
 - controlled legal-data update pipeline.
 
+## Current refactor-preview mechanism
+
+`tools/extract-single-file.mjs` reads the current `index.html`, extracts inline styles and executable inline scripts to a disposable `.tmp/refactor-preview/` tree, and rewrites references only inside that generated preview. Production `index.html` is not changed.
+
+This mechanism is intentionally transitional: it lets CI prove that the single-file source can be split mechanically before we commit a permanent multi-file layout.
+
 ## Release discipline
 
 For each structural stage:
 
 1. implement on `dev`;
 2. run `node tools/check-html.mjs`;
-3. test core flows manually;
-4. review the diff;
-5. merge to `main` only after the current production behavior is preserved.
+3. generate the split preview and validate it;
+4. test core flows manually;
+5. review the diff;
+6. merge to `main` only after the current production behavior is preserved.
 
 ## Minimum manual smoke test
 
