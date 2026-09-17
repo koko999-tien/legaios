@@ -52,6 +52,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/search-quality.mjs
 
+      - name: Verify imported-HTML sanitizer
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/security-sanitizer.mjs
+
       - name: Verify real mobile sidebar interaction
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
