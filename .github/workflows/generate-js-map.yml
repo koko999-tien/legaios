@@ -34,12 +34,12 @@ jobs:
       - name: Commit dependency inventory
         shell: bash
         run: |
-          if git diff --quiet -- docs/JS_DEPENDENCIES.md; then
+          git add docs/JS_DEPENDENCIES.md
+          if git diff --cached --quiet; then
             echo 'Dependency inventory is unchanged.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/JS_DEPENDENCIES.md
           git commit -m 'docs: map JavaScript dependencies for Stage 2b'
           git push origin HEAD:dev
