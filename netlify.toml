@@ -1,6 +1,10 @@
 [build]
   publish = "."
 
+[context.deploy-preview]
+  command = "node tools/extract-single-file.mjs index.html .tmp/refactor-preview"
+  publish = ".tmp/refactor-preview"
+
 [[headers]]
   for = "/*"
   [headers.values]
