@@ -57,6 +57,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/mobile-article-layout.mjs
 
+      - name: Verify offline PWA shell
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/pwa-smoke.mjs
+
       - name: Accessibility smoke test
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
