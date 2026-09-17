@@ -1,113 +1,65 @@
-# LegalOS V14 architecture plan
+# LegalOS V14 architecture
 
-## Baseline
+LegalOS is being migrated from one large HTML file into ordered, testable static modules without changing production behavior prematurely.
 
-Production currently uses a single `index.html` of roughly 600 KB. It contains markup, styles, application logic, built-in legal metadata/content, browser-storage logic, import/export logic, and UI rendering.
+## Deployment model
 
-That file is the working baseline and should remain recoverable throughout the refactor.
+- `main` is production and is deployed to `https://legalos-vn.netlify.app`.
+- `dev` is the refactor branch.
+- Pull request #1 provides a Netlify Deploy Preview before anything is merged to production.
+- Structural changes must pass `.github/workflows/validate.yml` and the Netlify preview before merge.
 
-## Goals
-
-1. Keep production behavior stable while code is reorganized.
-2. Separate presentation, application logic, storage, and legal data.
-3. Add automated checks before merging to `main`.
-4. Make future backend/database/AI work possible without rewriting the UI again.
-5. Keep legal-content changes separate from code-only refactors.
-
-## Staged migration
-
-### Stage 0 — safety rails
-
-- `main` remains production.
-- `dev` is the integration branch.
-- Add automated structural and JavaScript syntax validation.
-- Add Netlify configuration and response security headers.
-- Document rollback and test workflow.
-- Generate a disposable split-file preview in CI before production files are reorganized.
-
-### Stage 1 — extract static CSS
-
-Target structure:
+## Current dev structure
 
 ```text
+index.html
 assets/
   css/
     app.css
-```
-
-Only move style rules. Do not redesign at this stage. Verify desktop/mobile layout and dark mode before merging.
-
-### Stage 2 — extract application JavaScript
-
-Target structure:
-
-```text
-assets/
   js/
-    storage.js
-    search.js
-    documents.js
-    workspace.js
-    procedures.js
-    ui.js
-    app.js
+    legal-data.js          # legal document/topic catalog
+    knowledge-base.js      # metadata, deep guides, official-source knowledge
+    state.js               # localStorage wrapper + shared mutable state
+    import.js              # IndexedDB/file import subsystem
+    search-utils.js        # sanitization + query helpers
+    search-data.js         # structured clause/trail search data
+    search-runtime.js      # legal search, clause rendering, citation memo
+    ui-shell.js            # shell UI, drawers, preferences, procedure wizard
+    activity-workspace.js  # recent activity, comparison, workspace summary
+    project-tools.js       # update feed, screening helpers, case export
+    library.js             # library filters, saved/recent docs, article reader
+    procedures.js          # procedure checklist/progress/detail runtime
+    app.js                 # remaining workspace, legal-pack, expert, boot/events
 ```
 
-Keep behavior unchanged first. Split by responsibility only after a clean baseline is verified.
+The scripts intentionally remain **ordered classic scripts** for now. This preserves the existing global lexical model while responsibilities are made explicit. ES modules should only be introduced after cross-module dependencies are mapped and stabilized.
 
-### Stage 3 — extract built-in legal data
+## Migration stages
 
-Target structure:
+### Completed on `dev`
 
-```text
-assets/
-  data/
-    topics.js
-    laws.js
-    metadata.js
-    procedures.js
-```
+1. Externalized CSS from the single-file application.
+2. Externalized the original JavaScript runtime.
+3. Added structural/security validation and Netlify preview deployment.
+4. Isolated core legal data and legal knowledge-base data.
+5. Isolated persistent/shared state and the document-import subsystem.
+6. Isolated legal-search utilities, structured search data, and search/memo runtime.
+7. Isolated shell UI, activity/comparison/workspace summary, project tools, document library/reader, and procedure runtime.
 
-This stage is structural only. Do not alter legal wording, dates, relationships, or cited sources as part of the extraction.
+### Remaining before V14 merge
 
-### Stage 4 — typed data contracts and migrations
+1. Split the remaining `app.js` by responsibility: workspace + command palette, legal-pack/data-vault, expert review, other domain UI, and boot/event delegation.
+2. Regenerate the dependency inventory after the final split.
+3. Run manual smoke tests in the Netlify Deploy Preview on desktop and mobile.
+4. Merge only after the preview behaves like production for the supported flows.
 
-Introduce versioned schemas for:
+## Safety rules
 
-- workspace export/import;
-- legal packs;
-- imported-document metadata;
-- saved cases and notes.
-
-Add migration functions so older local data remains readable.
-
-### Stage 5 — online services
-
-Only after the front-end split is stable:
-
-- authentication;
-- PostgreSQL/Supabase data model;
-- multi-device sync;
-- server-side document processing;
-- AI features;
-- controlled legal-data update pipeline.
-
-## Current refactor-preview mechanism
-
-`tools/extract-single-file.mjs` reads the current `index.html`, extracts inline styles and executable inline scripts to a disposable `.tmp/refactor-preview/` tree, and rewrites references only inside that generated preview. Production `index.html` is not changed.
-
-This mechanism is intentionally transitional: it lets CI prove that the single-file source can be split mechanically before we commit a permanent multi-file layout.
-
-## Release discipline
-
-For each structural stage:
-
-1. implement on `dev`;
-2. run `node tools/check-html.mjs`;
-3. generate the split preview and validate it;
-4. test core flows manually;
-5. review the diff;
-6. merge to `main` only after the current production behavior is preserved.
+- Never refactor legal content and verify legal accuracy in the same change set.
+- Legal-data verification is tracked separately in Issue #2.
+- One-time write-enabled GitHub Actions workflows are deleted immediately after their successful extraction commit.
+- Prefer byte/marker-preserving moves before semantic rewrites.
+- Do not merge the draft PR merely because syntax/CI passes; manual behavior testing is still required.
 
 ## Minimum manual smoke test
 
@@ -115,12 +67,12 @@ Before a production merge, verify:
 
 - home page and navigation;
 - document search/filtering;
-- document detail opening;
+- document detail opening and in-document search;
 - official-source links;
 - dark/light theme;
-- workspace save/load;
-- notes;
+- workspace save/load and notes;
+- procedure progress;
 - case screening;
-- import/export;
+- imported document flows;
 - mobile navigation;
 - browser refresh with existing local data.
