@@ -47,6 +47,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/browser-smoke.mjs
 
+      - name: Verify legal search quality
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/search-quality.mjs
+
       - name: Verify real mobile sidebar interaction
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
