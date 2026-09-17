@@ -143,6 +143,25 @@ Nguồn:
 - Budget được đặt rộng hơn baseline hiện tại để chỉ chặn regression rõ ràng, không ép tối ưu giả tạo.
 - Lighthouse CI đầy đủ sẽ được cân nhắc ở stage sau vì chi phí chạy Chromium/audit cao hơn smoke test hiện tại.
 
+## 11. Sentry JavaScript / OpenTelemetry Browser — MIT / Apache-2.0
+
+Nguồn:
+- https://github.com/getsentry/sentry-javascript
+- https://github.com/open-telemetry/opentelemetry-browser
+
+Điểm học:
+- Lỗi trình duyệt cần được bắt ở tầng toàn cục thay vì phụ thuộc vào từng màn hình tự `try/catch`.
+- Telemetry trình duyệt nên có schema có cấu trúc để dễ chẩn đoán, nhưng phải kiểm soát dữ liệu nhạy cảm trước khi thu thập hoặc gửi đi.
+- Monitoring không nên làm hỏng luồng chính nếu chính monitoring gặp lỗi.
+
+Áp dụng:
+- LegalOS không cài SDK telemetry từ xa ở giai đoạn này.
+- `assets/js/oss-upgrades.js` bắt `error` và `unhandledrejection`, chỉ giữ tối đa 12 lỗi kỹ thuật gần nhất trong `sessionStorage`.
+- Snapshot chẩn đoán chỉ gồm trạng thái trình duyệt, viewport, service worker, storage, thời gian tải và lỗi kỹ thuật; không đọc nội dung hồ sơ, ghi chú, tên tài liệu nhập hoặc lịch sử tìm kiếm.
+- Command Palette có lệnh `Xuất chẩn đoán hệ thống` để người dùng chủ động tải JSON khi cần hỗ trợ.
+- `tools/diagnostics-smoke.mjs` đặt dữ liệu sentinel riêng tư vào workspace rồi xác minh sentinel không xuất hiện trong snapshot hoặc file chẩn đoán.
+- CI chạy test chẩn đoán cùng browser smoke test để khóa yêu cầu privacy này về sau.
+
 ## Nguyên tắc triển khai
 
 1. Không merge thẳng vào `main`; mọi thay đổi chạy trên `dev` + Deploy Preview.
