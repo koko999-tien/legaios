@@ -6,6 +6,7 @@ Desktop.ini
 .idea/
 
 # Local temporary files
+.tmp/
 *.tmp
 *.bak
 *.swp
