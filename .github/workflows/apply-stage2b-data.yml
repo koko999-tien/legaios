@@ -1,0 +1,61 @@
+name: Apply Stage 2b core-data extraction
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2b-data.mjs'
+      - '.github/workflows/apply-stage2b-data.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Extract core legal data
+        run: node tools/apply-stage2b-data.mjs
+
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+
+      - name: Verify Stage 2b.1 structure
+        shell: bash
+        run: |
+          test -s assets/js/legal-data.js
+          grep -q 'src="assets/js/legal-data.js"' index.html
+          grep -q 'src="assets/js/app.js"' index.html
+          if grep -Eq '^[[:space:]]*const[[:space:]]+T[[:space:]]*=' assets/js/app.js; then
+            echo 'const T still exists in app.js' >&2
+            exit 1
+          fi
+          if grep -Eq '^[[:space:]]*const[[:space:]]+D[[:space:]]*=' assets/js/app.js; then
+            echo 'const D still exists in app.js' >&2
+            exit 1
+          fi
+          git diff --check
+
+      - name: Commit Stage 2b.1 extraction
+        shell: bash
+        run: |
+          git add index.html assets/js/app.js assets/js/legal-data.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2b.1 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: extract core legal data from app runtime'
+          git push origin HEAD:dev
