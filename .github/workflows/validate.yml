@@ -21,5 +21,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate index.html
+      - name: Validate production index.html
         run: node tools/check-html.mjs
+
+      - name: Generate split-file refactor preview
+        run: node tools/extract-single-file.mjs index.html .tmp/refactor-preview
+
+      - name: Validate generated preview HTML
+        run: node tools/check-html.mjs .tmp/refactor-preview/index.html
