@@ -1,5 +1,5 @@
 /* LegalOS V14 — small native service worker inspired by Workbox caching patterns. */
-const CACHE_NAME='legalos-v14-shell-20260917-4';
+const CACHE_NAME='legalos-v14-shell-20260917-5';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -66,6 +66,25 @@ async function networkFirstAsset(request){
   }
 }
 
+async function staleWhileRevalidateAsset(request,event){
+  const cache=await caches.open(CACHE_NAME);
+  const cached=await cache.match(request);
+  const update=fetch(request).then(response=>{
+    if(response&&response.ok)cache.put(request,response.clone());
+    return response;
+  });
+  if(cached){
+    event.waitUntil(update.catch(()=>undefined));
+    return cached;
+  }
+  try{return await update}catch{return (await cache.match(request))||Response.error()}
+}
+
+function isStaticAsset(request,url){
+  if(['script','style','image','font'].includes(request.destination))return true;
+  return /\.(?:js|css|svg|png|jpe?g|webp|gif|ico|woff2?|webmanifest)$/i.test(url.pathname);
+}
+
 self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET')return;
@@ -73,6 +92,10 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==self.location.origin)return;
   if(request.mode==='navigate'){
     event.respondWith(networkFirstNavigation(request));
+    return;
+  }
+  if(isStaticAsset(request,url)){
+    event.respondWith(staleWhileRevalidateAsset(request,event));
     return;
   }
   event.respondWith(networkFirstAsset(request));
