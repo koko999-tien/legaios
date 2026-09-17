@@ -1,0 +1,55 @@
+name: Apply Stage 2b knowledge-base extraction
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'tools/apply-stage2b-knowledge.mjs'
+      - '.github/workflows/apply-stage2b-knowledge.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract-knowledge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Extract knowledge base
+        run: node tools/apply-stage2b-knowledge.mjs
+
+      - name: Validate resulting application
+        run: node tools/check-html.mjs index.html
+
+      - name: Verify Stage 2b.2 structure
+        shell: bash
+        run: |
+          test -s assets/js/knowledge-base.js
+          grep -q 'src="assets/js/legal-data.js"' index.html
+          grep -q 'src="assets/js/knowledge-base.js"' index.html
+          grep -q 'src="assets/js/app.js"' index.html
+          head -n 5 assets/js/app.js | grep -q 'const \$=id=>document.getElementById(id);'
+          git diff --check
+
+      - name: Commit Stage 2b.2 extraction
+        shell: bash
+        run: |
+          git add index.html assets/js/app.js assets/js/knowledge-base.js
+          if git diff --cached --quiet; then
+            echo 'No Stage 2b.2 changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor: isolate legal knowledge base from app runtime'
+          git push origin HEAD:dev
