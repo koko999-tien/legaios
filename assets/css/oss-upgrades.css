@@ -169,6 +169,12 @@ body:not([data-theme="dark"]) .coverage-pill{
     min-height:var(--tap-min);
   }
 
+  /* Keep Settings reachable on real phones; app.css hides auxiliary header tools on narrow screens. */
+  header.site #settingsBtn{
+    display:grid!important;
+    place-items:center;
+  }
+
   input,
   select,
   textarea{
