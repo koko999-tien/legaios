@@ -28,13 +28,15 @@ try{
   assert(!text.includes(sentinel),'Diagnostics leaked workspace/note content');
   assert(!Object.prototype.hasOwnProperty.call(snapshot,'localStorage'),'Diagnostics must not serialize localStorage contents');
 
+  // On mobile the discoverable path is Settings, not the desktop floating-search button.
   await page.locator('#settingsBtn').click();
   await page.waitForTimeout(80);
   assert(await page.locator('#diagExportBtn').count()===1,'Diagnostics export button is missing from settings');
   assert(await page.locator('#diagExportBtn').isVisible(),'Diagnostics export button is not visible in settings');
   await page.locator('#settingsClose').click();
 
-  await page.locator('#cmdOpen').click();
+  // The command palette is also available through its keyboard shortcut even when auxiliary buttons are hidden.
+  await page.keyboard.press('Control+K');
   await page.locator('#cmdQ').fill('chẩn đoán');
   await page.waitForTimeout(80);
   const diag=page.locator('#cmdList [data-cmd^="diag:"]').first();
@@ -47,7 +49,7 @@ try{
   console.log('LegalOS diagnostics smoke test passed.');
   console.log('  captures technical browser errors');
   console.log('  excludes workspace/note content');
-  console.log('  settings exposes diagnostics export');
+  console.log('  settings exposes diagnostics export on mobile');
   console.log('  command-palette export downloads JSON');
 }finally{
   await context.close();
