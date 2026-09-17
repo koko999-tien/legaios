@@ -100,7 +100,9 @@ for (const match of html.matchAll(/<link\b([^>]*)>/gi)) {
 }
 
 const executableCode = [...inlineScripts.map(item => item.code), ...localScripts.map(item => item.code)];
-const securityText = [html, ...executableCode].join('\n');
+// Remove script bodies from the HTML scan so inline JavaScript is not counted twice.
+const htmlWithoutScriptBodies = html.replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>)/gi, '$1$2');
+const securityText = [htmlWithoutScriptBodies, ...executableCode].join('\n');
 
 if (/\beval\s*\(/.test(securityText)) fail('eval(...) detected.');
 if (/\bnew\s+Function\s*\(/.test(securityText)) fail('new Function(...) detected.');
@@ -108,7 +110,8 @@ if (/document\.write\s*\(/i.test(securityText)) fail('document.write(...) detect
 if (/javascript\s*:/i.test(securityText)) fail('javascript: URL detected.');
 if (/set(?:Timeout|Interval)\s*\(\s*["']/i.test(securityText)) fail('String-based timer execution detected.');
 
-const innerHtmlAssignments = [...securityText.matchAll(/\.innerHTML\s*=/g)].length;
+const executableText = executableCode.join('\n');
+const innerHtmlAssignments = [...executableText.matchAll(/\.innerHTML\s*=/g)].length;
 const reviewedInnerHtmlBaseline = 70;
 if (innerHtmlAssignments > reviewedInnerHtmlBaseline) {
   fail(`innerHTML assignment count increased from the reviewed baseline (${reviewedInnerHtmlBaseline}) to ${innerHtmlAssignments}. Review and sanitize the new sink before raising the baseline.`);
@@ -130,7 +133,7 @@ console.log(`  ${ids.length.toLocaleString('en-US')} id attributes`);
 console.log(`  ${inlineScripts.length} inline executable script block(s)`);
 console.log(`  ${localScripts.length} local external script(s)`);
 console.log(`  ${localStylesheets.length} local stylesheet(s)`);
-console.log(`  ${innerHtmlAssignments} innerHTML assignment(s) across HTML + local JavaScript`);
+console.log(`  ${innerHtmlAssignments} innerHTML assignment(s) across executable JavaScript`);
 
 for (const message of warnings) console.warn(`WARNING: ${message}`);
 for (const message of errors) console.error(`ERROR: ${message}`);
