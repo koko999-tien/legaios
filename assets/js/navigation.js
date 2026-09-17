@@ -14,6 +14,13 @@
     script.dataset.legalosOss='js';
     document.head.appendChild(script);
   }
+  if(!document.querySelector('script[data-legalos-fuzzy]')){
+    const script=document.createElement('script');
+    script.src='assets/js/search-fuzzy.js';
+    script.async=false;
+    script.dataset.legalosFuzzy='js';
+    document.head.appendChild(script);
+  }
 })();
 
 (function installMobileArticleFixes(){
