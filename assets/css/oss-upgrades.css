@@ -122,6 +122,43 @@ body:not([data-theme="dark"]) .coverage-pill{
   .indexed-law-article,.clause-row-v13{contain-intrinsic-size:auto 260px}
 }
 
+.compare-structured{
+  margin-bottom:18px;
+  padding:16px;
+  border:1px solid var(--bd);
+  border-radius:16px;
+  background:var(--c);
+}
+.compare-structured-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:12px;
+}
+.compare-structured-head h3{margin:2px 0 0}
+.compare-structured-head small{max-width:360px;color:var(--m);text-align:right}
+.compare-facts{display:grid;gap:0;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.compare-fact-row{
+  display:grid;
+  grid-template-columns:minmax(120px,.7fr) minmax(0,1fr) minmax(0,1fr);
+  gap:0;
+  border-top:1px solid var(--bd);
+}
+.compare-fact-row:first-child{border-top:0}
+.compare-fact-row>*{padding:9px 10px;min-width:0;overflow-wrap:anywhere}
+.compare-fact-row>*+*{border-left:1px solid var(--bd)}
+.compare-fact-row.same{background:color-mix(in srgb,var(--c) 92%,#22c55e 8%)}
+.compare-fact-row.different{background:color-mix(in srgb,var(--c) 94%,#f59e0b 6%)}
+.compare-fact-head{background:var(--soft)!important;font-size:12px}
+.compare-ref-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.compare-ref-col{min-width:0;padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--soft)}
+.compare-ref-col>b{display:block;margin-bottom:8px}
+.compare-ref-col>div{display:flex;gap:6px;flex-wrap:wrap}
+.compare-ref-col small{color:var(--m)}
+.compare-ref-col.common{border-color:color-mix(in srgb,var(--bd) 65%,#16a34a 35%)}
+.compare-ref-col.left-only,.compare-ref-col.right-only{border-color:color-mix(in srgb,var(--bd) 65%,#f59e0b 35%)}
+
 @media(max-width:960px){
   button,
   .btn,
@@ -164,6 +201,16 @@ body:not([data-theme="dark"]) .coverage-pill{
     bottom:calc(84px + var(--safe-bottom));
     justify-content:center;
   }
+
+  .compare-structured-head{display:block}
+  .compare-structured-head small{display:block;max-width:none;margin-top:6px;text-align:left}
+  .compare-ref-summary{grid-template-columns:1fr}
+}
+
+@media(max-width:620px){
+  .compare-structured{padding:12px}
+  .compare-fact-row{grid-template-columns:96px minmax(0,1fr) minmax(0,1fr);font-size:12px}
+  .compare-fact-row>*{padding:8px 7px}
 }
 
 @media(max-width:420px){
@@ -171,6 +218,7 @@ body:not([data-theme="dark"]) .coverage-pill{
   .brand{min-width:0}
   .brand>span:last-child{min-width:0}
   .brand small{max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .compare-fact-row{grid-template-columns:82px minmax(0,1fr) minmax(0,1fr);font-size:11px}
 }
 
 @media(prefers-reduced-motion:reduce){
