@@ -57,13 +57,13 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
 9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
 10. Added `tools/check-v14-structure.mjs`, which locks the 20-script load order, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
+11. Regenerated `docs/JS_DEPENDENCIES.md` from the final 20-module script order.
 
 ## Remaining before V14 merge
 
-1. Refresh `docs/JS_DEPENDENCIES.md` against the final 20-module structure.
-2. Run a full manual smoke test in the Netlify Deploy Preview on desktop and mobile, including existing local browser data.
-3. Confirm the latest GitHub validation and Netlify Deploy Preview are both green.
-4. Keep PR #1 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
+1. Run a full manual smoke test in the Netlify Deploy Preview on desktop and mobile, including existing local browser data.
+2. Confirm the final smoke-tested commit still has green GitHub validation and Netlify Deploy Preview status.
+3. Keep PR #1 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
 
 ## Safety rules
 
