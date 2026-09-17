@@ -14,7 +14,6 @@ async function audit(page, label) {
     .analyze();
 
   const serious = result.violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
-  const critical = result.violations.filter(v => v.impact === 'critical');
 
   console.log(`\nAccessibility audit: ${label}`);
   console.log(`  violations: ${result.violations.length}`);
@@ -28,7 +27,7 @@ async function audit(page, label) {
     }
   }
 
-  assert(critical.length === 0, `${label}: critical accessibility violations found: ${critical.map(v => v.id).join(', ')}`);
+  assert(serious.length === 0, `${label}: serious/critical accessibility violations found: ${serious.map(v => v.id).join(', ')}`);
 }
 
 try {
@@ -62,7 +61,7 @@ try {
   }
 
   await mobileContext.close();
-  console.log('\nLegalOS accessibility smoke test completed without critical violations.');
+  console.log('\nLegalOS accessibility smoke test passed with no serious/critical violations.');
 } finally {
   await browser.close();
 }
