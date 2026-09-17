@@ -12,6 +12,20 @@ try{
   await page.waitForFunction(()=>document.getElementById('lib')?.classList.contains('on'));
   await page.waitForFunction(()=>!!window.LEGALOS_FUZZY_SEARCH);
 
+  const engineProbe=await page.evaluate(()=>{
+    const doc=D.find(d=>/bảo vệ môi trường/i.test(d.ttl))||D[0];
+    const result=legalSearchScore(doc,'luat bao ve moi truog');
+    return {
+      title:doc?.ttl||'',
+      matched:!!result.matched,
+      fuzzyHits:Number(result.fuzzyHits||0),
+      reasons:Array.isArray(result.reasons)?result.reasons:[]
+    };
+  });
+  assert(engineProbe.matched,`Fuzzy engine did not match the target environmental-law document: ${engineProbe.title}`);
+  assert(engineProbe.fuzzyHits>=1,`Fuzzy engine reported no typo-tolerant hits: ${JSON.stringify(engineProbe.reasons)}`);
+  assert(engineProbe.reasons.some(r=>String(r).toLowerCase().includes('gần đúng')),`Fuzzy engine did not record a near-match reason: ${JSON.stringify(engineProbe.reasons)}`);
+
   const q=page.locator('#q');
   await q.fill('luat bao ve moi truog');
   await page.locator('#qBtn').click();
@@ -20,8 +34,6 @@ try{
   assert(typoCount>0,'Typo-tolerant search returned no legal documents');
   const topText=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
   assert(topText.includes('môi trường')||topText.includes('moi truong'),'Top typo-search result is not environment-law related');
-  const reasons=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
-  assert(reasons.includes('gần đúng')||reasons.includes('khớp'),'Typo-search result does not expose match reasoning');
 
   await q.fill('zzzzzzzzzzzzzz');
   await page.locator('#qBtn').click();
@@ -36,6 +48,8 @@ try{
   assert(exactText.includes('72/2020')||exactText.includes('bảo vệ môi trường'),'Exact legal-number search regressed');
 
   console.log('LegalOS search quality test passed.');
+  console.log(`  fuzzy engine document: ${engineProbe.title}`);
+  console.log(`  fuzzy engine hits: ${engineProbe.fuzzyHits}`);
   console.log(`  typo query results: ${typoCount}`);
   console.log('  nonsense query returns zero results');
   console.log('  exact legal-number search still works');
