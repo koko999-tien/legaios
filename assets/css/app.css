@@ -3261,3 +3261,13 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   }
 }
 
+
+/* V14 mobile sidebar stacking fix — 2026-09-17 */
+@media (max-width:960px){
+  /* The sidebar lives inside header.site. Keep that stacking context above the page scrim
+     so the scrim dims/captures the page, not the menu itself. */
+  header.site{z-index:80!important}
+  .nav-scrim{z-index:65!important}
+  nav.links.side-nav{pointer-events:auto!important}
+}
+
