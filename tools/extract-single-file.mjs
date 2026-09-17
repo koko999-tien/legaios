@@ -17,6 +17,10 @@ fs.rmSync(outDir, { recursive: true, force: true });
 if (fs.existsSync(sourceAssetsDir)) {
   fs.cpSync(sourceAssetsDir, path.join(outDir, 'assets'), { recursive: true });
 }
+for (const rootAsset of ['manifest.webmanifest', 'sw.js']) {
+  const sourceAsset = path.join(sourceDir, rootAsset);
+  if (fs.existsSync(sourceAsset)) fs.copyFileSync(sourceAsset, path.join(outDir, rootAsset));
+}
 fs.mkdirSync(path.join(outDir, 'assets', 'css'), { recursive: true });
 fs.mkdirSync(path.join(outDir, 'assets', 'js'), { recursive: true });
 
