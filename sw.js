@@ -1,5 +1,5 @@
 /* LegalOS V14 — small native service worker inspired by Workbox caching patterns. */
-const CACHE_NAME='legalos-v14-shell-20260917-2';
+const CACHE_NAME='legalos-v14-shell-20260917-3';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -15,6 +15,7 @@ const APP_SHELL=[
   '/assets/js/search-utils.js',
   '/assets/js/search-data.js',
   '/assets/js/search-runtime.js',
+  '/assets/js/search-fuzzy.js',
   '/assets/js/ui-shell.js',
   '/assets/js/ui-utils.js',
   '/assets/js/activity-workspace.js',
