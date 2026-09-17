@@ -38,9 +38,11 @@
     if(!nav||!menu)return;
     const mobile=matchMedia('(max-width:960px)').matches;
     const open=nav.classList.contains('open');
+    const hidden=mobile&&!open;
     menu.setAttribute('aria-controls','nav');
     menu.setAttribute('aria-expanded',String(open));
-    nav.setAttribute('aria-hidden',String(mobile&&!open));
+    nav.setAttribute('aria-hidden',String(hidden));
+    nav.inert=hidden;
 
     document.querySelectorAll('[data-go]').forEach(el=>{
       const page=el.dataset.go;
@@ -62,6 +64,18 @@
       document.getElementById('navScrim')?.classList.remove('on');
       syncNavigationA11y();
       document.getElementById('menuBtn')?.focus();
+    });
+  }
+
+  function installDrawerA11y(){
+    document.querySelectorAll('.right-drawer').forEach(drawer=>{
+      const sync=()=>{
+        const open=drawer.classList.contains('on');
+        drawer.setAttribute('aria-hidden',String(!open));
+        drawer.inert=!open;
+      };
+      sync();
+      new MutationObserver(sync).observe(drawer,{attributes:true,attributeFilter:['class']});
     });
   }
 
@@ -96,6 +110,7 @@
     installSkipLink();
     enhanceStatusRegions();
     installNavigationA11y();
+    installDrawerA11y();
     installOfflineStatus();
     ensureThemeMeta();
     document.body.classList.add('oss-upgrades-ready');
