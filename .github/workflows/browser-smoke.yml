@@ -22,11 +22,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Playwright
+      - name: Install Playwright and axe
         shell: bash
         run: |
           npm init -y >/dev/null 2>&1
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 @axe-core/playwright@4.13.0
           npx playwright install --with-deps chromium
 
       - name: Start local LegalOS server
@@ -56,3 +56,8 @@ jobs:
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/mobile-article-layout.mjs
+
+      - name: Accessibility smoke test
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/accessibility-smoke.mjs
