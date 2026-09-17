@@ -21,11 +21,17 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate production index.html
-        run: node tools/check-html.mjs
+      - name: Validate index and local assets
+        run: node tools/check-html.mjs index.html
 
-      - name: Generate split-file refactor preview
+      - name: Verify V14 module structure
+        run: node tools/check-v14-structure.mjs
+
+      - name: Generate self-contained static preview copy
         run: node tools/extract-single-file.mjs index.html .tmp/refactor-preview
 
       - name: Validate generated preview HTML
         run: node tools/check-html.mjs .tmp/refactor-preview/index.html
+
+      - name: Check whitespace errors
+        run: git diff --check
