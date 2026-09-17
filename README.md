@@ -1,53 +1,57 @@
 # LegalOS
 
-LegalOS is an experimental Vietnamese environmental-law web application for legal lookup, procedure tracking, local case/workspace notes, document import, and screening support.
+LegalOS is a browser-based environmental-law workspace and research interface. The current production site remains on the stable `main` branch while the V14 modular refactor is developed on `dev`.
 
-## Live site
+## Live environments
 
-Production is deployed from `main` to Netlify at `https://legalos-vn.netlify.app`.
+- Production: `https://legalos-vn.netlify.app`
+- V14 Deploy Preview: `https://deploy-preview-1--legalos-vn.netlify.app`
 
 ## Branch workflow
 
-- `main`: production branch. Netlify publishes this branch automatically.
-- `dev`: development branch. Changes should be tested here before they are merged to `main`.
+```text
+main  -> production Netlify deploy
+dev   -> V14 refactor + CI + Deploy Preview
+```
 
-Do not make large refactors directly on `main`.
+Do not merge structural refactors directly to `main`. Work on `dev`, let GitHub Actions validate the static application, verify the Netlify Deploy Preview, then merge through the draft pull request only after manual smoke testing.
 
-## Current architecture
+## V14 front-end layout
 
-The current application is intentionally preserved as a single-file web app:
+The old single-file application is being split gradually while retaining classic-script execution order:
 
-- `index.html` — HTML, CSS, JavaScript, and built-in legal metadata/content.
-- Browser storage — `localStorage` and `IndexedDB` for local user data and imported documents.
+```text
+index.html
+assets/css/app.css
+assets/js/legal-data.js
+assets/js/knowledge-base.js
+assets/js/state.js
+assets/js/import.js
+assets/js/search-utils.js
+assets/js/search-data.js
+assets/js/search-runtime.js
+assets/js/ui-shell.js
+assets/js/activity-workspace.js
+assets/js/project-tools.js
+assets/js/library.js
+assets/js/procedures.js
+assets/js/app.js
+```
 
-The single-file build remains the production baseline while the V14 refactor is prepared on `dev`.
-
-## Local run
-
-No build step is required. Open `index.html` directly in a browser, or serve the repository with any simple static HTTP server.
+`app.js` is still the final compatibility/runtime layer and will shrink further as remaining responsibilities are isolated.
 
 ## Validation
 
-The repository includes a dependency-free Node validation script at `tools/check-html.mjs`. GitHub Actions runs it on pushes and pull requests to catch basic structural and JavaScript syntax regressions.
-
-Run locally with:
+The permanent validator is `.github/workflows/validate.yml`. The supporting checker is:
 
 ```bash
-node tools/check-html.mjs
+node tools/check-html.mjs index.html
 ```
 
-## Split-file preview
+It checks structural HTML assumptions, referenced local assets, JavaScript syntax, and selected security-regression conditions.
 
-`tools/extract-single-file.mjs` generates a disposable refactor preview that extracts inline `<style>` and executable inline `<script>` blocks while preserving their position in the HTML. It does **not** modify production `index.html`.
+## Legal-data note
 
-```bash
-node tools/extract-single-file.mjs index.html .tmp/refactor-preview
-```
+Structural refactoring does **not** certify the accuracy or currency of the built-in legal content. Legal-data verification is tracked separately in Issue #2 and should not be mixed into code-only refactor commits.
 
-GitHub Actions generates and validates this preview automatically. This gives us a safer path to the future multi-file V14 structure before production is changed.
-
-## Refactor rule
-
-Code refactoring must not silently rewrite, correct, or replace legal content. Legal-data verification is a separate task from code/architecture refactoring.
-
-See `docs/ARCHITECTURE.md` for the staged V14 plan.
+See `docs/ARCHITECTURE.md` for the migration plan and safety rules.
