@@ -40,8 +40,17 @@ scripts.forEach((code, index) => {
   }
 });
 
-if (/\beval\s*\(/.test(html)) warn('eval(...) detected.');
-if (/\bnew\s+Function\s*\(/.test(html)) warn('new Function(...) detected.');
+if (/\beval\s*\(/.test(html)) fail('eval(...) detected.');
+if (/\bnew\s+Function\s*\(/.test(html)) fail('new Function(...) detected.');
+if (/document\.write\s*\(/i.test(html)) fail('document.write(...) detected.');
+if (/javascript\s*:/i.test(html)) fail('javascript: URL detected.');
+if (/set(?:Timeout|Interval)\s*\(\s*["']/i.test(html)) fail('String-based timer execution detected.');
+
+const innerHtmlAssignments = [...html.matchAll(/\.innerHTML\s*=/g)].length;
+const singleFileInnerHtmlBaseline = 70;
+if (file === 'index.html' && innerHtmlAssignments > singleFileInnerHtmlBaseline) {
+  fail(`innerHTML assignment count increased from the reviewed baseline (${singleFileInnerHtmlBaseline}) to ${innerHtmlAssignments}. Review and sanitize the new sink before raising the baseline.`);
+}
 
 const blankTargets = [...html.matchAll(/<a\b[^>]*\btarget\s*=\s*["']_blank["'][^>]*>/gi)].map(m => m[0]);
 blankTargets.forEach((tag, index) => {
@@ -57,6 +66,7 @@ console.log(`  ${lines.toLocaleString('en-US')} lines`);
 console.log(`  ${bytes.toLocaleString('en-US')} bytes`);
 console.log(`  ${ids.length.toLocaleString('en-US')} id attributes`);
 console.log(`  ${scripts.length} inline script block(s)`);
+console.log(`  ${innerHtmlAssignments} innerHTML assignment(s)`);
 
 for (const message of warnings) console.warn(`WARNING: ${message}`);
 for (const message of errors) console.error(`ERROR: ${message}`);
