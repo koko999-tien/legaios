@@ -2,6 +2,54 @@
 (function(){
   'use strict';
 
+  const DIAG_KEY='legalos_diag_errors_v1';
+  function diagText(value,max=500){return String(value??'').replace(/\s+/g,' ').trim().slice(0,max)}
+  function diagSource(value){
+    try{const u=new URL(String(value||''),location.href);return u.origin===location.origin?u.pathname.split('/').slice(-3).join('/'):u.origin}catch{return ''}
+  }
+  function readDiagErrors(){try{const x=JSON.parse(sessionStorage.getItem(DIAG_KEY)||'[]');return Array.isArray(x)?x.slice(-12):[]}catch{return []}}
+  function writeDiagErrors(rows){try{sessionStorage.setItem(DIAG_KEY,JSON.stringify(rows.slice(-12)))}catch{}}
+  function recordDiagError(kind,message,source='',line=0,col=0){
+    const rows=readDiagErrors();
+    rows.push({at:new Date().toISOString(),kind:diagText(kind,40),message:diagText(message),source:diagSource(source),line:Number(line)||0,col:Number(col)||0});
+    writeDiagErrors(rows);
+  }
+  function installDiagnosticsCapture(){
+    window.addEventListener('error',e=>recordDiagError('error',e.message||e.error?.message||'Browser error',e.filename,e.lineno,e.colno));
+    window.addEventListener('unhandledrejection',e=>recordDiagError('unhandledrejection',e.reason?.message||e.reason||'Unhandled promise rejection'));
+  }
+  async function diagnosticSnapshot(){
+    let storage={supported:Boolean(navigator.storage?.estimate)};
+    try{
+      if(navigator.storage?.estimate){const x=await navigator.storage.estimate();storage={supported:true,usage:x.usage||0,quota:x.quota||0}}
+    }catch{storage={supported:true,error:'estimate-failed'}}
+    let sw={supported:'serviceWorker' in navigator,controlled:Boolean(navigator.serviceWorker?.controller)};
+    try{
+      if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistration();sw={...sw,scope:r?.scope||'',active:r?.active?.state||'',waiting:r?.waiting?.state||'',installing:r?.installing?.state||''}}
+    }catch{sw={...sw,error:'registration-read-failed'}}
+    let localStorageOk=true;try{const k='__legalos_diag_probe';localStorage.setItem(k,'1');localStorage.removeItem(k)}catch{localStorageOk=false}
+    const nav=performance.getEntriesByType?.('navigation')?.[0];
+    return {
+      schema:'legalos-diagnostics-v1',
+      app:{name:'LegalOS',version:'V14',collectedAt:new Date().toISOString()},
+      privacy:'Không chứa nội dung hồ sơ, ghi chú, tên tài liệu nhập hoặc lịch sử tìm kiếm.',
+      page:{origin:location.origin,path:location.pathname,route:document.querySelector('.page.on')?.id||'unknown'},
+      display:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio||1,theme:document.body?.getAttribute('data-theme')||'',reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches},
+      browser:{online:navigator.onLine,language:navigator.language||'',userAgent:diagText(navigator.userAgent,300)},
+      capabilities:{indexedDB:'indexedDB' in window,caches:'caches' in window,localStorage:localStorageOk,serviceWorker:sw,storage},
+      performance:nav?{type:nav.type,domContentLoaded:Math.round(nav.domContentLoadedEventEnd||0),load:Math.round(nav.loadEventEnd||0),transferSize:nav.transferSize||0}:null,
+      errors:readDiagErrors()
+    };
+  }
+  async function downloadDiagnostics(){
+    const payload=await diagnosticSnapshot();
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`LegalOS-diagnostics-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800);
+    if(typeof window.toast==='function')window.toast('Đã xuất chẩn đoán kỹ thuật');
+    return payload;
+  }
+  window.LEGALOS_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
+
   function ensureManifest(){
     if(document.querySelector('link[rel="manifest"]'))return;
     const link=document.createElement('link');
@@ -147,6 +195,7 @@
     document.body.classList.add('oss-upgrades-ready');
   }
 
+  installDiagnosticsCapture();
   ensureManifest();
   registerServiceWorker();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
