@@ -22,8 +22,15 @@ try {
     const x = Math.max(r.left + 8, Math.min(r.right - 8, r.left + r.width / 2));
     const y = Math.max(r.top + 8, Math.min(r.bottom - 8, r.top + r.height / 2));
     const hit = document.elementFromPoint(x, y);
+    const hitPath = [];
+    let node = hit;
+    for (let i = 0; node && i < 5; i++, node = node.parentElement) {
+      hitPath.push(`${node.tagName.toLowerCase()}${node.id ? `#${node.id}` : ''}${node.classList?.length ? `.${[...node.classList].join('.')}` : ''}`);
+    }
     return {
       hitInsideNav: !!hit?.closest('#nav'),
+      hitPath: hitPath.join(' > '),
+      point: `${Math.round(x)},${Math.round(y)}`,
       navZ: getComputedStyle(nav).zIndex,
       headerZ: getComputedStyle(document.querySelector('header.site')).zIndex,
       scrimZ: getComputedStyle(scrim).zIndex,
@@ -33,7 +40,7 @@ try {
 
   assert(state, 'Could not inspect mobile sidebar');
   assert(state.scrimOn, 'Sidebar scrim did not open');
-  assert(state.hitInsideNav, `Sidebar is covered by another layer (header z=${state.headerZ}, nav z=${state.navZ}, scrim z=${state.scrimZ})`);
+  assert(state.hitInsideNav, `Sidebar is covered at ${state.point} by ${state.hitPath || 'unknown'} (header z=${state.headerZ}, nav z=${state.navZ}, scrim z=${state.scrimZ})`);
 
   // Use a real Playwright click, not DOM .click(), so an overlay would make this fail.
   await page.locator('#nav [data-go="lib"]').click();
@@ -42,10 +49,7 @@ try {
 
   await page.locator('#menuBtn').click();
   await page.waitForFunction(() => document.getElementById('nav')?.classList.contains('open'));
-  await page.locator('#navScrim').click({ position: { x: 380, y: 300 } }).catch(async () => {
-    // Fallback: click a visible point on the scrim outside the drawer.
-    await page.mouse.click(380, 300);
-  });
+  await page.mouse.click(380, 300);
   await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
 
   console.log('Mobile sidebar is above the scrim and accepts real taps.');
