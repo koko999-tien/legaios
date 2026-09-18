@@ -1,4 +1,4 @@
-/* LegalOS V14 — typo-tolerant legal search inspired by Fuse.js token-search ideas.
+/* Căn cứ Pháp lý Môi trường — typo-tolerant legal search inspired by Fuse.js token-search ideas.
    This is a small local implementation: no CDN/runtime dependency, tuned for the current legal dataset. */
 (function(){
   'use strict';
