@@ -17,7 +17,7 @@ const T=[
 ["phi","Phí & tài chính xanh","Phí BVMT, phân loại xanh và công cụ tài chính liên quan."]
 ];
 const D=[
-{id:"l72",t:"bvmt",k:"Luật",ttl:"Luật BVMT 2020 (72/2020/QH14)",b:`<p>HL 01/01/2022. Điều 28: nhóm I–IV theo quy mô, loại hình, diện tích, yếu tố nhạy cảm. Điều 30–38 ĐTM. Điều 39–48 GPMT. Điều 49 ĐKMT. Điều 54–55 EPR. Điều 91 KNK.</p><p>Luật 146/2025/QH15 (HL 01/01/2026) sửa thẩm quyền GPMT: Bộ NN&MT và chính quyền địa phương 2 cấp.</p>`},
+{id:"l72",t:"bvmt",k:"Luật",ttl:"Luật BVMT 2020 (72/2020/QH14)",b:`<p>HL 01/01/2022. Điều 25–27 ĐMC. Điều 28: nhóm I–IV theo quy mô, loại hình, diện tích, yếu tố nhạy cảm. Điều 30–38 ĐTM. Điều 39–48 GPMT. Điều 49 ĐKMT. Điều 54–55 EPR. Điều 91 KNK.</p><p>Luật 146/2025/QH15 (HL 01/01/2026) sửa thẩm quyền GPMT: Bộ NN&MT và chính quyền địa phương 2 cấp.</p>`},
 {id:"nd08",t:"bvmt",k:"Nghị định",ttl:"NĐ 08/2022/NĐ-CP",b:`<p>Nghị định hướng dẫn chi tiết Luật BVMT, gồm tiêu chí phân nhóm dự án, ĐTM, GPMT, quản lý chất thải, quan trắc và các phụ lục quan trọng.</p><p><b>Không đọc riêng lẻ:</b> NĐ 08 đã được sửa bởi NĐ 05/2025 và tiếp tục được sửa bởi NĐ 48/2026. Khi phân loại dự án phải đối chiếu bản quy định và phụ lục đang áp dụng.</p>`},
 {id:"nd05",t:"bvmt",k:"Nghị định",ttl:"NĐ 05/2025/NĐ-CP",b:`<p>Ban hành và có hiệu lực 06/01/2025, sửa đổi NĐ 08/2022 về nhiều nội dung của pháp luật BVMT, trong đó có thủ tục môi trường và phân cấp.</p><p>Từ 29/01/2026 cần đọc tiếp NĐ 48/2026 vì NĐ 48 tiếp tục sửa NĐ 08 đã được NĐ 05 sửa đổi.</p>`},
 {id:"nd131",t:"bvmt",k:"Nghị định",ttl:"NĐ 131/2025/NĐ-CP Điều 26",b:`<p>HL 01/07/2025. Chủ tịch UBND tỉnh cấp GPMT khi nước thải SH ≥50 m³/ngày; nước thải CN ≥10 m³/ngày; khí thải ≥2.000 m³/giờ; CTNH ≥100 kg/tháng kèm thải phải xử lý (trong phạm vi nghị định).</p>`},
