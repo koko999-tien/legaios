@@ -214,6 +214,29 @@ try {
   assert(countText.length > 0, 'Library result count is empty after search');
   assert((await page.locator('#docs').innerHTML()).trim().length > 0, 'Library results container is empty');
 
+  const libraryUx = await page.evaluate(() => {
+    const groups=[...document.querySelectorAll('#chips .topic-filter-group')];
+    const firstTag=document.querySelector('#docs.compact-view .meta .tag');
+    const openAction=document.querySelector('#docs .doc-tools-v11 .goto-match');
+    const previewAction=document.querySelector('#docs .doc-tools-v11 .preview-btn');
+    return {
+      groups:groups.length,
+      collapsed:groups.filter(x=>!x.open).length,
+      tagSize:firstTag?parseFloat(getComputedStyle(firstTag).fontSize):0,
+      openText:openAction?.textContent?.trim()||'',
+      openTitle:openAction?.getAttribute('title')||'',
+      previewText:previewAction?.textContent?.trim()||'',
+      previewTitle:previewAction?.getAttribute('title')||''
+    };
+  });
+  assert(libraryUx.groups >= 3, `Expected grouped library filters, found ${libraryUx.groups}`);
+  assert(libraryUx.collapsed >= 1, 'Library filter groups should reduce long-scroll fatigue by collapsing secondary groups');
+  assert(libraryUx.tagSize >= 9, `Compact library metadata is still too small: ${libraryUx.tagSize}px`);
+  assert(['Mở chi tiết','Đến đoạn khớp'].includes(libraryUx.openText), `Primary document action is unclear: ${libraryUx.openText}`);
+  assert(libraryUx.openTitle.length > 10, 'Primary document action is missing explanatory hover text');
+  assert(libraryUx.previewText === 'Xem nhanh', `Quick-preview action changed unexpectedly: ${libraryUx.previewText}`);
+  assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
+
   const firstDoc = page.locator('#docs [data-open]').first();
   if (await firstDoc.count()) {
     await firstDoc.evaluate(el => el.click());
