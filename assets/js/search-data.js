@@ -1,4 +1,4 @@
-/* LegalOS V14 — structured clause/trail search data. */
+/* Căn cứ Pháp lý Môi trường — structured clause/trail search data. */
 const CLAUSE_PACK_V13={
  "vbhn98:30":{
   doc:"vbhn98",article:30,title:"Đối tượng phải thực hiện đánh giá tác động môi trường",status:"structured",reviewedAt:"09/09/2026",
