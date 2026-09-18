@@ -393,7 +393,11 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 
 /* ===== Smart article reading progress ===== */
 body.article-view header.site{
+  position:sticky!important;
+  top:0!important;
+  z-index:40!important;
   height:auto!important;
+  overflow:visible!important;
 }
 .smart-reading-progress{
   display:none!important;
