@@ -1,4 +1,4 @@
-/* LegalOS V14 — resilient IndexedDB wrapper inspired by Dexie.js design patterns.
+/* Căn cứ Pháp lý Môi trường — resilient IndexedDB wrapper inspired by Dexie.js design patterns.
    Keeps one versioned connection, uses explicit transactions, and falls back to session memory. */
 (function(){
   'use strict';
@@ -29,7 +29,7 @@
         if(!db.objectStoreNames.contains(IMPORT_DB_STORE))db.createObjectStore(IMPORT_DB_STORE,{keyPath:'id'});
       };
       req.onerror=()=>{dbPromise=null;reject(req.error||new Error('IndexedDB open failed'))};
-      req.onblocked=()=>console.warn('LegalOS IndexedDB upgrade/open is blocked by another tab.');
+      req.onblocked=()=>console.warn('IndexedDB upgrade/open is blocked by another tab.');
       req.onsuccess=()=>{
         const db=req.result;
         db.onversionchange=()=>{db.close();dbPromise=null};
@@ -71,7 +71,7 @@
       importMemory.forEach(x=>map.set(x.id,x));
       return [...map.values()];
     }catch(err){
-      console.warn('LegalOS IndexedDB read-all fallback:',err);
+      console.warn('IndexedDB read-all fallback:',err);
       importDbFailed=true;
       dbPromise=null;
       return [...importMemory];
@@ -83,7 +83,7 @@
     if(mem)return mem;
     if(importDbFailed)return null;
     try{return (await withStore('readonly',store=>requestValue(store.get(id))))||null}
-    catch(err){console.warn('LegalOS IndexedDB get fallback:',err);importDbFailed=true;dbPromise=null;return null}
+    catch(err){console.warn('IndexedDB get fallback:',err);importDbFailed=true;dbPromise=null;return null}
   };
 
   importDbPut=async function(rec){
@@ -92,7 +92,7 @@
       await withStore('readwrite',store=>requestValue(store.put(rec)));
       return true;
     }catch(err){
-      console.warn('LegalOS IndexedDB put fallback:',err);
+      console.warn('IndexedDB put fallback:',err);
       remember(rec);importDbFailed=true;dbPromise=null;return false;
     }
   };
@@ -101,14 +101,14 @@
     importMemory=importMemory.filter(x=>x.id!==id);
     if(importDbFailed)return false;
     try{await withStore('readwrite',store=>requestValue(store.delete(id)));return true}
-    catch(err){console.warn('LegalOS IndexedDB delete fallback:',err);importDbFailed=true;dbPromise=null;return false}
+    catch(err){console.warn('IndexedDB delete fallback:',err);importDbFailed=true;dbPromise=null;return false}
   };
 
   importDbClear=async function(){
     importMemory=[];
     if(importDbFailed)return false;
     try{await withStore('readwrite',store=>requestValue(store.clear()));return true}
-    catch(err){console.warn('LegalOS IndexedDB clear fallback:',err);importDbFailed=true;dbPromise=null;return false}
+    catch(err){console.warn('IndexedDB clear fallback:',err);importDbFailed=true;dbPromise=null;return false}
   };
 
   window.addEventListener('pagehide',()=>{
