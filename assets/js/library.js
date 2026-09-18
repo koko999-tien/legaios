@@ -74,11 +74,11 @@ function openDoc(id,focusQuery=""){
   $("addCompareArt").onclick=()=>{if(!compareSelected.includes(id)){toggleCompare(id,true);toast("Đã thêm vào so sánh")}else toast("Văn bản này đã được chọn")};
   $("addCitationArt").onclick=()=>addCitationV13(id);
   $("artNote").oninput=()=>{notes[x.id]=$("artNote").value;STORE.set("w3_notes",notes);renderWorkspaceStats();renderArticleNotesIndex()};
-  $("readMinus").onclick=()=>{document.body.classList.remove("read-large");document.body.classList.toggle("read-small");};
-  $("readPlus").onclick=()=>{document.body.classList.remove("read-small");document.body.classList.toggle("read-large");};
-  $("readFocus").onclick=()=>{document.body.classList.toggle("read-focus");$("readFocus").classList.toggle("on",document.body.classList.contains("read-focus"));};
+  $("readMinus").onclick=()=>{document.body.classList.remove("read-large");document.body.classList.toggle("read-small");requestAnimationFrame(readingProgressUpdate);};
+  $("readPlus").onclick=()=>{document.body.classList.remove("read-small");document.body.classList.toggle("read-large");requestAnimationFrame(readingProgressUpdate);};
+  $("readFocus").onclick=()=>{document.body.classList.toggle("read-focus");$("readFocus").classList.toggle("on",document.body.classList.contains("read-focus"));requestAnimationFrame(readingProgressUpdate);};
   $("inDocFind").onclick=()=>runInDocSearch($("inDocQ").value);
   $("inDocQ").onkeydown=e=>{if(e.key==="Enter")runInDocSearch($("inDocQ").value)};
   if(focusQuery){$("inDocQ").value=focusQuery;runInDocSearch(focusQuery);setTimeout(()=>$("inDocQ")?.scrollIntoView({behavior:"smooth",block:"center"}),120)}
-  setTimeout(readingProgressUpdate,0);
+  setTimeout(()=>{readingProgressUpdate();setTimeout(readingProgressUpdate,180)},0);
 }
