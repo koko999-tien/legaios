@@ -1,6 +1,6 @@
 # Căn cứ Pháp lý Môi trường
 
-Căn cứ Pháp lý Môi trường is a browser-based environmental-law workspace and research interface. The current production site remains on the stable `main` branch while the V14 modular refactor is developed on `dev`.
+Căn cứ Pháp lý Môi trường is a browser-based environmental compliance workspace and legal-research interface. Its product direction is task-first: profile the facility/project, identify branches that need verification, open the governing source, track work/deadlines, and monitor relevant legal changes. The current production site remains on the stable `main` branch while the V14 modular refactor is developed on `dev`.
 
 ## Live environments
 
@@ -35,6 +35,7 @@ assets/js/activity-workspace.js
 assets/js/project-tools.js
 assets/js/library.js
 assets/js/procedures.js
+assets/js/compliance.js
 assets/js/workspace.js
 assets/js/legal-hub.js
 assets/js/expert.js
@@ -48,6 +49,17 @@ assets/js/oss-upgrades.js
 `boot.js` connects the modules. Progressive enhancements add diagnostics, accessibility and PWA support. `index.html` is the source of truth for the complete script order.
 
 See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
+
+## Product model
+
+The application deliberately avoids presenting automated screening as a legal conclusion.
+
+- **Hồ sơ tuân thủ** stores facility/project context and user-entered deadlines locally.
+- **Nhánh cần đối chiếu** maps declared signals to legal topics/documents that should be reviewed.
+- **Radar pháp luật** prioritizes documents using the active compliance profile, but does not claim that a document certainly applies.
+- Dates such as a GPMT expiry are treated as user-declared tracking data unless independently verified from an authoritative source.
+- Dossier review and screening results can be converted into a compliance profile instead of being re-entered.
+- Workspace export schema `ccplmt-workspace-v2` includes compliance profiles and manual deadlines.
 
 ## Validation
 
