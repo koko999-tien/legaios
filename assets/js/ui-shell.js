@@ -3,9 +3,14 @@ function renderHomePortal(){
   if($('homeRecentDocs')){const arr=recent.map(id=>D.find(x=>x.id===id)).filter(Boolean).slice(0,4);$('homeRecentDocs').innerHTML=arr.length?arr.map(d=>`<button class="home-mini-doc" data-open="${d.id}" type="button"><b>${d.ttl}</b><small>${d.k} · ${topicName(d.t)}</small></button>`).join(''):'<div class="home-mini-empty">Chưa có lịch sử xem văn bản.</div>'}
   if($('homeSavedDocs')){const arr=saved.map(id=>D.find(x=>x.id===id)).filter(Boolean).slice(0,4);$('homeSavedDocs').innerHTML=arr.length?arr.map(d=>`<button class="home-mini-doc" data-open="${d.id}" type="button"><b>★ ${d.ttl}</b><small>${d.k} · ${topicName(d.t)}</small></button>`).join(''):'<div class="home-mini-empty">Chưa lưu văn bản nào.</div>'}
   const latestCase=cases[0];
+  const latestCompliance=(typeof complianceProfiles!=='undefined'&&complianceProfiles.length)?complianceProfiles[0]:null;
   if($('homeResumeTitle')&&$('homeResumeCopy')&&$('homeResumeFoot')){
-    if(latestCase){
-      $('homeResumeTitle').textContent=`Tiếp tục hồ sơ “${latestCase.name||'chưa đặt tên'}”`;
+    if(latestCompliance){
+      $('homeResumeTitle').textContent=`Tiếp tục “${latestCompliance.name||'hồ sơ tuân thủ'}”`;
+      $('homeResumeCopy').textContent=`${complianceStatus(latestCompliance)} · ${complianceCompleteness(latestCompliance)}% dữ liệu nền · mở lại deadline và nhánh cần rà.`;
+      $('homeResumeFoot').textContent='Mở hồ sơ tuân thủ';
+    }else if(latestCase){
+      $('homeResumeTitle').textContent=`Tiếp tục hồ sơ sàng lọc “${latestCase.name||'chưa đặt tên'}”`;
       $('homeResumeCopy').textContent=`${caseStatusLabel?.(latestCase)||'Hồ sơ đã lưu'} · mở lại kết quả, ghi chú và việc nên làm tiếp.`;
       $('homeResumeFoot').textContent='Mở hồ sơ gần nhất';
     }else if(recent.length||saved.length||expertBriefs.length){
@@ -13,9 +18,9 @@ function renderHomePortal(){
       $('homeResumeCopy').textContent=`${recent.length} văn bản vừa xem · ${saved.length} văn bản đã lưu · ${expertBriefs.length} phiếu rà soát.`;
       $('homeResumeFoot').textContent='Mở workspace';
     }else{
-      $('homeResumeTitle').textContent='Tôi muốn tiếp tục công việc đang làm';
-      $('homeResumeCopy').textContent='Mở lại hồ sơ, ghi chú, văn bản đã lưu và những việc đang theo dõi trên thiết bị này.';
-      $('homeResumeFoot').textContent='Mở công việc của tôi';
+      $('homeResumeTitle').textContent='Tôi muốn theo dõi nghĩa vụ và deadline';
+      $('homeResumeCopy').textContent='Gom hồ sơ cơ sở/dự án, việc cần kiểm tra, deadline, ghi chú và căn cứ đang theo dõi trên thiết bị này.';
+      $('homeResumeFoot').textContent='Mở hồ sơ tuân thủ';
     }
   }
   renderImportStats();
@@ -39,7 +44,7 @@ function closeDrawers(){['previewDrawer','settingsDrawer','quickNoteDrawer'].for
 function renderCommandCenter(){
   if($('ccDocs'))$('ccDocs').textContent=`${D.length} văn bản · ${T.length} lĩnh vực`;
   if($('ccProc'))$('ccProc').textContent=`${P.length} lộ trình nghiệp vụ`;
-  if($('ccWork'))$('ccWork').textContent=`${cases.length} hồ sơ · ${saved.length} văn bản đã lưu`;
+  if($('ccWork'))$('ccWork').textContent=`${typeof complianceProfiles!=='undefined'?complianceProfiles.length:0} hồ sơ tuân thủ · ${cases.length} hồ sơ sàng lọc · ${saved.length} văn bản đã lưu`;
   if($('ccUpdates')){const upcoming=D.filter(d=>{const e=parseVNDate(metaOf(d.id).eff);return e&&e>new Date()}).length;$('ccUpdates').textContent=upcoming?`${upcoming} mục sắp có hiệu lực`:'Theo dõi thay đổi & hiệu lực'}
 }
 function renderArticleNotesIndex(){
