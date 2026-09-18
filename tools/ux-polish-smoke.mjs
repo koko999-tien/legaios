@@ -44,10 +44,11 @@ try {
 
   await page.setViewportSize({ width: 390, height: 844 });
   await go('home');
-  const quickDisplay = await page.locator('#home .quick-actions-line').evaluate(el => getComputedStyle(el).display);
-  assert(quickDisplay === 'none', 'Duplicate home shortcut strip should be hidden on phones.');
   assert(await page.locator('#home .compact-home-search').isVisible(), 'Primary home search must remain visible on phones.');
+  assert(await page.locator('#home .compact-primary-card').count() === 3, 'Home must keep exactly three primary jobs on phones.');
   assert(await page.locator('#home .compact-primary-card').first().isVisible(), 'Primary home job cards must remain visible on phones.');
+  assert(await page.locator('#home .legal-trust-strip').isVisible(), 'Legal source guidance must remain visible on phones.');
+  assert(await page.locator('#home .home-tools-disclosure:not([open])').count() === 1, 'Advanced tools must stay collapsed by default on phones.');
 
   const geometry = await page.evaluate(() => ({
     viewport: window.innerWidth,
@@ -61,7 +62,7 @@ try {
   console.log('  home hierarchy/readability checked');
   console.log('  library helper readability checked');
   console.log('  core-knowledge helper readability checked');
-  console.log('  mobile duplicate shortcuts hidden without overflow');
+  console.log('  mobile newcomer hierarchy and collapsed advanced tools checked');
 } finally {
   await browser.close();
 }
