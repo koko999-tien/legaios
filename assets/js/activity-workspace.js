@@ -29,7 +29,7 @@ function logActivity(type,id,label){
 function renderHomeActivity(){
   const host=$("homeActivity");if(!host)return;
   const arr=STORE.get("w4_activity",[]);
-  const icon={doc:"VB",case:"HS",compliance:"TU",proc:"QT",fee:"₫"};
+  const icon={doc:"VB",case:"HS",compliance:"TU",obligation:"NV",proc:"QT",fee:"₫"};
   host.innerHTML=arr.length?arr.slice(0,6).map(x=>`
     <div class="activity-item">
       <div class="activity-icon">${icon[x.type]||"•"}</div>
