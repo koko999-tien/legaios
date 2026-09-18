@@ -25,8 +25,13 @@ try {
   assert(await page.locator('body').evaluate(el => el.classList.contains('article-view')), 'article-view body class is missing');
   const focusBox = await page.locator('#readFocus').boundingBox();
   assert(focusBox && focusBox.width >= 80, `Focus button is too narrow: ${Math.round(focusBox?.width || 0)}px`);
-  const progressDisplay = await page.locator('#readingProgress').evaluate(el => getComputedStyle(el).display);
-  assert(progressDisplay === 'none', `Reading progress should be hidden on mobile article view, got ${progressDisplay}`);
+  const progress = page.locator('#readingProgress');
+  await page.waitForFunction(() => document.getElementById('readingProgress')?.classList.contains('on'));
+  const progressDisplay = await progress.evaluate(el => getComputedStyle(el).display);
+  assert(progressDisplay !== 'none', `Smart reading progress should be visible on mobile article view, got ${progressDisplay}`);
+  const progressBox = await progress.boundingBox();
+  assert(progressBox && progressBox.left >= -1 && progressBox.x + progressBox.width <= 391, 'Smart reading progress exceeds the mobile viewport');
+  assert(await page.locator('#readingProgressMeta').count(), 'Smart reading progress metadata is missing');
   const mobileNavDisplay = await page.locator('#mobileQuick').evaluate(el => getComputedStyle(el).display);
   assert(mobileNavDisplay === 'none', `Bottom mobile nav should be hidden while reading an article, got ${mobileNavDisplay}`);
 
