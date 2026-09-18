@@ -72,7 +72,7 @@ const SEARCH_SYNONYMS={
   xlnt:["xu ly nuoc thai"],
   qcvn:["quy chuan ky thuat quoc gia"]
 };
-const SEARCH_STOPWORDS=new Set(["cua","toi","minh","co","can","phai","khong","thi","nao","gi","nhung","mot","cac","cho","ve","la","va","voi","trong","theo","duoc","hay","neu","muon","hoi"]);
+const SEARCH_STOPWORDS=new Set(["cua","toi","minh","phai","khong","thi","nao","gi","nhung","mot","cac","cho","ve","la","va","voi","trong","theo","duoc","hay","neu","muon","hoi"]);
 const SEARCH_CONTEXT_EXPANSIONS=[
   {re:/\b(xuong|nha may|co so san xuat|co so)\b/,tokens:["co","so","san","xuat"]},
   {re:/\b(mo rong|nang cong suat|thay doi du an)\b/,tokens:["thay","doi","mo","rong","du","an"]},
