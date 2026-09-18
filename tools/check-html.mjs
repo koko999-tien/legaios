@@ -24,6 +24,27 @@ if (!/<html\b[^>]*\blang=["']vi["']/i.test(html)) warn('Expected <html lang="vi"
 if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) fail('Missing viewport meta tag.');
 if (!/<title>[^<]+<\/title>/i.test(html)) fail('Missing non-empty <title>.');
 
+if (path.basename(absoluteFile) === 'index.html') {
+  const notFoundPath = path.resolve(baseDir, '404.html');
+  const robotsPath = path.resolve(baseDir, 'robots.txt');
+  if (!fs.existsSync(notFoundPath)) {
+    fail('Missing branded 404.html.');
+  } else {
+    const notFound = fs.readFileSync(notFoundPath, 'utf8');
+    if (!/name=["']robots["'][^>]*content=["']noindex["']/i.test(notFound)) fail('404.html must be noindex.');
+    if (!/Căn cứ Pháp lý Môi trường/i.test(notFound)) fail('404.html is missing the current brand.');
+  }
+  if (!fs.existsSync(robotsPath)) {
+    fail('Missing robots.txt.');
+  } else {
+    const robots = fs.readFileSync(robotsPath, 'utf8');
+    if (!/User-agent:\s*\*/i.test(robots) || !/Allow:\s*\//i.test(robots)) fail('robots.txt is missing the default allow policy.');
+  }
+  if (!/<meta\b[^>]*property=["']og:title["']/i.test(html)) fail('Missing Open Graph title metadata.');
+  if (!/<link\b[^>]*rel=["']manifest["']/i.test(html)) fail('Missing manifest link in index.html.');
+  if (!/<link\b[^>]*rel=["']icon["']/i.test(html)) fail('Missing favicon link in index.html.');
+}
+
 const cspMetaMatch = html.match(/<meta\b[^>]*http-equiv=(["'])Content-Security-Policy\1[^>]*content=(["'])([\s\S]*?)\2[^>]*>/i);
 const cspMeta = cspMetaMatch?.[3] || '';
 if (!cspMeta) {
