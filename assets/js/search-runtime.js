@@ -1,4 +1,4 @@
-/* LegalOS V14 — legal search, clause rendering and citation-memo runtime. */
+/* Căn cứ Pháp lý Môi trường — legal search, clause rendering and citation-memo runtime. */
 function clauseKey(doc,article){return `${doc}:${article}`}
 function clauseArticle(doc,article){return CLAUSE_PACK_V13[clauseKey(doc,article)]||null}
 function allClauseNodesForDoc(doc){
@@ -95,16 +95,16 @@ function saveMemoMetaV13(){
  citationMemoMetaV13={title:$("memoTitle")?.value||"",note:$("memoGeneralNote")?.value||""};STORE.set(MEMO_META_KEY_V13,citationMemoMetaV13);
 }
 function exportMemoMarkdownV13(){
- const title=citationMemoMetaV13.title||"Căn cứ hồ sơ LegalOS";
+ const title=citationMemoMetaV13.title||"Căn cứ hồ sơ";
  const lines=[`# ${title}`,"",citationMemoMetaV13.note||"",citationMemoMetaV13.note?"":"",`Xuất: ${new Date().toLocaleString("vi-VN")}`,""];
  citationBasketV13.forEach((x,i)=>{const d=D.find(z=>z.id===x.doc);lines.push(`## ${i+1}. ${x.label}`,`- Văn bản: ${d?d.ttl:x.doc}`,`- Tóm tắt: ${x.text}`,x.note?`- Ghi chú: ${x.note}`:"",x.source?`- Nguồn: ${x.source}`:"","")});
  const blob=new Blob([lines.filter(x=>x!==null).join("\n")],{type:"text/markdown;charset=utf-8"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="LegalOS-can-cu-ho-so.md";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Can-cu-phap-ly-moi-truong-can-cu-ho-so.md";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 function exportV13DataPack(){
- const payload={schema:"legalos-v13",exportedAt:new Date().toISOString(),clauses:CLAUSE_PACK_V13,trails:LEGAL_TRAILS_V13,documents:D.map(d=>({id:d.id,title:d.ttl,type:d.k,topic:d.t,meta:metaOf(d.id)}))};
+ const payload={schema:"ccplmt-v13",exportedAt:new Date().toISOString(),clauses:CLAUSE_PACK_V13,trails:LEGAL_TRAILS_V13,documents:D.map(d=>({id:d.id,title:d.ttl,type:d.k,topic:d.t,meta:metaOf(d.id)}))};
  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="LegalOS-V13-data-pack.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Can-cu-phap-ly-moi-truong-data-pack.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
 function parseAdvancedQueryV13(q){
@@ -225,7 +225,7 @@ function renderSearchCoach(list,q){
   if(!$("searchCoach"))return;
   const p=parseLegalQuery(q);
   if(!q.trim()){
-    $("searchCoach").innerHTML='<span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>LegalOS sẽ phân tích ý định tìm kiếm và xếp kết quả theo mức phù hợp.</p></div>';
+    $("searchCoach").innerHTML='<span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Hệ thống sẽ phân tích ý định tìm kiếm và xếp kết quả theo mức phù hợp.</p></div>';
     if($("querySummary"))$("querySummary").innerHTML="";
     return;
   }
@@ -239,9 +239,9 @@ function renderSearchCoach(list,q){
   const exactRef=p.article||p.clause||p.point;
   const conversational=!!p.intent?.question||!!p.intent?.labels?.length;
   const guidance=conversational
-    ?"LegalOS đang tìm căn cứ và nhánh cần kiểm tra, không tự trả lời có/không về nghĩa vụ pháp lý. Hãy mở văn bản gốc của kết quả phù hợp trước khi kết luận."
+    ?"Hệ thống đang tìm căn cứ và nhánh cần kiểm tra, không tự trả lời có/không về nghĩa vụ pháp lý. Hãy mở văn bản gốc của kết quả phù hợp trước khi kết luận."
     :(exactRef?"Nếu cần nội dung Khoản/Điểm đầy đủ, hãy mở nguồn chính thức của văn bản phù hợp.":"");
-  $("searchCoach").innerHTML=`<span class="coach-icon">${exactRef?"§":conversational?"?":"⌕"}</span><div><b>LegalOS hiểu truy vấn là: ${intent.join(" · ")}</b><p>${list.length?`Tìm thấy ${list.length} văn bản phù hợp trong kho tóm tắt/metadata.`:`Chưa thấy căn cứ khớp trong dữ liệu hiện có.`} ${guidance}</p></div>`;
+  $("searchCoach").innerHTML=`<span class="coach-icon">${exactRef?"§":conversational?"?":"⌕"}</span><div><b>Hệ thống hiểu truy vấn là: ${intent.join(" · ")}</b><p>${list.length?`Tìm thấy ${list.length} văn bản phù hợp trong kho tóm tắt/metadata.`:`Chưa thấy căn cứ khớp trong dữ liệu hiện có.`} ${guidance}</p></div>`;
   if($("querySummary"))$("querySummary").innerHTML=`Chế độ: <b>${legalSearchMode==="ref"?"Điều/Khoản/Điểm":legalSearchMode==="number"?"Số hiệu":"Thông minh"}</b>`;
 }
 function prepareLegalHtml(raw){
@@ -268,5 +268,5 @@ function runInDocSearch(q){
   document.querySelectorAll("#legalText .law-block-hit").forEach(x=>x.classList.remove("law-block-hit"));
   const hits=findBlocksInDoc(d.b+coreArticleHtml(d.id),q);
   $("inDocStatus").textContent=q.trim()?`${hits.length} đoạn trong tóm tắt khớp “${q.trim()}”`:"";
-  $("inDocMatches").innerHTML=hits.length?hits.map(h=>`<button class="in-doc-match" data-law-block="${h.i}" type="button"><b>Đoạn ${h.i+1}</b>${hi(h.text,q)}</button>`).join(""):(q.trim()?`<div class="sourcebox"><b>Không thấy trong tóm tắt LegalOS.</b><br>Điều này không có nghĩa văn bản gốc không chứa nội dung bạn tìm. Hãy mở nguồn chính thức để tra toàn văn.</div>`:"");
+  $("inDocMatches").innerHTML=hits.length?hits.map(h=>`<button class="in-doc-match" data-law-block="${h.i}" type="button"><b>Đoạn ${h.i+1}</b>${hi(h.text,q)}</button>`).join(""):(q.trim()?`<div class="sourcebox"><b>Không thấy trong tóm tắt của hệ thống.</b><br>Điều này không có nghĩa văn bản gốc không chứa nội dung bạn tìm. Hãy mở nguồn chính thức để tra toàn văn.</div>`:"");
 }
