@@ -7,7 +7,7 @@
   const baseLegalSearchScore=legalSearchScore;
   const profileCache=new Map();
   const MATCH_REASON=/Tên văn bản khớp|Đúng số hiệu|Có nhắc (?:Điều|Khoản|Điểm)|Đúng (?:Khoản|Điểm)|Điều .*đã bóc|Khớp cụm|Thỏa điều kiện/i;
-  const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','ve','la']);
+  const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','ve','la','toi','minh','co','can','phai','khong','thi','nao','gi','hay','neu','muon','hoi']);
 
   function tokenizeVN(value=''){
     return (cleanLegalQuery(value).match(/[\p{L}\p{M}\p{N}_]+/gu)||[])
@@ -68,7 +68,8 @@
 
   function fuzzyEvidence(d,q){
     const profile=profileFor(d);
-    const queryTokens=[...new Set(tokenizeVN(q))];
+    const expanded=typeof expandTokens==='function'?expandTokens(q):tokenizeVN(q);
+    const queryTokens=[...new Set(expanded.filter(t=>t.length>1&&!COMMON.has(t)))];
     if(!queryTokens.length)return {boost:0,hits:0,reasons:[],total:0};
     let boost=0,hits=0;
     const reasons=[];
@@ -90,7 +91,9 @@
     const base=baseLegalSearchScore(d,q);
     if(!String(q||'').trim())return {...base,matched:true,fuzzyHits:0};
     const fuzzy=fuzzyEvidence(d,q);
-    const baseMatched=(base.reasons||[]).some(r=>MATCH_REASON.test(r));
+    const intent=typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]};
+    const baseMatched=(base.reasons||[]).some(r=>MATCH_REASON.test(r))
+      ||(intent.labels.length>0&&base.score>0&&(base.reasons||[]).some(r=>/từ khóa khớp/i.test(r)));
     const needed=fuzzy.total<=1?1:Math.ceil(fuzzy.total*0.6);
     const matched=baseMatched||(fuzzy.hits>=needed&&fuzzy.hits>0);
     const fuzzySummary=fuzzy.total&&fuzzy.hits?`${fuzzy.hits}/${fuzzy.total} từ khóa khớp hoặc gần đúng`:'';
