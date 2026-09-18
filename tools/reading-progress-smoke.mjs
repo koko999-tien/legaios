@@ -38,6 +38,11 @@ try {
   const bar = page.locator('#readingProgress');
   assert(await bar.isVisible(), 'Smart reading progress is not visible');
   assert(await page.locator('#readingProgressTrack').count(), 'Reading progress track is missing');
+  const desktopShellBox = await page.locator('.reading-progress-shell').boundingBox();
+  const desktopTrackBox = await page.locator('#readingProgressTrack').boundingBox();
+  assert(desktopShellBox && desktopShellBox.width <= 760, `Desktop reading progress shell is too wide: ${Math.round(desktopShellBox?.width || 0)}px`);
+  assert(desktopShellBox && desktopShellBox.height <= 46, `Desktop reading progress shell is too tall: ${Math.round(desktopShellBox?.height || 0)}px`);
+  assert(desktopTrackBox && desktopTrackBox.width <= 760 && desktopTrackBox.height <= 6, 'Desktop reading progress track is not compact');
   assert(await page.locator('#readingProgressSection').count(), 'Reading section label is missing');
   assert(await page.locator('#readingProgressMeta').count(), 'Reading progress metadata is missing');
 
