@@ -144,6 +144,11 @@ try {
   assert(await page.locator('#nav > .nav-primary > button').count() === 4, 'Sidebar should expose four primary work routes');
   assert(await page.locator('#navMore:not([open])').count() === 1, 'Advanced sidebar tools should be collapsed on the home route');
 
+  await go('corekb');
+  assert(await page.locator('#navMore[open]').count() === 1, 'Advanced sidebar should reveal the active advanced route');
+  await go('home');
+  assert(await page.locator('#navMore:not([open])').count() === 1, 'Returning to a primary route should collapse advanced navigation');
+
   const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'home'];
   for (const id of routes) await go(id);
 
@@ -175,6 +180,10 @@ try {
   });
   assert(await page.locator('#caseDetail .case-next-box').count() === 1, 'Workspace case is missing the next-action panel');
   assert(await page.locator('#caseDetail .case-next-list li').count() > 0, 'Workspace case has no actionable next steps');
+
+  await go('home');
+  await page.evaluate(() => renderHomePortal());
+  assert((await page.locator('#homeResumeTitle').textContent() || '').includes('Hồ sơ QA'), 'Returning-user home card did not prioritize the latest saved case');
 
   // Library search should render usable results without throwing runtime errors.
   await go('lib');
