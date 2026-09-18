@@ -1,8 +1,8 @@
-# LegalOS V14 — Open-source upgrade notes
+# Căn cứ Pháp lý Môi trường V14 — Open-source upgrade notes
 
 Ngày rà soát: 2026-09-17
 
-Tài liệu này ghi lại các dự án mã nguồn mở được nghiên cứu để nâng cấp LegalOS. Mục tiêu là học pattern/kiến trúc phù hợp, không kéo framework lớn vào ứng dụng nếu chưa cần và không sao chép code có giấy phép không tương thích.
+Tài liệu này ghi lại các dự án mã nguồn mở được nghiên cứu để nâng cấp Căn cứ Pháp lý Môi trường. Mục tiêu là học pattern/kiến trúc phù hợp, không kéo framework lớn vào ứng dụng nếu chưa cần và không sao chép code có giấy phép không tương thích.
 
 ## 1. GOV.UK Frontend — MIT
 
@@ -13,7 +13,7 @@ Nguồn: https://github.com/alphagov/govuk-frontend
 - Thiết kế form/nút rõ ràng, ưu tiên màn hình hẹp và assistive technology.
 - WCAG 2.2 AA là mục tiêu thực tế; mobile wrapping và focus state phải được test.
 
-Áp dụng vào LegalOS:
+Áp dụng vào Căn cứ Pháp lý Môi trường:
 - Bổ sung skip link, focus-visible, trạng thái ARIA cho menu.
 - Touch target tối thiểu trên mobile.
 - Không để thanh cố định che nội dung.
@@ -46,7 +46,7 @@ Nguồn:
 - Thêm `assets/js/search-fuzzy.js`: Unicode tokenization, bounded Levenshtein, fuzzy boost cho tiêu đề/nội dung và ngưỡng tỷ lệ token khớp.
 - Không thay legal-specific scoring hiện có: số hiệu, Điều/Khoản/Điểm và chỉ mục cấu trúc vẫn có ưu tiên cao hơn.
 - Thêm regression test cho truy vấn có typo, truy vấn vô nghĩa và tra cứu số hiệu chính xác.
-- Không thêm Fuse/MiniSearch làm runtime dependency; LegalOS chỉ học pattern và giữ engine nhỏ, kiểm soát được.
+- Không thêm Fuse/MiniSearch làm runtime dependency; Căn cứ Pháp lý Môi trường chỉ học pattern và giữ engine nhỏ, kiểm soát được.
 
 ## 4. Open Legal Data Platform — MIT
 
@@ -71,7 +71,7 @@ Nguồn: https://github.com/freelawproject/courtlistener
 
 Lưu ý giấy phép:
 - Chỉ tham khảo pattern và kiến trúc/UX.
-- Không sao chép source AGPL vào LegalOS ở giai đoạn này.
+- Không sao chép source AGPL vào Căn cứ Pháp lý Môi trường ở giai đoạn này.
 
 ## 6. DOMPurify — Apache-2.0 / MPL-2.0 dual license
 
@@ -83,7 +83,7 @@ Nguồn: https://github.com/cure53/DOMPurify
 - Nội dung import phải coi là untrusted.
 
 Áp dụng:
-- LegalOS giữ sanitizer DOM allow-list cho Legal Pack/import.
+- Căn cứ Pháp lý Môi trường giữ sanitizer DOM allow-list cho Legal Pack/import.
 - Thêm attack-corpus test tự động gồm script, event attribute, `javascript:`, SVG, MathML, iframe/srcdoc, form controls, DOM clobbering và template.
 - Link HTTPS hợp lệ vẫn phải được giữ lại và được ép `noopener noreferrer`.
 
@@ -109,7 +109,7 @@ Nguồn: https://github.com/GoogleChrome/workbox
 - App shell caching, versioned cache, service-worker lifecycle, offline-first/network-first theo loại request.
 
 Áp dụng:
-- LegalOS dùng service worker native nhỏ gọn: cache app shell và network-first cho navigation/static assets với fallback cache.
+- Căn cứ Pháp lý Môi trường dùng service worker native nhỏ gọn: cache app shell và network-first cho navigation/static assets với fallback cache.
 - Cache version được tăng khi thêm module search/storage mới.
 - Không thêm runtime dependency Workbox lúc này để giữ app tĩnh và nhẹ.
 
@@ -155,7 +155,7 @@ Nguồn:
 - Monitoring không nên làm hỏng luồng chính nếu chính monitoring gặp lỗi.
 
 Áp dụng:
-- LegalOS không cài SDK telemetry từ xa ở giai đoạn này.
+- Căn cứ Pháp lý Môi trường không cài SDK telemetry từ xa ở giai đoạn này.
 - `assets/js/oss-upgrades.js` bắt `error` và `unhandledrejection`, chỉ giữ tối đa 12 lỗi kỹ thuật gần nhất trong `sessionStorage`.
 - Snapshot chẩn đoán chỉ gồm trạng thái trình duyệt, viewport, service worker, storage, thời gian tải và lỗi kỹ thuật; không đọc nội dung hồ sơ, ghi chú, tên tài liệu nhập hoặc lịch sử tìm kiếm.
 - Command Palette có lệnh `Xuất chẩn đoán hệ thống` để người dùng chủ động tải JSON khi cần hỗ trợ.
@@ -169,4 +169,4 @@ Nguồn:
 3. Mỗi dependency phải có lý do, giấy phép rõ và test tự động.
 4. Search pháp lý ưu tiên độ chính xác/nguồn/truy vết hơn hiệu ứng UI.
 5. Mobile thật vẫn là tiêu chuẩn cuối; emulator/Playwright chỉ là lớp bảo vệ sớm.
-6. Mỗi nâng cấp từ dự án nguồn mở phải được viết lại cho nhu cầu LegalOS và có regression test trước khi coi là hoàn thành.
+6. Mỗi nâng cấp từ dự án nguồn mở phải được viết lại cho nhu cầu Căn cứ Pháp lý Môi trường và có regression test trước khi coi là hoàn thành.
