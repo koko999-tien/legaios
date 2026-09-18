@@ -1,10 +1,10 @@
-/* LegalOS V14 — small native service worker inspired by Workbox caching patterns. */
-const CACHE_NAME='legalos-v14-shell-20260918-38';
+/* Căn cứ Pháp lý Môi trường — native service worker. */
+const CACHE_NAME='ccplmt-v14-shell-20260918-39';
 const APP_SHELL=[
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/assets/icons/legalos.svg',
+  '/assets/icons/can-cu-phap-ly-moi-truong.svg',
   '/assets/css/app.css',
   '/assets/css/oss-upgrades.css',
   '/assets/js/oss-upgrades.js',
@@ -39,7 +39,7 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(keys.filter(key=>key.startsWith('legalos-')&&key!==CACHE_NAME).map(key=>caches.delete(key))))
+      .then(keys=>Promise.all(keys.filter(key=>key.startsWith('ccplmt-')&&key!==CACHE_NAME).map(key=>caches.delete(key))))
       .then(()=>self.clients.claim())
   );
 });
