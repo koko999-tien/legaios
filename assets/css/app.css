@@ -1434,8 +1434,8 @@ input,select,textarea,.in{
 }
 .library-hint{
   margin-left:auto;
-  font-size:8px!important;
-  color:var(--m);
+  font-size:9px!important;
+  color:color-mix(in srgb,var(--m) 65%,var(--text));
 }
 .results-head-v11{
   margin:10px 0 7px;
@@ -2839,7 +2839,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   min-height:38px;
 }
 #lib .library-actions{margin:0 !important;gap:6px !important}
-#lib .library-hint{font-size:8px !important}
+#lib .library-hint{font-size:9px !important}
 
 /* Tips panel is optional, not permanent clutter */
 #lib .library-assist-v11{
