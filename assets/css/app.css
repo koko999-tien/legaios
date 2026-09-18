@@ -3495,7 +3495,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   letter-spacing:-.012em!important;
   word-spacing:0!important;
 }
-/* Only brand-highlighted words are green. The application UI keeps its original blue palette. */
 #home .academic-hero-copy h1 span{
   color:var(--text)!important;
 }
