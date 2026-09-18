@@ -58,7 +58,7 @@ try {
 
   if (errors.length) throw new Error(`Browser runtime errors detected:\n${errors.join('\n')}`);
 
-  console.log('LegalOS UX polish smoke test passed.');
+  console.log('Căn cứ Pháp lý Môi trường UX polish smoke test passed.');
   console.log('  home hierarchy/readability checked');
   console.log('  library helper readability checked');
   console.log('  core-knowledge helper readability checked');
