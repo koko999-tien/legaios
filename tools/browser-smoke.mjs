@@ -276,6 +276,9 @@ try {
   assert(libraryUx.openTitle.length > 10, 'Primary document action is missing explanatory hover text');
   assert(libraryUx.previewText === 'Xem nhanh', `Quick-preview action changed unexpectedly: ${libraryUx.previewText}`);
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
+  assert(await page.locator('#advancedSearch').count() === 1, 'Advanced legal search panel is missing');
+  assert(await page.locator('#effectF option[value="partial"]').count() === 1, 'Effect-metadata filter is missing the partial-effect option');
+  assert((await page.locator('#advancedSearch').innerText()).includes('không tự xác nhận tình trạng pháp lý'), 'Advanced search does not explain the legal-status metadata boundary');
 
   const firstDoc = page.locator('#docs [data-open]').first();
   if (await firstDoc.count()) {
@@ -283,6 +286,11 @@ try {
     await page.waitForFunction(() => document.getElementById('art')?.classList.contains('on'));
     assert(await activePage('art'), 'Opening a library result did not activate article view');
     assert(await page.locator('#art [data-feedback-doc]').count() === 1, 'Article data-feedback action is missing');
+    assert(await page.locator('#art .doc-breadcrumb').count() === 1, 'Article breadcrumb is missing');
+    assert(await page.locator('#art .doc-record').count() === 1, 'Legal document record summary is missing');
+    assert((await page.locator('#art .doc-record').innerText()).includes('Ngày hiệu lực (metadata)'), 'Document record does not distinguish effect metadata');
+    assert((await page.locator('#art .doc-record').innerText()).includes('Không dùng riêng bảng này để kết luận'), 'Document record is missing the legal-status boundary');
+    assert(await page.locator('#art .doc-section-nav [data-scroll="sourceSec"]').count() === 1, 'Document section navigation is missing source/relationship access');
     const articleTitle=(await page.locator('#art .art-content h1').textContent()||'').trim();
     await page.locator('#art [data-feedback-doc]').click();
     await page.waitForFunction(() => document.getElementById('feedbackModal')?.classList.contains('on'));
