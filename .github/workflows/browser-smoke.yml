@@ -60,6 +60,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/ux-polish-smoke.mjs
 
+      - name: Verify core legal trust metadata
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/legal-trust-smoke.mjs
+
       - name: Verify legal search quality
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
