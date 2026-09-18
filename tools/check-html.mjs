@@ -24,7 +24,8 @@ if (!/<html\b[^>]*\blang=["']vi["']/i.test(html)) warn('Expected <html lang="vi"
 if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) fail('Missing viewport meta tag.');
 if (!/<title>[^<]+<\/title>/i.test(html)) fail('Missing non-empty <title>.');
 
-const cspMeta = html.match(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] || '';
+const cspMetaMatch = html.match(/<meta\b[^>]*http-equiv=(["'])Content-Security-Policy\1[^>]*content=(["'])([\s\S]*?)\2[^>]*>/i);
+const cspMeta = cspMetaMatch?.[3] || '';
 if (!cspMeta) {
   fail('Missing Content-Security-Policy meta tag.');
 } else if (!/frame-src[^;]*https:\/\/app\.netlify\.com/i.test(cspMeta)) {
