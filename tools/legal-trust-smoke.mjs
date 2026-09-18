@@ -37,6 +37,10 @@ try{
   const badges=(await page.locator('#abody .legal-badge-row').innerText()).trim();
   assert(/Đã kiểm chứng 18\/09\/2026/.test(badges),'Article view does not expose current trust-review date');
   assert(await page.locator('#abody a.official').count()>0,'Article view is missing official-source link');
+  const coverage=(await page.locator('#abody .data-coverage').innerText()).trim();
+  assert(/Nội dung đang xem: tóm tắt LegalOS/.test(coverage),'Article does not clearly identify the LegalOS summary');
+  const officialLabels=await page.locator('#abody a.official').allTextContents();
+  assert(officialLabels.some(text=>/Mở văn bản gốc/.test(text)),'Official-source action is not labeled as opening the original document');
 
   console.log('LegalOS core legal trust test passed.');
   console.log('  8 core BVMT/EPR documents checked');
