@@ -689,3 +689,14 @@ body.article-view main{padding-top:28px!important}
   #menuBtn>span::before{top:-6px!important}
   #menuBtn>span::after{top:6px!important}
 }
+
+
+/* V14 mobile article contrast hardening — 2026-09-18 */
+body:not([data-theme="dark"]) .crumb>button,
+body:not([data-theme="dark"]) #art .back{
+  color:#1e58c7!important;
+}
+body:not([data-theme="dark"]) #articleRefIndex>span{
+  color:#586174!important;
+  font-size:10px!important;
+}
