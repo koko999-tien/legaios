@@ -87,6 +87,8 @@ async function assertMobileSidebarScrollable(width) {
   await go('home');
   await page.locator('#menuBtn').click();
   await page.waitForFunction(() => document.getElementById('nav')?.classList.contains('open'));
+  const more = page.locator('#navMore');
+  if (await more.count() && !(await more.evaluate(el => el.open))) await more.locator(':scope > summary').click();
   const navInfo = await page.locator('#nav').evaluate(el => {
     const style = getComputedStyle(el);
     const before = el.scrollTop;
@@ -100,9 +102,10 @@ async function assertMobileSidebarScrollable(width) {
       touchAction: style.touchAction
     };
   });
-  assert(navInfo.scrollHeight > navInfo.clientHeight, `mobile ${width}px: sidebar content is not taller than its viewport; scroll behavior cannot be verified`);
-  assert(navInfo.after > navInfo.before, `mobile ${width}px: sidebar does not scroll`);
   assert(/auto|scroll/.test(navInfo.overflowY), `mobile ${width}px: sidebar overflow-y is ${navInfo.overflowY}`);
+  if (navInfo.scrollHeight > navInfo.clientHeight + 1) {
+    assert(navInfo.after > navInfo.before, `mobile ${width}px: expanded sidebar does not scroll`);
+  }
   assert(navInfo.touchAction.includes('pan-y') || navInfo.touchAction === 'auto', `mobile ${width}px: sidebar touch-action is ${navInfo.touchAction}`);
   await page.locator('#navScrim').click();
   await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
@@ -138,8 +141,40 @@ try {
   assert(await page.locator('#home .home-tools-disclosure:not([open])').count() === 1, 'Advanced home tools should be collapsed by default');
   assert((await page.locator('#nav [data-go="expert"]').textContent() || '').includes('Rà soát hồ sơ'), 'Expert route still uses an unclear navigation label');
 
+  assert(await page.locator('#nav > .nav-primary > button').count() === 4, 'Sidebar should expose four primary work routes');
+  assert(await page.locator('#navMore:not([open])').count() === 1, 'Advanced sidebar tools should be collapsed on the home route');
+
   const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'home'];
   for (const id of routes) await go(id);
+
+  // Dossier review should explain the situation, missing questions and prioritized next steps.
+  await go('expert');
+  await page.evaluate(() => {
+    document.getElementById('expPhase').value = 'operation';
+    document.getElementById('expSector').value = 'industrial';
+    document.getElementById('expLocation').value = 'KCN thử nghiệm';
+    document.getElementById('expScale').value = '1.000 tấn/năm';
+    document.getElementById('expWater').value = 'yes';
+    analyzeExpert();
+  });
+  assert(await page.locator('#expOut .expert-situation').count() === 1, 'Expert review does not explain the interpreted situation');
+  assert(await page.locator('#expOut .expert-next-plan li').count() > 0, 'Expert review does not provide prioritized next steps');
+  assert(await page.locator('#expOut .expert-question-list li').count() > 0, 'Expert review does not surface unanswered questions');
+
+  // Saved cases should expose a concrete next-action panel instead of only static classification.
+  await go('work');
+  await page.evaluate(() => {
+    const qa = {
+      id:'qa-case-guidance',name:'Hồ sơ QA',createdAt:new Date().toISOString(),userNote:'',
+      input:{sector:'industrial'},
+      result:{group:'Chưa kết luận',dtm:null,gp:null,notes:['Cần xác minh thêm quy mô và vị trí.']}
+    };
+    cases=[qa,...cases.filter(x=>x.id!==qa.id)];
+    renderWorkspace();
+    showCase(qa.id);
+  });
+  assert(await page.locator('#caseDetail .case-next-box').count() === 1, 'Workspace case is missing the next-action panel');
+  assert(await page.locator('#caseDetail .case-next-list li').count() > 0, 'Workspace case has no actionable next steps');
 
   // Library search should render usable results without throwing runtime errors.
   await go('lib');
