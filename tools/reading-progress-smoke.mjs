@@ -41,8 +41,16 @@ try {
   const desktopShellBox = await page.locator('.reading-progress-shell').boundingBox();
   const desktopTrackBox = await page.locator('#readingProgressTrack').boundingBox();
   const headerBox = await page.locator('header.site').boundingBox();
+  const siteInBox = await page.locator('header.site .site-in').boundingBox();
   const progressBox = await bar.boundingBox();
-  assert(headerBox && progressBox && Math.abs(progressBox.y - (headerBox.y + headerBox.height)) <= 2, 'Desktop reading progress is not attached directly below the header');
+  const mountedInHeader = await bar.evaluate(el => el.parentElement?.matches('header.site') || false);
+  assert(mountedInHeader, 'Reading progress is not mounted inside the sticky header');
+  assert(
+    headerBox && siteInBox && progressBox &&
+    Math.abs(progressBox.y - (siteInBox.y + siteInBox.height)) <= 2 &&
+    Math.abs((progressBox.y + progressBox.height) - (headerBox.y + headerBox.height)) <= 2,
+    'Reading progress is not the second row of the sticky header'
+  );
   assert(desktopShellBox && desktopShellBox.width <= 760, `Desktop reading progress shell is too wide: ${Math.round(desktopShellBox?.width || 0)}px`);
   assert(desktopShellBox && desktopShellBox.height <= 46, `Desktop reading progress shell is too tall: ${Math.round(desktopShellBox?.height || 0)}px`);
   assert(desktopTrackBox && desktopTrackBox.width <= 760 && desktopTrackBox.height <= 6, 'Desktop reading progress track is not compact');
@@ -64,6 +72,13 @@ try {
 
   const midValue = Number(await page.locator('#readingProgressTrack').getAttribute('aria-valuenow'));
   assert(midValue >= 20 && midValue <= 95, `Mid-document progress is implausible: ${midValue}%`);
+  const stickyGeometry = await page.evaluate(() => {
+    const header = document.querySelector('header.site')?.getBoundingClientRect();
+    const bar = document.getElementById('readingProgress')?.getBoundingClientRect();
+    return header && bar ? { headerTop: header.top, barTop: bar.top, headerBottom: header.bottom, barBottom: bar.bottom } : null;
+  });
+  assert(stickyGeometry && Math.abs(stickyGeometry.headerTop) <= 2, 'Header is not sticky while reading');
+  assert(stickyGeometry && stickyGeometry.barTop >= stickyGeometry.headerTop && Math.abs(stickyGeometry.barBottom - stickyGeometry.headerBottom) <= 2, 'Reading progress does not scroll together with the sticky header');
   const section = (await page.locator('#readingProgressSection').textContent() || '').trim();
   assert(section.length > 0, 'Current reading section is empty');
 
