@@ -53,7 +53,7 @@ function showCase(id){
     </div>
     <div data-case-panel="input" hidden><div class="why"><b>Dữ liệu đầu vào</b><ul>${Object.entries(c.input).map(([k,v])=>`<li>${esc(k)}: ${esc(v)}</li>`).join("")}</ul></div></div>
     <div data-case-panel="note" hidden><textarea class="case-notes" id="caseNote" placeholder="Ghi chú cho hồ sơ này…">${esc(c.userNote||"")}</textarea></div>
-    <div class="case-actions"><button class="btn bp" data-export-case="${c.id}" type="button">Xuất Markdown</button><button class="btn bs" data-copy-case="${c.id}" type="button">Sao chép tóm tắt</button></div>
+    <div class="case-actions"><button class="btn bp" data-export-case="${c.id}" type="button">Xuất Markdown</button><button class="btn bs" data-copy-case="${c.id}" type="button">Sao chép tóm tắt</button><button class="btn bs" data-case-to-compliance="${c.id}" type="button">Đưa vào Hồ sơ tuân thủ</button></div>
     <p class="note" style="margin-top:12px">Phiếu này giúp tổ chức dữ liệu và ưu tiên việc cần rà. Các nhãn ĐTM/GPMT ở đây không thay thế việc xác định đối tượng theo văn bản, phụ lục và hồ sơ thực tế.</p>`;
   logActivity("case",id,c.name);
 }
