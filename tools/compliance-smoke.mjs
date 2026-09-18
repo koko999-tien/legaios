@@ -69,6 +69,12 @@ try{
   await page.locator('#oblTitle').fill('Xác minh nghĩa vụ quan trắc nước thải');
   await page.locator('#oblStatus').selectOption('active');
   await page.locator('#oblOwner').fill('Bộ phận Môi trường');
+  await page.locator('#oblLegalDoc').selectOption('vbhn98');
+  await page.locator('#oblLegalDoc').evaluate(el=>el.dispatchEvent(new Event('change',{bubbles:true})));
+  const deepOption=page.locator('#oblDeepRef option').filter({hasText:'Điều 39'}).first();
+  assert(await deepOption.count()===1,'Structured Điều 39 reference is not available for the consolidated environmental law');
+  await page.locator('#oblDeepRef').selectOption(await deepOption.getAttribute('value'));
+  await page.locator('#oblLegalAppendix').fill('II');
   await page.locator('#oblDueDate').fill(isoAfter(15));
   await page.locator('#oblRecurrence').selectOption('monthly');
   await page.locator('#oblDueBasis').selectOption('permit');
@@ -86,6 +92,8 @@ try{
   assert(obligationText.includes('theo giấy phép/hồ sơ'),'Deadline source type is missing');
   assert(obligationText.includes('bien-ban-quan-trac-qa.pdf'),'Evidence reference is missing');
   assert(obligationText.includes('đang thực hiện'),'User-managed obligation status is missing');
+  assert(obligationText.includes('điều 39'),'Structured legal article is missing from the obligation row');
+  assert(obligationText.includes('phụ lục ii'),'Appendix reference is missing from the obligation row');
   assert(obligationText.includes('hàng tháng'),'Recurring obligation cadence is missing');
   const calendarText=(await page.locator('.compliance-calendar').innerText()).toLowerCase();
   assert(calendarText.includes('xác minh nghĩa vụ quan trắc nước thải'),'Compliance calendar omitted the recurring obligation');
@@ -119,6 +127,9 @@ try{
   await page.locator('[data-lawtab="impact"]').click();
   assert((await page.locator('#complianceRadarHub').innerText()).includes('Nhà máy QA'),'Legal update hub is not profile-aware');
   assert((await page.locator('#complianceRadarHub').innerText()).includes('không phải kết luận'),'Profile-aware legal updates overstate legal applicability');
+  const updateText=(await page.locator('#complianceRadarHub').innerText()).toLowerCase();
+  assert(updateText.includes('đang làm căn cứ cho 1 nghĩa vụ'),'Legal updates do not explain direct obligation impact');
+  assert(updateText.includes('điều 39'),'Legal updates lost the structured legal reference');
 
   await page.evaluate(()=>openDoc('l72'));
   await page.waitForFunction(()=>document.getElementById('art')?.classList.contains('on'));
@@ -130,13 +141,15 @@ try{
   const path=await download.path();
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
-  assert(exported.schema==='ccplmt-workspace-v4','Workspace export schema was not upgraded for recurring obligations');
+  assert(exported.schema==='ccplmt-workspace-v5','Workspace export schema was not upgraded for structured legal references');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.evidence?.length===1,'Workspace export omitted evidence references');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.recurrence==='monthly','Workspace export omitted recurring cadence');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.occurrenceHistory?.length===1,'Workspace export omitted recurring occurrence history');
+  assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalArticle==='39','Workspace export omitted structured article reference');
+  assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalAppendix==='II','Workspace export omitted appendix reference');
 
   await page.reload({waitUntil:'networkidle'});
   await go('work');
@@ -152,11 +165,11 @@ try{
   console.log('  profile creation + persistence checked');
   console.log('  signal-driven legal branches checked');
   console.log('  manual deadline + user-declared GPMT date checked');
-  console.log('  obligation source + owner + due basis + evidence checked');
+  console.log('  obligation source + structured Điều/Khoản/Phụ lục + owner + due basis + evidence checked');
   console.log('  recurring cadence + projected calendar + period completion checked');
   console.log('  article -> obligation register action checked');
   console.log('  home pulse + profile-aware legal updates checked');
-  console.log('  workspace v4 export includes recurrence history and evidence references');
+  console.log('  workspace v5 export includes structured legal refs, recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
