@@ -145,7 +145,7 @@ if (/set(?:Timeout|Interval)\s*\(\s*["']/i.test(securityText)) fail('String-base
 
 const executableText = executableCode.join('\n');
 const innerHtmlAssignments = [...executableText.matchAll(/\.innerHTML\s*=/g)].length;
-const reviewedInnerHtmlBaseline = 81; // Obligation editor/register adds 2 reviewed sinks; user-controlled fields are escaped before interpolation.
+const reviewedInnerHtmlBaseline = 82; // +1 reviewed deep-ref select sink; option labels/values are escaped before interpolation.
 if (innerHtmlAssignments > reviewedInnerHtmlBaseline) {
   fail(`innerHTML assignment count increased from the reviewed baseline (${reviewedInnerHtmlBaseline}) to ${innerHtmlAssignments}. Review and sanitize the new sink before raising the baseline.`);
 }
