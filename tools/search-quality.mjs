@@ -57,7 +57,7 @@ try{
   assert(naturalCount>0,'Conversational GPMT question returned no legal documents');
   const coach=(await page.locator('#searchCoach').innerText()).toLowerCase();
   assert(coach.includes('câu hỏi về giấy phép môi trường'),'Search coach did not explain the detected conversational intent');
-  assert(coach.includes('không tự trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
+  assert(coach.includes('không phải câu trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
 
   console.log('LegalOS search quality test passed.');
   console.log(`  fuzzy engine document: ${engineProbe.title}`);
