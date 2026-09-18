@@ -324,11 +324,12 @@ function renderComplianceWorkspace(){
 function renderComplianceHome(){
   const host=$("homeCompliancePulse");if(!host)return;
   if(!complianceProfiles.length){
-    host.innerHTML='<div class="home-compliance-empty"><div><div class="section-kicker">Theo dõi tuân thủ</div><b>Biến quy định thành việc cần làm</b><p>Tạo hồ sơ cơ sở/dự án để gom căn cứ, nhánh cần kiểm tra và deadline vào một nơi.</p></div><button class="btn bp" data-compliance-new type="button">Tạo hồ sơ tuân thủ</button></div>';
+    host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">BÀN LÀM VIỆC TUÂN THỦ</div><h2>Chưa có hồ sơ theo dõi</h2><p>Tạo hồ sơ đầu tiên để quản lý nghĩa vụ, deadline, bằng chứng và radar pháp luật.</p></div><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ</button></div><div class="home-compliance-grid"><div><b>0</b><span>hồ sơ</span></div><div><b>0</b><span>nghĩa vụ đang mở</span></div><div><b>0</b><span>mục gần hạn</span></div><div><b>0</b><span>văn bản ưu tiên</span></div></div>';
     return;
   }
   const p=complianceProfile(complianceProfiles[0].id)||complianceProfiles[0],urgent=complianceUrgent(p).length+complianceObligationUrgent(p).length,tracks=complianceTracks(p),openObl=complianceOpenObligations(p).length;
-  host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">Hồ sơ đang theo dõi</div><h2>'+esc(p.name)+'</h2><p>'+esc(complianceStatus(p))+' · '+complianceCompleteness(p)+'% dữ liệu nền</p></div><button class="btn bs" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="home-compliance-grid"><div><b>'+openObl+'</b><span>nghĩa vụ đang mở</span></div><div><b>'+urgent+'</b><span>mục gần hạn</span></div><div><b>'+tracks.length+'</b><span>nhánh cần rà</span></div><div><b>'+complianceUnknowns(p).length+'</b><span>tín hiệu chưa rõ</span></div></div>';
+  const radarDocs=new Set();p.obligations.forEach(function(o){if(o.legalDocId)radarDocs.add(o.legalDocId)});tracks.forEach(function(t){t.docs.forEach(function(d){radarDocs.add(d.id)})});
+  host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">BÀN LÀM VIỆC TUÂN THỦ</div><h2>'+esc(p.name)+'</h2><p>'+esc(complianceStatus(p))+' · '+complianceCompleteness(p)+'% dữ liệu nền</p></div><button class="btn bs" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="home-compliance-grid"><div><b>'+openObl+'</b><span>nghĩa vụ đang mở</span></div><div><b>'+urgent+'</b><span>mục gần hạn</span></div><div><b>'+tracks.length+'</b><span>nhánh cần rà</span></div><div><b>'+radarDocs.size+'</b><span>văn bản ưu tiên</span></div></div>';
 }
 function renderComplianceRadar(targetId){
   targetId=targetId||"complianceRadarHub";
