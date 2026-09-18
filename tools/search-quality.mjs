@@ -47,12 +47,25 @@ try{
   const exactText=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
   assert(exactText.includes('72/2020')||exactText.includes('bảo vệ môi trường'),'Exact legal-number search regressed');
 
+  const intentProbe=await page.evaluate(()=>detectLegalIntent('Xưởng của tôi có cần giấy phép môi trường không?'));
+  assert(intentProbe.labels.includes('Câu hỏi về giấy phép môi trường'),`Conversational intent was not recognized: ${JSON.stringify(intentProbe)}`);
+
+  await q.fill('Xưởng của tôi có cần giấy phép môi trường không?');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const naturalCount=await page.locator('#docs [data-open]').count();
+  assert(naturalCount>0,'Conversational GPMT question returned no legal documents');
+  const coach=(await page.locator('#searchCoach').innerText()).toLowerCase();
+  assert(coach.includes('câu hỏi về giấy phép môi trường'),'Search coach did not explain the detected conversational intent');
+  assert(coach.includes('không tự trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
+
   console.log('LegalOS search quality test passed.');
   console.log(`  fuzzy engine document: ${engineProbe.title}`);
   console.log(`  fuzzy engine hits: ${engineProbe.fuzzyHits}`);
   console.log(`  typo query results: ${typoCount}`);
   console.log('  nonsense query returns zero results');
   console.log('  exact legal-number search still works');
+  console.log(`  conversational GPMT query results: ${naturalCount}`);
 }finally{
   await browser.close();
 }
