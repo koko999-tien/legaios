@@ -24,7 +24,7 @@ if (!/<html\b[^>]*\blang=["']vi["']/i.test(html)) warn('Expected <html lang="vi"
 if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) fail('Missing viewport meta tag.');
 if (!/<title>[^<]+<\/title>/i.test(html)) fail('Missing non-empty <title>.');
 
-if (path.basename(absoluteFile) === 'index.html') {
+if (absoluteFile === path.resolve('index.html')) {
   const notFoundPath = path.resolve(baseDir, '404.html');
   const robotsPath = path.resolve(baseDir, 'robots.txt');
   if (!fs.existsSync(notFoundPath)) {
