@@ -43,12 +43,12 @@ try{
       return original.call(this,key,value);
     };
   });
-  const before=await page.evaluate(()=>Object.fromEntries(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1'].map(k=>[k,localStorage.getItem(k)])));
+  const before=await page.evaluate(()=>Object.fromEntries(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1'].map(k=>[k,localStorage.getItem(k)])));
   await upload(backup);
   await page.waitForFunction(()=>document.getElementById('toast').textContent.includes('Không thể lưu bản nhập'));
   assert(await page.locator('#storageWarning').isVisible(),'Failed storage write was not announced');
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Failed import changed memory or notes');
-  const after=await page.evaluate(()=>Object.fromEntries(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1'].map(k=>[k,localStorage.getItem(k)])));
+  const after=await page.evaluate(()=>Object.fromEntries(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1'].map(k=>[k,localStorage.getItem(k)])));
   assert(JSON.stringify(before)===JSON.stringify(after),'Failed import left partial storage changes');
   await page.evaluate(()=>{Storage.prototype.setItem=window.__testStorageSet;delete window.__testStorageSet});
   await upload(backup);
