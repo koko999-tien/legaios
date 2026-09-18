@@ -138,16 +138,22 @@ try {
     const root = getComputedStyle(document.documentElement);
     const h1 = getComputedStyle(document.querySelector('#home .academic-hero-copy h1'));
     const accent = getComputedStyle(document.querySelector('#home .academic-hero-copy h1 span')).color;
+    const brandAccent = getComputedStyle(document.querySelector('.brand-copy b em')).color;
+    const searchButton = getComputedStyle(document.querySelector('#home .academic-search-panel .bp')).backgroundColor;
     return {
       primary: root.getPropertyValue('--a').trim().toLowerCase(),
       fontFamily: h1.fontFamily.toLowerCase(),
       letterSpacing: h1.letterSpacing,
-      accent
+      accent,
+      brandAccent,
+      searchButton
     };
   });
-  assert(academicIdentity.primary === '#1f6b4c', `Academic primary color regressed: ${academicIdentity.primary}`);
+  assert(academicIdentity.primary === '#2563eb', `Application primary color should stay blue: ${academicIdentity.primary}`);
   assert(!academicIdentity.fontFamily.includes('georgia'), `Vietnamese academic heading regressed to Georgia: ${academicIdentity.fontFamily}`);
-  assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.accent), `Hero accent is not academic green: ${academicIdentity.accent}`);
+  assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.accent), `Hero highlighted word is not green: ${academicIdentity.accent}`);
+  assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.brandAccent), `Brand highlighted word is not green: ${academicIdentity.brandAccent}`);
+  assert(['rgb(37, 99, 235)','color(srgb 0.145098 0.388235 0.921569)'].includes(academicIdentity.searchButton), `Search button should remain blue: ${academicIdentity.searchButton}`);
   assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
   const primaryRoutes = await page.locator('#home .home113-primary-card').evaluateAll(nodes => nodes.map(node => node.dataset.go));
   assert(JSON.stringify(primaryRoutes) === JSON.stringify(['lib','expert','work']), `Unexpected primary home routes: ${primaryRoutes.join(', ')}`);
