@@ -3808,16 +3808,36 @@ header.site .academic-brand .brand-copy small{
   font-size:10px!important;
 }
 
-/* On phones, the existing horizontal topic strip remains easier than collapsed groups. */
+/* On phones, keep the same collapsible groups vertically; avoid a long/clipped horizontal chip rail. */
 @media(max-width:820px){
-  #lib .topic-filter-group{
-    display:contents;
-    border:0;
-    padding:0;
+  #lib .library-filters .chips.grouped-topic-filters{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:7px!important;
+    overflow:visible!important;
+    padding-bottom:0!important;
   }
-  #lib .topic-filter-group>summary{display:none}
-  #lib .topic-filter-group:not([open])>.topic-filter-group-body{display:contents!important}
-  #lib .topic-filter-group-body{display:contents!important}
+  #lib .topic-filter-group{
+    display:block;
+    min-width:0;
+    width:100%;
+  }
+  #lib .topic-filter-group>summary{
+    display:grid;
+    width:100%;
+  }
+  #lib .topic-filter-group-body{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+  #lib .topic-filter-group-body .chip,
+  #lib .library-filters .chip.topic-all{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    white-space:normal!important;
+  }
 }
 @media(max-width:700px){
   header.site .academic-brand .brand-copy b{font-size:14px}
