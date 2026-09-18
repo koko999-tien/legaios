@@ -1,4 +1,4 @@
-/* LegalOS V14 — expert dossier review, completeness analysis and saved expert briefs. */
+/* Căn cứ Pháp lý Môi trường — expert dossier review, completeness analysis and saved expert briefs. */
 function phaseLabel(v){return({plan:"Chuẩn bị / đầu tư mới",construction:"Thi công / xây dựng",operation:"Đang vận hành",change:"Thay đổi / mở rộng",closure:"Đóng cửa / phục hồi"})[v]||"Chưa xác định"}
 function sectorLabel(v){return({industrial:"Sản xuất / công nghiệp",mining:"Địa chất / khoáng sản",waste:"Xử lý chất thải",energy:"Điện / năng lượng",agri:"Nông nghiệp / chăn nuôi / thủy sản",infra:"Hạ tầng / giao thông / đô thị",tourism:"Du lịch / dịch vụ",other:"Khác"})[v]||"Chưa xác định"}
 function ynLabel(v){return v==="yes"?"Có":v==="no"?"Không":"Chưa rõ"}
@@ -117,7 +117,7 @@ function renderExpertResult(d,a){
     <div class="expert-scorebar"><span style="width:${a.score}%"></span></div>
     <section class="expert-situation">
       <div class="expert-situation-main">
-        <div class="section-kicker">LegalOS đang hiểu tình huống</div>
+        <div class="section-kicker">Hệ thống đang hiểu tình huống</div>
         <h3>${esc(situation.headline)}</h3>
         <p>${situation.context.length?esc(situation.context.join(" · ")):"Chưa đủ thông tin nền để mô tả dự án/cơ sở."}</p>
       </div>
@@ -175,5 +175,5 @@ function renderVerifiedAudit(){
   const rows=Object.entries(PROFESSOR_VERIFIED).map(([id,v])=>({id,v,d:D.find(x=>x.id===id)})).filter(x=>x.d);
   const linked=D.filter(d=>!!metaOf(d.id).src).length;
   $("verifiedAudit").innerHTML=`<div class="verify-summary"><div><b>${rows.length}</b><span>mục kiểm chứng thủ công đợt này</span></div><div><b>${linked}</b><span>mục có liên kết nguồn trong dữ liệu</span></div><div><b>${D.length-linked}</b><span>mục chưa có link nguồn</span></div></div>`+
-  rows.map(x=>`<article class="verify-card"><div class="verify-check">✓</div><div><div class="section-kicker">Đã đối chiếu ${x.v.checked}</div><h3>${x.d.ttl}</h3><p>${x.v.note}</p><div class="row"><button class="tiny" data-open="${x.id}" type="button">Mở trong LegalOS</button><a class="official" href="${x.v.source}" target="_blank" rel="noopener">Nguồn Chính phủ ↗</a></div></div></article>`).join("");
+  rows.map(x=>`<article class="verify-card"><div class="verify-check">✓</div><div><div class="section-kicker">Đã đối chiếu ${x.v.checked}</div><h3>${x.d.ttl}</h3><p>${x.v.note}</p><div class="row"><button class="tiny" data-open="${x.id}" type="button">Mở trong hệ thống</button><a class="official" href="${x.v.source}" target="_blank" rel="noopener">Nguồn Chính phủ ↗</a></div></div></article>`).join("");
 }
