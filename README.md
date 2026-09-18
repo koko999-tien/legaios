@@ -23,30 +23,36 @@ The front end is split into ordered classic scripts. The legacy `app.js` has bee
 ```text
 index.html
 assets/css/app.css
+assets/css/v14-product.css
+assets/css/compliance.css
+assets/css/oss-upgrades.css
 assets/js/legal-data.js
 assets/js/knowledge-base.js
 assets/js/state.js
 assets/js/import.js
+assets/js/idb-resilience.js
 assets/js/search-utils.js
 assets/js/search-data.js
 assets/js/search-runtime.js
+assets/js/search-fuzzy.js
 assets/js/ui-shell.js
 assets/js/activity-workspace.js
 assets/js/project-tools.js
 assets/js/library.js
 assets/js/procedures.js
+assets/js/compliance-core.js
 assets/js/compliance.js
 assets/js/workspace.js
 assets/js/legal-hub.js
 assets/js/expert.js
 assets/js/navigation.js
+assets/js/oss-upgrades.js
 assets/js/library-search.js
 assets/js/classifier.js
 assets/js/boot.js
-assets/js/oss-upgrades.js
 ```
 
-`boot.js` connects the modules. Progressive enhancements add diagnostics, accessibility and PWA support. `index.html` is the source of truth for the complete script order.
+`boot.js` connects the modules. Progressive enhancements, fuzzy search and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete stylesheet and script order.
 
 See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
 
