@@ -3992,7 +3992,7 @@ header.site .academic-brand .brand-copy small{
 .home-compliance-head p{margin:0;color:var(--m);font-size:11px;line-height:1.5}
 .home-compliance-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   border-top:1px solid var(--bd);
 }
 .home-compliance-grid>div{display:grid;gap:2px;padding:10px 16px;border-right:1px solid var(--bd)}
@@ -4213,4 +4213,197 @@ header.site .academic-brand .brand-copy small{
   .compliance-task-list li>div:last-child{justify-content:flex-start}
   .compliance-status-line{display:grid}
   .compliance-score{text-align:left}
+}
+
+
+/* Obligation register — sources, owners, deadlines and evidence, 2026-09-18 */
+.obligation-register{scroll-margin-top:88px}
+.obligation-register-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.obligation-register-actions>span{font-size:9px;color:var(--m)}
+.obligation-list{display:grid;gap:8px;margin-top:10px}
+.obligation-empty{
+  padding:18px;
+  border:1px dashed var(--bd);
+  border-radius:9px;
+  text-align:center;
+  background:var(--bg);
+}
+.obligation-empty b{font-size:11px}
+.obligation-empty p{margin:5px 0 0;color:var(--m);font-size:10px;line-height:1.5}
+
+.obligation-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  padding:11px;
+  border:1px solid var(--bd);
+  border-radius:10px;
+  background:var(--c);
+}
+.obligation-main{min-width:0;display:grid;gap:7px}
+.obligation-title-line{display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap}
+.obligation-title-line>b{font-size:11px;line-height:1.4}
+.obligation-status{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  min-height:20px;
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:8.5px;
+  font-weight:800;
+  background:var(--bg);
+  color:var(--m);
+  border:1px solid var(--bd);
+}
+.obligation-status.active{background:var(--as);color:var(--a);border-color:color-mix(in srgb,var(--a) 28%,var(--bd))}
+.obligation-status.met{background:var(--okb);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 28%,var(--bd))}
+.obligation-status.not_applicable{background:var(--bg);color:var(--m)}
+.obligation-meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--m);font-size:9px}
+.obligation-source{
+  width:100%;
+  text-align:left;
+  border:1px solid color-mix(in srgb,var(--a) 20%,var(--bd));
+  border-radius:7px;
+  background:var(--as);
+  color:var(--text);
+  padding:7px 8px;
+  font-size:9px;
+  line-height:1.45;
+}
+.obligation-source:hover{border-color:var(--a)}
+.obligation-source.text-only{cursor:default}
+.obligation-source.text-only:hover{border-color:color-mix(in srgb,var(--a) 20%,var(--bd))}
+.obligation-evidence-list{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.obligation-evidence{
+  display:inline-flex;
+  padding:3px 6px;
+  border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--ok) 28%,var(--bd));
+  background:var(--okb);
+  color:var(--ok);
+  font-size:8.5px;
+  font-weight:750;
+}
+.obligation-evidence.missing{
+  border-color:color-mix(in srgb,var(--w) 32%,var(--bd));
+  background:var(--wb);
+  color:var(--w);
+}
+.obligation-note{margin:0;color:var(--m);font-size:9px;line-height:1.5}
+.obligation-side{
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-end;
+  gap:5px;
+  flex-wrap:wrap;
+  max-width:190px;
+}
+
+.obligation-editor{
+  margin-top:10px;
+  border:1px solid color-mix(in srgb,var(--a) 25%,var(--bd));
+  border-radius:10px;
+  background:var(--bg);
+}
+.obligation-editor>summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 12px;
+  cursor:pointer;
+}
+.obligation-editor>summary::-webkit-details-marker{display:none}
+.obligation-editor>summary>span:first-child{display:grid;gap:2px}
+.obligation-editor>summary b{font-size:11px}
+.obligation-editor>summary small{font-size:9px;color:var(--m);font-weight:400}
+.obligation-editor-body{padding:0 12px 12px;border-top:1px solid var(--bd)}
+.obligation-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:10px;
+}
+.obligation-form-grid label,
+.obligation-note-field,
+.obligation-evidence-editor label{
+  display:grid;
+  gap:5px;
+}
+.obligation-form-grid label.wide{grid-column:1/-1}
+.obligation-form-grid label>span,
+.obligation-note-field>span,
+.obligation-evidence-editor label>span{
+  font-size:9px;
+  color:var(--m);
+  font-weight:750;
+}
+.obligation-form-grid input,
+.obligation-form-grid select,
+.obligation-note-field textarea,
+.obligation-evidence-editor textarea{
+  width:100%;
+  min-width:0;
+  border:1px solid var(--bd);
+  border-radius:8px;
+  background:var(--c);
+  color:var(--text);
+  padding:8px 9px;
+  font:inherit;
+}
+.obligation-evidence-editor{
+  display:grid;
+  gap:8px;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid var(--bd);
+}
+.obligation-evidence-editor>div:first-child{display:grid;gap:2px}
+.obligation-evidence-editor>div:first-child>b{font-size:10px}
+.obligation-evidence-editor>div:first-child>span{font-size:9px;color:var(--m)}
+.obligation-evidence-choices{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+  max-height:220px;
+  overflow:auto;
+}
+.obligation-evidence-choice{
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  padding:7px 8px;
+  border:1px solid var(--bd);
+  border-radius:8px;
+  background:var(--c);
+}
+.obligation-evidence-choice>span{display:grid;gap:2px;min-width:0}
+.obligation-evidence-choice b{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:9px;
+}
+.obligation-evidence-choice small{font-size:8px;color:var(--m)}
+.obligation-no-evidence{
+  padding:9px 10px;
+  border:1px dashed var(--bd);
+  border-radius:8px;
+  color:var(--m);
+  font-size:9px;
+  line-height:1.5;
+}
+.obligation-note-field{margin-top:10px}
+.obligation-editor-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:10px}
+
+@media(max-width:650px){
+  .home-compliance-grid{grid-template-columns:repeat(2,1fr)}
+  .home-compliance-grid>div{border-bottom:1px solid var(--bd)}
+  .home-compliance-grid>div:nth-child(2n){border-right:0}
+  .home-compliance-grid>div:nth-last-child(-n+2){border-bottom:0}
+  .obligation-row{grid-template-columns:1fr}
+  .obligation-side{max-width:none;justify-content:flex-start}
+  .obligation-form-grid,.obligation-evidence-choices{grid-template-columns:1fr}
 }
