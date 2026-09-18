@@ -1,4 +1,4 @@
-name: Validate LegalOS
+name: Validate Căn cứ Pháp lý Môi trường
 
 on:
   push:
