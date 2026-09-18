@@ -6,7 +6,7 @@ function setCrumb(){
   document.querySelectorAll(".crumb").forEach(x=>x.remove());
   const p=currentPage();
   if(p==="home")return;
-  const labels={lib:"Kho văn bản",corekb:"Văn bản trọng tâm",art:"Chi tiết văn bản",expert:"Rà soát hồ sơ",proc:"Lộ trình thủ tục",pone:"Chi tiết quy trình",cls:"Sàng lọc dự án",fee:"Phí & nghĩa vụ",term:"Thuật ngữ",import:"Nhập tài liệu",work:"Hồ sơ công việc",memo:"Căn cứ hồ sơ",upd:"Cập nhật pháp luật",info:"Thông tin & chính sách"};
+  const labels={lib:"Kho văn bản",corekb:"Văn bản trọng tâm",art:"Chi tiết văn bản",expert:"Rà soát hồ sơ",proc:"Lộ trình thủ tục",pone:"Chi tiết quy trình",cls:"Sàng lọc dự án",fee:"Phí & nghĩa vụ",term:"Thuật ngữ",import:"Nhập tài liệu",work:"Hồ sơ tuân thủ",memo:"Căn cứ hồ sơ",upd:"Cập nhật pháp luật",info:"Thông tin & chính sách"};
   const page=document.querySelector(`#${p} .wrap`);
   if(!page)return;
   const c=document.createElement("div");c.className="crumb";
@@ -141,7 +141,7 @@ function closeCompare(){$("compareModal").classList.remove("on")}
 
 function renderWorkspaceStats(){
   if(!$("wkCases"))return;
-  $("wkCases").textContent=cases.length;if($("wkExpert"))$("wkExpert").textContent=expertBriefs.length;
+  $("wkCases").textContent=cases.length;if($("wkCompliance"))$("wkCompliance").textContent=typeof complianceProfiles!=="undefined"?complianceProfiles.length:0;if($("wkExpert"))$("wkExpert").textContent=expertBriefs.length;
   $("wkSaved").textContent=saved.length;
   $("wkNotes").textContent=Object.values(notes).filter(v=>String(v).trim()).length+(String(quickNote||"").trim()?1:0);
   const total=P.reduce((n,p)=>n+p.st.length,0);
