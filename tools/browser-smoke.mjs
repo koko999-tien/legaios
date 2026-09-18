@@ -130,6 +130,12 @@ async function assertCompactMobileText(width) {
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   assert((await page.title()).includes('Căn cứ Pháp lý Môi trường'), 'Document title does not contain the current brand');
+  assert(await page.locator('meta[property="og:title"][content="Căn cứ Pháp lý Môi trường"]').count() === 1, 'Open Graph title metadata is missing');
+  assert(await page.locator('meta[property="og:description"]').count() === 1, 'Open Graph description metadata is missing');
+  assert(await page.locator('link[rel="manifest"][href="manifest.webmanifest"]').count() === 1, 'PWA manifest link is missing from the document head');
+  assert(await page.locator('link[rel="icon"][href*="can-cu-phap-ly-moi-truong.svg"]').count() === 1, 'Brand favicon is missing');
+  const structuredData=await page.locator('script[type="application/ld+json"]').textContent();
+  assert(structuredData && JSON.parse(structuredData).name === 'Căn cứ Pháp lý Môi trường', 'WebSite structured data is missing or invalid');
   assert(await activePage('home'), 'Home page is not active after startup');
 
   // New users should see three plain-language starting points before advanced tools.
@@ -169,8 +175,14 @@ try {
   await go('home');
   assert(await page.locator('#navMore:not([open])').count() === 1, 'Returning to a primary route should collapse advanced navigation');
 
-  const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'home'];
+  const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'info', 'home'];
   for (const id of routes) await go(id);
+
+  await go('info');
+  assert(await page.locator('#info .info-card').count() === 4, 'Trust center should expose four policy/information cards');
+  assert(await page.locator('footer [data-info-scroll]').count() === 4, 'Footer trust links are incomplete');
+  assert((await page.locator('#infoAbout').innerText()).includes('không phải cổng thông tin của cơ quan nhà nước'), 'About section does not clarify independent/non-government status');
+  assert((await page.locator('#infoPrivacy').innerText()).includes('lưu cục bộ'), 'Privacy section does not explain local browser storage');
 
   // Dossier review should explain the situation, missing questions and prioritized next steps.
   await go('expert');
@@ -242,6 +254,18 @@ try {
     await firstDoc.evaluate(el => el.click());
     await page.waitForFunction(() => document.getElementById('art')?.classList.contains('on'));
     assert(await activePage('art'), 'Opening a library result did not activate article view');
+    assert(await page.locator('#art [data-feedback-doc]').count() === 1, 'Article data-feedback action is missing');
+    const articleTitle=(await page.locator('#art .art-content h1').textContent()||'').trim();
+    await page.locator('#art [data-feedback-doc]').click();
+    await page.waitForFunction(() => document.getElementById('feedbackModal')?.classList.contains('on'));
+    await page.locator('#feedbackType').selectOption('Hiệu lực / sửa đổi');
+    await page.locator('#feedbackNote').fill('Kiểm tra lại hiệu lực theo nguồn chính thức.');
+    const report=await page.evaluate(() => feedbackReportText());
+    assert(report.includes(articleTitle), 'Feedback report lost the current document context');
+    assert(report.includes('Hiệu lực / sửa đổi'), 'Feedback report lost the selected issue type');
+    assert(report.includes('Kiểm tra lại hiệu lực'), 'Feedback report lost the user note');
+    await page.locator('#feedbackClose').click();
+    await page.waitForFunction(() => !document.getElementById('feedbackModal')?.classList.contains('on'));
   }
 
   // Theme must toggle and persist across refresh via localStorage.
