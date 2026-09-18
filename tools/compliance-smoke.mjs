@@ -17,7 +17,9 @@ try{
   await page.goto(baseURL,{waitUntil:'networkidle'});
   await page.evaluate(()=>{
     localStorage.removeItem('ccplmt_compliance_profiles_v1');
+    localStorage.removeItem('ccplmt_compliance_audit_v1');
     complianceProfiles=[];
+    complianceAudit=[];
     currentComplianceId=null;
   });
   await page.reload({waitUntil:'networkidle'});
@@ -95,6 +97,21 @@ try{
   assert(obligationText.includes('điều 39'),'Structured legal article is missing from the obligation row');
   assert(obligationText.includes('phụ lục ii'),'Appendix reference is missing from the obligation row');
   assert(obligationText.includes('hàng tháng'),'Recurring obligation cadence is missing');
+  assert((await page.locator('.audit-list').innerText()).includes('Tạo nghĩa vụ'),'Audit trail did not record obligation creation');
+
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('[data-obligation-delete]').first().click();
+  assert(!(await page.locator('.obligation-register').innerText()).includes('Xác minh nghĩa vụ quan trắc nước thải'),'Deleted obligation is still visible');
+  await page.locator('.compliance-profile-detail [data-compliance-undo-last]').click();
+  assert((await page.locator('.obligation-register').innerText()).includes('Xác minh nghĩa vụ quan trắc nước thải'),'Undo did not restore the deleted obligation');
+  const undoState=await page.evaluate(()=>{
+    const deleted=complianceAudit.find(e=>e.action==='delete'&&e.entityType==='obligation');
+    return {count:complianceAudit.length,undoneAt:deleted?.undoneAt||'',owner:complianceProfiles[0]?.obligations?.[0]?.owner||''};
+  });
+  assert(undoState.count>=2,'Audit trail did not persist multiple changes');
+  assert(!!undoState.undoneAt,'Undo did not mark the delete audit event as undone');
+  assert(undoState.owner==='Bộ phận Môi trường','Undo did not restore the full obligation snapshot');
+
   const calendarText=(await page.locator('.compliance-calendar').innerText()).toLowerCase();
   assert(calendarText.includes('xác minh nghĩa vụ quan trắc nước thải'),'Compliance calendar omitted the recurring obligation');
   assert(calendarText.includes('dự kiến theo chu kỳ hàng tháng'),'Compliance calendar does not distinguish projected recurring occurrences');
@@ -141,7 +158,7 @@ try{
   const path=await download.path();
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
-  assert(exported.schema==='ccplmt-workspace-v5','Workspace export schema was not upgraded for structured legal references');
+  assert(exported.schema==='ccplmt-workspace-v6','Workspace export schema was not upgraded for audit trail');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');
@@ -150,6 +167,8 @@ try{
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.occurrenceHistory?.length===1,'Workspace export omitted recurring occurrence history');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalArticle==='39','Workspace export omitted structured article reference');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalAppendix==='II','Workspace export omitted appendix reference');
+  assert(Array.isArray(exported.complianceAudit)&&exported.complianceAudit.length>=2,'Workspace export omitted compliance audit trail');
+  assert(exported.complianceAudit.some(e=>e.action==='delete'&&e.undoneAt),'Workspace export lost the undone audit state');
 
   await page.reload({waitUntil:'networkidle'});
   await go('work');
@@ -169,7 +188,8 @@ try{
   console.log('  recurring cadence + projected calendar + period completion checked');
   console.log('  article -> obligation register action checked');
   console.log('  home pulse + profile-aware legal updates checked');
-  console.log('  workspace v5 export includes structured legal refs, recurrence history and evidence references');
+  console.log('  audit delete/undo + full obligation snapshot restoration checked');
+  console.log('  workspace v6 export includes audit, structured legal refs, recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
