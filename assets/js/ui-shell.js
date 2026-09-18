@@ -1,5 +1,7 @@
 /* Căn cứ Pháp lý Môi trường — shell UI, drawers, library view and procedure wizard. */
 function renderHomePortal(){
+  if($('homeDocMetric'))$('homeDocMetric').textContent=String(D.length);
+  if($('homeTopicMetric'))$('homeTopicMetric').textContent=String(T.length);
   if($('homeRecentDocs')){const arr=recent.map(id=>D.find(x=>x.id===id)).filter(Boolean).slice(0,4);$('homeRecentDocs').innerHTML=arr.length?arr.map(d=>`<button class="home-mini-doc" data-open="${d.id}" type="button"><b>${d.ttl}</b><small>${d.k} · ${topicName(d.t)}</small></button>`).join(''):'<div class="home-mini-empty">Chưa có lịch sử xem văn bản.</div>'}
   if($('homeSavedDocs')){const arr=saved.map(id=>D.find(x=>x.id===id)).filter(Boolean).slice(0,4);$('homeSavedDocs').innerHTML=arr.length?arr.map(d=>`<button class="home-mini-doc" data-open="${d.id}" type="button"><b>★ ${d.ttl}</b><small>${d.k} · ${topicName(d.t)}</small></button>`).join(''):'<div class="home-mini-empty">Chưa lưu văn bản nào.</div>'}
   const latestCase=cases[0];
@@ -7,7 +9,9 @@ function renderHomePortal(){
   if($('homeResumeTitle')&&$('homeResumeCopy')&&$('homeResumeFoot')){
     if(latestCompliance){
       $('homeResumeTitle').textContent=`Tiếp tục “${latestCompliance.name||'hồ sơ tuân thủ'}”`;
-      $('homeResumeCopy').textContent=`${complianceStatus(latestCompliance)} · ${complianceCompleteness(latestCompliance)}% dữ liệu nền · mở lại deadline và nhánh cần rà.`;
+      const openObl=typeof complianceOpenObligations==='function'?complianceOpenObligations(latestCompliance).length:0;
+      const due=typeof complianceUrgent==='function'?complianceUrgent(latestCompliance).length:0;
+      $('homeResumeCopy').textContent=`${openObl} nghĩa vụ đang mở · ${due} việc gần hạn · ${complianceCompleteness(latestCompliance)}% dữ liệu nền.`;
       $('homeResumeFoot').textContent='Mở hồ sơ tuân thủ';
     }else if(latestCase){
       $('homeResumeTitle').textContent=`Tiếp tục hồ sơ sàng lọc “${latestCase.name||'chưa đặt tên'}”`;
@@ -18,8 +22,8 @@ function renderHomePortal(){
       $('homeResumeCopy').textContent=`${recent.length} văn bản vừa xem · ${saved.length} văn bản đã lưu · ${expertBriefs.length} phiếu rà soát.`;
       $('homeResumeFoot').textContent='Mở workspace';
     }else{
-      $('homeResumeTitle').textContent='Tôi muốn theo dõi nghĩa vụ và deadline';
-      $('homeResumeCopy').textContent='Gom hồ sơ cơ sở/dự án, việc cần kiểm tra, deadline, ghi chú và căn cứ đang theo dõi trên thiết bị này.';
+      $('homeResumeTitle').textContent='Quản lý nghĩa vụ, deadline và bằng chứng';
+      $('homeResumeCopy').textContent='Theo dõi hồ sơ tuân thủ, Sổ nghĩa vụ, người phụ trách, căn cứ và tài liệu chứng minh trong một nơi.';
       $('homeResumeFoot').textContent='Mở hồ sơ tuân thủ';
     }
   }
