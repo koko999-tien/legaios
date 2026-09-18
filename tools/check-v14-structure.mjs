@@ -15,6 +15,7 @@ const expectedScripts = [
   'assets/js/project-tools.js',
   'assets/js/library.js',
   'assets/js/procedures.js',
+  'assets/js/compliance.js',
   'assets/js/workspace.js',
   'assets/js/legal-hub.js',
   'assets/js/expert.js',
@@ -55,7 +56,8 @@ const requiredMarkers = [
   ['assets/js/navigation.js', 'function go('],
   ['assets/js/expert.js', 'function analyzeExpert('],
   ['assets/js/legal-hub.js', 'function renderLawHubTab('],
-  ['assets/js/workspace.js', 'function renderWorkspace(']
+  ['assets/js/workspace.js', 'function renderWorkspace('],
+  ['assets/js/compliance.js', 'function renderComplianceWorkspace(']
 ];
 for (const [file, marker] of requiredMarkers) {
   const text = fs.readFileSync(file, 'utf8');
