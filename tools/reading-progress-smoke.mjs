@@ -40,6 +40,9 @@ try {
   assert(await page.locator('#readingProgressTrack').count(), 'Reading progress track is missing');
   const desktopShellBox = await page.locator('.reading-progress-shell').boundingBox();
   const desktopTrackBox = await page.locator('#readingProgressTrack').boundingBox();
+  const headerBox = await page.locator('header.site').boundingBox();
+  const progressBox = await bar.boundingBox();
+  assert(headerBox && progressBox && Math.abs(progressBox.y - (headerBox.y + headerBox.height)) <= 2, 'Desktop reading progress is not attached directly below the header');
   assert(desktopShellBox && desktopShellBox.width <= 760, `Desktop reading progress shell is too wide: ${Math.round(desktopShellBox?.width || 0)}px`);
   assert(desktopShellBox && desktopShellBox.height <= 46, `Desktop reading progress shell is too tall: ${Math.round(desktopShellBox?.height || 0)}px`);
   assert(desktopTrackBox && desktopTrackBox.width <= 760 && desktopTrackBox.height <= 6, 'Desktop reading progress track is not compact');
