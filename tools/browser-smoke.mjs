@@ -139,27 +139,38 @@ try {
   assert(await activePage('home'), 'Home page is not active after startup');
 
   // New users should see three plain-language starting points before advanced tools.
-  assert((await page.locator('#home h1').textContent() || '').trim() === 'Bạn đang cần tra cứu hay xử lý việc gì?', 'Home does not lead with the user task question');
+  assert((await page.locator('#home h1').textContent() || '').trim() === 'Tra cứu căn cứ. Theo dõi việc phải làm.', 'Home does not lead with the concrete legal-workbench proposition');
   const academicIdentity = await page.evaluate(() => {
     const root = getComputedStyle(document.documentElement);
     const h1 = getComputedStyle(document.querySelector('#home .academic-hero-copy h1'));
-    const accent = getComputedStyle(document.querySelector('#home .academic-hero-copy h1 span')).color;
     const brandAccent = getComputedStyle(document.querySelector('.brand-copy b em')).color;
     const searchButton = getComputedStyle(document.querySelector('#home .academic-search-panel .bp')).backgroundColor;
+    const hero = document.querySelector('#home .academic-home-hero');
+    const firstCard = document.querySelector('#home .home113-primary-card');
     return {
       primary: root.getPropertyValue('--a').trim().toLowerCase(),
       fontFamily: h1.fontFamily.toLowerCase(),
       letterSpacing: h1.letterSpacing,
-      accent,
       brandAccent,
-      searchButton
+      searchButton,
+      docMetric: document.getElementById('homeDocMetric')?.textContent?.trim() || '',
+      topicMetric: document.getElementById('homeTopicMetric')?.textContent?.trim() || '',
+      expectedDocs: String(D.length),
+      expectedTopics: String(T.length),
+      heroHeight: hero?.getBoundingClientRect().height || 0,
+      firstCardHeight: firstCard?.getBoundingClientRect().height || 0,
+      miniListDisplay: firstCard ? getComputedStyle(firstCard.querySelector('.card-mini-list')).display : ''
     };
   });
   assert(academicIdentity.primary === '#2563eb', `Application primary color should stay blue: ${academicIdentity.primary}`);
   assert(!academicIdentity.fontFamily.includes('georgia'), `Vietnamese academic heading regressed to Georgia: ${academicIdentity.fontFamily}`);
-  assert(['rgb(23, 32, 51)','color(srgb 0.0901961 0.12549 0.2)'].includes(academicIdentity.accent), `Hero search word should use the normal heading color: ${academicIdentity.accent}`);
   assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.brandAccent), `Brand highlighted word is not green: ${academicIdentity.brandAccent}`);
   assert(['rgb(37, 99, 235)','color(srgb 0.145098 0.388235 0.921569)'].includes(academicIdentity.searchButton), `Search button should remain blue: ${academicIdentity.searchButton}`);
+  assert(academicIdentity.docMetric === academicIdentity.expectedDocs, `Home document metric is stale: ${academicIdentity.docMetric} vs ${academicIdentity.expectedDocs}`);
+  assert(academicIdentity.topicMetric === academicIdentity.expectedTopics, `Home topic metric is stale: ${academicIdentity.topicMetric} vs ${academicIdentity.expectedTopics}`);
+  assert(academicIdentity.heroHeight > 0 && academicIdentity.heroHeight < 380, `Home hero is too tall for a workbench: ${academicIdentity.heroHeight}px`);
+  assert(academicIdentity.firstCardHeight > 0 && academicIdentity.firstCardHeight < 230, `Primary home card is too tall: ${academicIdentity.firstCardHeight}px`);
+  assert(academicIdentity.miniListDisplay === 'none', 'Marketing-style mini chips should stay hidden on primary work actions');
   assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
   const primaryRoutes = await page.locator('#home .home113-primary-card').evaluateAll(nodes => nodes.map(node => node.dataset.go));
   assert(JSON.stringify(primaryRoutes) === JSON.stringify(['lib','expert','work']), `Unexpected primary home routes: ${primaryRoutes.join(', ')}`);
