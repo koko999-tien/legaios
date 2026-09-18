@@ -1058,15 +1058,15 @@
 
 
 :root{
-  --text:#172A24;
-  --m:#647067;
+  --text:#172033;
+  --m:#667085;
   --c:#FFFFFF;
-  --bg:#F5F8F6;
-  --bd:#DCE6E0;
-  --a:#1F6B4C;
-  --as:#EAF4EE;
-  --ok:#287A58;
-  --okb:#E8F4ED;
+  --bg:#F5F7FA;
+  --bd:#E4E8EF;
+  --a:#2563EB;
+  --as:#EEF4FF;
+  --ok:#16835C;
+  --okb:#EAF7F1;
   --w:#B86518;
   --wb:#FFF3E7;
   --b:#C94238;
@@ -1076,14 +1076,14 @@
   --radius:14px;
 }
 [data-theme="dark"]{
-  --text:#F1F6F3;
-  --m:#A6B4AC;
-  --c:#17201C;
-  --bg:#101713;
-  --bd:#2A3831;
-  --a:#79C39D;
-  --as:#173126;
-  --ok:#79C39D;
+  --text:#F2F4F7;
+  --m:#98A2B3;
+  --c:#161B22;
+  --bg:#0F141B;
+  --bd:#29313D;
+  --a:#78A8FF;
+  --as:#172A47;
+  --ok:#6FD0A8;
   --okb:#15352B;
   --w:#F0A561;
   --wb:#3A291A;
@@ -3667,19 +3667,7 @@ header.site{
 }
 
 
-/* Academic green identity guard — 2026-09-18 */
-:root{
-  --a:#1F6B4C;
-  --as:#EAF4EE;
-  --ok:#287A58;
-  --okb:#E8F4ED;
-}
-[data-theme="dark"]{
-  --a:#79C39D;
-  --as:#173126;
-  --ok:#79C39D;
-  --okb:#15352B;
-}
+/* Academic brand accents + Vietnamese-safe typography — 2026-09-18 */
 #home .academic-hero-copy h1,
 .academic-brand .brand-copy b{
   font-family:Cambria,"Times New Roman","Liberation Serif",serif!important;
@@ -3691,15 +3679,8 @@ header.site{
   letter-spacing:-.012em!important;
   word-spacing:0!important;
 }
+/* Only brand-highlighted words are green. The application UI keeps its original blue palette. */
 #home .academic-hero-copy h1 span,
-.academic-overline,
-.brand-copy b em{color:#1F6B4C!important}
-#home .academic-search-panel .home113-search-main .bp{
-  background:#1F6B4C!important;
-  border-color:#1F6B4C!important;
-  color:#fff!important;
-}
-#home .academic-search-panel .home113-search-main .bp:hover{
-  background:#17533B!important;
-  border-color:#17533B!important;
+.brand-copy b em{
+  color:#1F6B4C!important;
 }
