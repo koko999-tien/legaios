@@ -1,35 +1,4 @@
 /* Căn cứ Pháp lý Môi trường — page navigation and route activation. */
-(function loadOpenSourceUpgrades(){
-  if(!document.querySelector('link[data-legalos-oss]')){
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='assets/css/oss-upgrades.css';
-    link.dataset.legalosOss='css';
-    document.head.appendChild(link);
-  }
-  if(!document.querySelector('script[data-legalos-oss]')){
-    const script=document.createElement('script');
-    script.src='assets/js/oss-upgrades.js';
-    script.async=false;
-    script.dataset.legalosOss='js';
-    document.head.appendChild(script);
-  }
-  if(!document.querySelector('script[data-legalos-fuzzy]')){
-    const script=document.createElement('script');
-    script.src='assets/js/search-fuzzy.js';
-    script.async=false;
-    script.dataset.legalosFuzzy='js';
-    document.head.appendChild(script);
-  }
-  if(!document.querySelector('script[data-legalos-idb]')){
-    const script=document.createElement('script');
-    script.src='assets/js/idb-resilience.js';
-    script.async=false;
-    script.dataset.legalosIdb='js';
-    document.head.appendChild(script);
-  }
-})();
-
 (function installMobileArticleFixes(){
   if(document.getElementById('legalosMobileArticleFixes'))return;
   const style=document.createElement('style');
