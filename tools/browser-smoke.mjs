@@ -129,6 +129,15 @@ try {
   assert((await page.title()).includes('LegalOS'), 'Document title does not contain LegalOS');
   assert(await activePage('home'), 'Home page is not active after startup');
 
+  // New users should see three plain-language starting points before advanced tools.
+  assert((await page.locator('#home h1').textContent() || '').trim() === 'Bạn cần làm gì hôm nay?', 'Home does not lead with the user task question');
+  assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
+  const primaryRoutes = await page.locator('#home .home113-primary-card').evaluateAll(nodes => nodes.map(node => node.dataset.go));
+  assert(JSON.stringify(primaryRoutes) === JSON.stringify(['lib','expert','work']), `Unexpected primary home routes: ${primaryRoutes.join(', ')}`);
+  assert(await page.locator('#home .legal-trust-strip').count() === 1, 'Legal source/trust guidance is missing from home');
+  assert(await page.locator('#home .home-tools-disclosure:not([open])').count() === 1, 'Advanced home tools should be collapsed by default');
+  assert((await page.locator('#nav [data-go="expert"]').textContent() || '').includes('Rà soát hồ sơ'), 'Expert route still uses an unclear navigation label');
+
   const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'home'];
   for (const id of routes) await go(id);
 
