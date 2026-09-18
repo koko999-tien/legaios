@@ -51,9 +51,11 @@ try {
     Math.abs((progressBox.y + progressBox.height) - (headerBox.y + headerBox.height)) <= 2,
     'Reading progress is not the second row of the sticky header'
   );
-  assert(desktopShellBox && progressBox && desktopShellBox.width >= progressBox.width * 0.9, `Desktop reading progress shell is not full-width enough: ${Math.round(desktopShellBox?.width || 0)}px of ${Math.round(progressBox?.width || 0)}px`);
+  const progressPaddingLeft = await bar.evaluate(el => Number.parseFloat(getComputedStyle(el).paddingLeft) || 0);
+  const expectedReaderWidth = progressBox ? progressBox.width - progressPaddingLeft : 0;
+  assert(desktopShellBox && expectedReaderWidth && desktopShellBox.width >= expectedReaderWidth - 3, `Desktop reading progress shell is not full reader-width: ${Math.round(desktopShellBox?.width || 0)}px of ${Math.round(expectedReaderWidth)}px`);
   assert(desktopShellBox && desktopShellBox.height <= 46, `Desktop reading progress shell is too tall: ${Math.round(desktopShellBox?.height || 0)}px`);
-  assert(desktopTrackBox && progressBox && desktopTrackBox.width >= progressBox.width * 0.9 && desktopTrackBox.height <= 6, 'Desktop reading progress track is not full-width/compact');
+  assert(desktopTrackBox && expectedReaderWidth && desktopTrackBox.width >= expectedReaderWidth - 3 && desktopTrackBox.height <= 6, 'Desktop reading progress track is not full reader-width/compact');
   assert(await page.locator('#readingProgressSection').count(), 'Reading section label is missing');
   assert(await page.locator('#readingProgressMeta').count(), 'Reading progress metadata is missing');
 
