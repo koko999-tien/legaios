@@ -1,16 +1,16 @@
 {
-  "name": "LegalOS — Pháp luật môi trường",
-  "short_name": "LegalOS",
-  "description": "Tra cứu pháp luật môi trường, quản lý hồ sơ và theo dõi thủ tục.",
+  "name": "Căn cứ Pháp lý Môi trường",
+  "short_name": "Căn cứ pháp lý",
+  "description": "Tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường.",
   "lang": "vi",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#2783de",
+  "theme_color": "#1f6b4c",
   "icons": [
     {
-      "src": "/assets/icons/legalos.svg",
+      "src": "/assets/icons/can-cu-phap-ly-moi-truong.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
