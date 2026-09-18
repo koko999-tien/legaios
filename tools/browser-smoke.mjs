@@ -195,6 +195,14 @@ try {
   const dmcGlossary=(await page.locator('#tlist').innerText()).toLowerCase();
   assert(dmcGlossary.includes('đmc'),'Glossary search cannot find ĐMC');
   assert(dmcGlossary.includes('đánh giá môi trường chiến lược'),'ĐMC glossary expansion is missing the full term');
+  await page.locator('#tq').fill('VOC');
+  await page.waitForTimeout(120);
+  const vocGlossary=(await page.locator('#tlist').innerText()).toLowerCase();
+  assert(vocGlossary.includes('volatile organic compounds'),'Glossary search cannot resolve VOC');
+  await page.locator('#tq').fill('XLNT');
+  await page.waitForTimeout(120);
+  const xlntGlossary=(await page.locator('#tlist').innerText()).toLowerCase();
+  assert(xlntGlossary.includes('xử lý nước thải'),'Glossary search cannot resolve XLNT');
   await page.locator('#tq').fill('');
   await page.waitForTimeout(100);
 
