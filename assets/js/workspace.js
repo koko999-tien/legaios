@@ -58,7 +58,7 @@ function showCase(id){
   logActivity("case",id,c.name);
 }
 function exportWorkspace(){
-  const data={app:"Căn cứ Pháp lý Môi trường",schema:"ccplmt-workspace-v4",exportedAt:new Date().toISOString(),saved,recent,notes,procDone,cases,expertBriefs,complianceProfiles:complianceBackupRows()};
+  const data={app:"Căn cứ Pháp lý Môi trường",schema:"ccplmt-workspace-v5",exportedAt:new Date().toISOString(),saved,recent,notes,procDone,cases,expertBriefs,complianceProfiles:complianceBackupRows()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Can-cu-phap-ly-moi-truong-workspace.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
