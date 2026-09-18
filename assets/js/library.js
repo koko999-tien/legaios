@@ -15,10 +15,11 @@ function renderLibraryTopicFilters(q=""){
   const groups=LIB_FILTER_GROUPS.map(g=>{
     const rows=g.topics.map(id=>topicMap.get(id)).filter(Boolean).filter(x=>!needle||foldVN(x[1]+" "+x[2]).includes(needle));
     if(!rows.length)return "";
-    return `<section class="topic-filter-group">
-      <div class="topic-filter-group-head"><b>${g.label}</b><span>${rows.reduce((n,x)=>n+libraryTopicCount(x[0]),0)}</span></div>
-      <div>${rows.map(x=>`<button class="chip ${active===x[0]?"on":""}" data-t="${x[0]}" type="button"><span>${x[1]}</span><small>${libraryTopicCount(x[0])}</small></button>`).join("")}</div>
-    </section>`;
+    const expanded=!!needle||rows.some(x=>active===x[0])||g.id==="env";
+    return `<details class="topic-filter-group" ${expanded?"open":""}>
+      <summary class="topic-filter-group-head"><b>${g.label}</b><span>${rows.reduce((n,x)=>n+libraryTopicCount(x[0]),0)}</span><i aria-hidden="true">⌄</i></summary>
+      <div class="topic-filter-group-body">${rows.map(x=>`<button class="chip ${active===x[0]?"on":""}" data-t="${x[0]}" type="button"><span>${x[1]}</span><small>${libraryTopicCount(x[0])}</small></button>`).join("")}</div>
+    </details>`;
   }).join("");
   host.innerHTML=`<button class="chip topic-all ${active==="all"?"on":""}" data-t="all" type="button"><span>Tất cả văn bản</span><small>${total}</small></button>${groups||'<div class="empty-mini">Không có lĩnh vực phù hợp.</div>'}`;
 }
