@@ -135,7 +135,7 @@ function complianceObligationStatusLabel(v){
   return ({verify:"Cần xác minh",active:"Đang thực hiện",met:"Đã đáp ứng",not_applicable:"Không áp dụng · người dùng đánh dấu"})[v]||"Cần xác minh";
 }
 function complianceDueBasisLabel(v){
-  return ({manual:"Người dùng nhập",permit:"Theo giấy phép/hồ sơ",legal_source:"Theo căn cứ pháp luật",verified:"Đã đối chiếu nguồn"})[v]||"Người dùng nhập";
+  return ({manual:"Người dùng nhập",permit:"Theo giấy phép/hồ sơ",legal_source:"Theo căn cứ pháp luật",verified:"Người dùng đánh dấu đã đối chiếu nguồn"})[v]||"Người dùng nhập";
 }
 function complianceOpenObligations(p){
   return p&&Array.isArray(p.obligations)?p.obligations.filter(function(x){return x.status==="verify"||x.status==="active"}):[];
@@ -161,6 +161,7 @@ function complianceObligationHtml(o){
     '<div class="obligation-meta">'+(o.owner?'<span>Phụ trách: '+esc(o.owner)+'</span>':'<span>Chưa giao người phụ trách</span>')+(o.dueDate?'<span>'+esc(complianceDueBasisLabel(o.dueBasis))+' · '+esc(o.dueDate)+'</span>':'<span>Chưa có deadline</span>')+'</div>'+
     (doc?'<button class="obligation-source" data-open="'+esc(doc.id)+'" type="button"><b>Căn cứ:</b> '+esc(doc.ttl)+'</button>':o.legalRef?'<div class="obligation-source text-only"><b>Căn cứ ghi chú:</b> '+esc(o.legalRef)+'</div>':'<div class="obligation-source text-only muted">Chưa gắn căn cứ</div>')+
     '<div class="obligation-evidence-list">'+evidence+'</div>'+
+    (o.evidenceNote?'<p class="obligation-note"><b>Bằng chứng:</b> '+esc(o.evidenceNote)+'</p>':"")+
     (o.note?'<p class="obligation-note">'+esc(o.note)+'</p>':"")+
     '</div><div class="obligation-side">'+due+'<button class="tiny" data-obligation-edit="'+esc(o.id)+'" type="button">Sửa</button><button class="tiny danger-soft" data-obligation-delete="'+esc(o.id)+'" type="button">Xóa</button></div></article>';
 }
@@ -186,7 +187,7 @@ function obligationEditorHtml(p,o){
   '<label class="wide"><span>Căn cứ chính</span><select id="oblLegalDoc">'+complianceObligationOptions(o.legalDocId)+'</select></label>'+
   '<label class="wide"><span>Điều/Khoản hoặc ghi chú căn cứ</span><input id="oblLegalRef" value="'+esc(o.legalRef||"")+'" placeholder="Ví dụ: Điều 39, khoản 2; cần đối chiếu phụ lục…"></label>'+
   '<label><span>Deadline</span><input id="oblDueDate" type="date" value="'+esc(o.dueDate||"")+'"></label>'+
-  '<label><span>Nguồn deadline</span><select id="oblDueBasis"><option value="manual" '+(o.dueBasis==="manual"?"selected":"")+'>Người dùng nhập</option><option value="permit" '+(o.dueBasis==="permit"?"selected":"")+'>Theo giấy phép/hồ sơ</option><option value="legal_source" '+(o.dueBasis==="legal_source"?"selected":"")+'>Theo căn cứ pháp luật</option><option value="verified" '+(o.dueBasis==="verified"?"selected":"")+'>Đã đối chiếu nguồn</option></select></label>'+
+  '<label><span>Nguồn deadline</span><select id="oblDueBasis"><option value="manual" '+(o.dueBasis==="manual"?"selected":"")+'>Người dùng nhập</option><option value="permit" '+(o.dueBasis==="permit"?"selected":"")+'>Theo giấy phép/hồ sơ</option><option value="legal_source" '+(o.dueBasis==="legal_source"?"selected":"")+'>Theo căn cứ pháp luật</option><option value="verified" '+(o.dueBasis==="verified"?"selected":"")+'>Người dùng đánh dấu: đã đối chiếu nguồn</option></select></label>'+
   '<label class="wide"><span>Mô tả nguồn deadline</span><input id="oblDueSource" value="'+esc(o.dueSource||"")+'" placeholder="Số giấy phép, Điều/Khoản, nguồn chính thức hoặc lý do đặt lịch"></label>'+
   '</div><div class="obligation-evidence-editor"><div><b>Bằng chứng / tài liệu liên quan</b><span>Chỉ lưu tham chiếu tới file đã nhập; backup workspace không chứa file gốc.</span></div><div class="obligation-evidence-choices">'+complianceEvidenceChecklist(o.evidence)+'</div><label><span>Mô tả bằng chứng</span><textarea id="oblEvidenceNote" rows="2" placeholder="Ví dụ: Biên bản ngày…, báo cáo quan trắc quý…, chứng từ CTNH…">'+esc(o.evidenceNote||"")+'</textarea></label></div>'+
   '<label class="obligation-note-field"><span>Ghi chú</span><textarea id="oblNote" rows="3" placeholder="Việc còn thiếu, cách xác minh, kết quả trao đổi…">'+esc(o.note||"")+'</textarea></label>'+
@@ -244,7 +245,7 @@ function complianceReportMarkdown(p){
   if(!p.obligations.length)lines.push("Chưa có mục nghĩa vụ.");
   p.obligations.forEach(function(o,i){
     const d=complianceLegalDoc(o.legalDocId);
-    lines.push("",(i+1)+". **"+o.title+"**","   - Trạng thái: "+complianceObligationStatusLabel(o.status),"   - Người phụ trách: "+(o.owner||"Chưa giao"),"   - Căn cứ: "+(d?d.ttl:(o.legalRef||"Chưa gắn")),"   - Deadline: "+(o.dueDate||"Chưa có")+" · "+complianceDueBasisLabel(o.dueBasis),"   - Nguồn deadline: "+(o.dueSource||"Chưa ghi"),"   - Bằng chứng: "+(o.evidence.length?o.evidence.map(function(x){return x.name||x.id}).join("; "):"Chưa gắn"),"   - Ghi chú: "+(o.note||""));
+    lines.push("",(i+1)+". **"+o.title+"**","   - Trạng thái: "+complianceObligationStatusLabel(o.status),"   - Người phụ trách: "+(o.owner||"Chưa giao"),"   - Căn cứ: "+(d?d.ttl:(o.legalRef||"Chưa gắn")),"   - Deadline: "+(o.dueDate||"Chưa có")+" · "+complianceDueBasisLabel(o.dueBasis),"   - Nguồn deadline: "+(o.dueSource||"Chưa ghi"),"   - Bằng chứng: "+(o.evidence.length?o.evidence.map(function(x){return x.name||x.id}).join("; "):"Chưa gắn"),"   - Mô tả bằng chứng: "+(o.evidenceNote||"Chưa ghi"),"   - Ghi chú: "+(o.note||""));
   });
   lines.push("","## Việc cần làm & deadline");
   complianceTasks(p).forEach(function(t){lines.push("- "+(t.done?"[x] ":"[ ] ")+t.title+(t.date?" — "+t.date:""))});
