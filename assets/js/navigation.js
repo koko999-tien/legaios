@@ -1,4 +1,4 @@
-/* LegalOS V14 — page navigation and route activation. */
+/* Căn cứ Pháp lý Môi trường — page navigation and route activation. */
 (function loadOpenSourceUpgrades(){
   if(!document.querySelector('link[data-legalos-oss]')){
     const link=document.createElement('link');
