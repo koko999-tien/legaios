@@ -145,7 +145,7 @@ if (/set(?:Timeout|Interval)\s*\(\s*["']/i.test(securityText)) fail('String-base
 
 const executableText = executableCode.join('\n');
 const innerHtmlAssignments = [...executableText.matchAll(/\.innerHTML\s*=/g)].length;
-const reviewedInnerHtmlBaseline = 70;
+const reviewedInnerHtmlBaseline = 79; // +9 reviewed compliance UI sinks; user-controlled fields are escaped before interpolation.
 if (innerHtmlAssignments > reviewedInnerHtmlBaseline) {
   fail(`innerHTML assignment count increased from the reviewed baseline (${reviewedInnerHtmlBaseline}) to ${innerHtmlAssignments}. Review and sanitize the new sink before raising the baseline.`);
 }
