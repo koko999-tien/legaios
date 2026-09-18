@@ -419,7 +419,7 @@ function renderComplianceWorkspace(){
 function renderComplianceHome(){
   const host=$("homeCompliancePulse");if(!host)return;
   if(!complianceProfiles.length){
-    host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">BÀN LÀM VIỆC TUÂN THỦ</div><h2>Chưa có hồ sơ theo dõi</h2><p>Tạo hồ sơ đầu tiên để quản lý nghĩa vụ, deadline, bằng chứng và radar pháp luật.</p></div><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ</button></div><div class="home-compliance-grid"><div><b>0</b><span>hồ sơ</span></div><div><b>0</b><span>nghĩa vụ đang mở</span></div><div><b>0</b><span>mục gần hạn</span></div><div><b>0</b><span>văn bản ưu tiên</span></div></div>';
+    host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">BÀN LÀM VIỆC TUÂN THỦ</div><h2>Chưa có hồ sơ theo dõi</h2><p>Tạo hồ sơ đầu tiên để quản lý nghĩa vụ, deadline, bằng chứng và cập nhật pháp luật.</p></div><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ</button></div><div class="home-compliance-grid"><div><b>0</b><span>hồ sơ</span></div><div><b>0</b><span>nghĩa vụ đang mở</span></div><div><b>0</b><span>mục gần hạn</span></div><div><b>0</b><span>văn bản ưu tiên</span></div></div>';
     return;
   }
   const p=complianceProfile(complianceProfiles[0].id)||complianceProfiles[0],urgent=complianceUrgent(p).length+complianceObligationUrgent(p).length,tracks=complianceTracks(p),openObl=complianceOpenObligations(p).length;
@@ -430,12 +430,12 @@ function renderComplianceRadar(targetId){
   targetId=targetId||"complianceRadarHub";
   const host=$(targetId);if(!host)return;
   if(!complianceProfiles.length){
-    host.innerHTML='<div class="lawhub-callout"><b>Radar theo hồ sơ</b><p style="margin:5px 0 0;font-size:12px">Tạo Hồ sơ tuân thủ để lọc các nhánh cập nhật theo bối cảnh cơ sở/dự án của bạn.</p><button class="tiny" data-compliance-new type="button" style="margin-top:8px">Tạo hồ sơ</button></div>';
+    host.innerHTML='<div class="lawhub-callout"><b>Cập nhật theo hồ sơ</b><p style="margin:5px 0 0;font-size:12px">Tạo Hồ sơ tuân thủ để lọc các nhánh cập nhật theo bối cảnh cơ sở/dự án của bạn.</p><button class="tiny" data-compliance-new type="button" style="margin-top:8px">Tạo hồ sơ</button></div>';
     return;
   }
   const p=complianceProfile()||complianceProfiles[0],tracks=complianceTracks(p);
   const docs=[];p.obligations.forEach(function(o){const d=complianceLegalDoc(o.legalDocId);if(d&&!docs.some(function(x){return x.id===d.id}))docs.push(d)});tracks.forEach(function(t){t.docs.forEach(function(d){if(!docs.some(function(x){return x.id===d.id}))docs.push(d)})});
-  host.innerHTML='<section class="compliance-radar"><div class="compliance-radar-head"><div><div class="section-kicker">Radar theo hồ sơ</div><h3>'+esc(p.name)+'</h3><p>Các văn bản dưới đây được ghép theo tín hiệu đã khai; đây là danh sách ưu tiên đọc, không phải kết luận văn bản chắc chắn áp dụng.</p></div><button class="tiny" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="compliance-radar-docs">'+(docs.length?docs.slice(0,8).map(function(d){return '<button data-open="'+d.id+'" type="button"><b>'+esc(d.ttl)+'</b><small>'+d.k+' · '+esc(topicName(d.t))+'</small></button>'}).join(""):'<span class="muted">Chưa có văn bản phù hợp trong kho hiện tại.</span>')+'</div></section>';
+  host.innerHTML='<section class="compliance-radar"><div class="compliance-radar-head"><div><div class="section-kicker">Cập nhật theo hồ sơ</div><h3>'+esc(p.name)+'</h3><p>Các văn bản dưới đây được ghép theo tín hiệu đã khai; đây là danh sách ưu tiên đọc, không phải kết luận văn bản chắc chắn áp dụng.</p></div><button class="tiny" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="compliance-radar-docs">'+(docs.length?docs.slice(0,8).map(function(d){return '<button data-open="'+d.id+'" type="button"><b>'+esc(d.ttl)+'</b><small>'+d.k+' · '+esc(topicName(d.t))+'</small></button>'}).join(""):'<span class="muted">Chưa có văn bản phù hợp trong kho hiện tại.</span>')+'</div></section>';
 }
 function fillComplianceEditor(p){
   const values={cpName:p&&p.name||"",cpType:p&&p.profileType||"facility",cpSector:p&&p.sector||"",cpLocation:p&&p.location||"",cpPhase:p&&p.phase||"",cpGpmtNumber:p&&p.permit&&p.permit.gpmtNumber||"",cpGpmtExpires:p&&p.permit&&p.permit.expires||"",cpNote:p&&p.note||"",complianceEditorId:p&&p.id||""};
