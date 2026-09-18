@@ -13,8 +13,23 @@ try{
 
   const boxes=page.locator('#docs [data-compare]');
   assert(await boxes.count()>=2,'Need at least two legal documents for compare smoke test');
+
   await boxes.nth(0).check();
+  await page.waitForTimeout(80);
+  const bar=page.locator('#compareBar');
+  assert(await bar.isVisible(),'Compare selection bar should be visible after selecting one document');
+  assert((await bar.getAttribute('data-ready'))==='0','Compare bar should not be ready after one document');
+  assert(await page.locator('#compareOpen').isDisabled(),'Compare action must be disabled until two documents are selected');
+  const oneBox=await bar.boundingBox();
+  assert(oneBox && oneBox.x>=-2 && oneBox.x+oneBox.width<=392 && oneBox.y+oneBox.height<=844,'One-document compare bar is clipped on mobile');
+
   await boxes.nth(1).check();
+  await page.waitForTimeout(80);
+  assert((await bar.getAttribute('data-ready'))==='1','Compare bar should be ready after two documents');
+  assert(!(await page.locator('#compareOpen').isDisabled()),'Compare action should be enabled after two documents');
+  const twoBox=await bar.boundingBox();
+  assert(twoBox && twoBox.x>=-2 && twoBox.x+twoBox.width<=392 && twoBox.y+twoBox.height<=844,'Ready compare bar is clipped on mobile');
+
   await page.locator('#compareOpen').click();
   await page.waitForFunction(()=>document.getElementById('compareModal')?.classList.contains('on'));
 
@@ -29,6 +44,8 @@ try{
   console.log('LegalOS structured compare smoke test passed.');
   console.log('  metadata comparison rendered');
   console.log('  common/unique legal-reference groups rendered');
+  console.log('  mobile compare-selection bar stays visible without clipping');
+  console.log('  compare action stays disabled until 2 documents are selected');
   console.log('  mobile viewport has no horizontal overflow');
 }finally{
   await browser.close();
