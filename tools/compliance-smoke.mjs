@@ -70,6 +70,7 @@ try{
   await page.locator('#oblStatus').selectOption('active');
   await page.locator('#oblOwner').fill('Bộ phận Môi trường');
   await page.locator('#oblDueDate').fill(isoAfter(15));
+  await page.locator('#oblRecurrence').selectOption('monthly');
   await page.locator('#oblDueBasis').selectOption('permit');
   await page.locator('#oblDueSource').fill('Theo lịch nội bộ đối chiếu GPMT-QA-01');
   await page.locator('#oblLegalRef').fill('Cần đối chiếu điều khoản và phụ lục trong văn bản gốc');
@@ -85,6 +86,23 @@ try{
   assert(obligationText.includes('theo giấy phép/hồ sơ'),'Deadline source type is missing');
   assert(obligationText.includes('bien-ban-quan-trac-qa.pdf'),'Evidence reference is missing');
   assert(obligationText.includes('đang thực hiện'),'User-managed obligation status is missing');
+  assert(obligationText.includes('hàng tháng'),'Recurring obligation cadence is missing');
+  const calendarText=(await page.locator('.compliance-calendar').innerText()).toLowerCase();
+  assert(calendarText.includes('xác minh nghĩa vụ quan trắc nước thải'),'Compliance calendar omitted the recurring obligation');
+  assert(calendarText.includes('dự kiến theo chu kỳ hàng tháng'),'Compliance calendar does not distinguish projected recurring occurrences');
+
+  const recurrenceBefore=await page.evaluate(()=>{
+    const p=complianceProfiles[0],o=p.obligations[0];
+    return {dueDate:o.dueDate,next:complianceNextOccurrence(o.dueDate,o.recurrence),history:o.occurrenceHistory.length};
+  });
+  await page.locator('[data-obligation-complete-period]').click();
+  const recurrenceAfter=await page.evaluate(()=>{
+    const p=complianceProfiles[0],o=p.obligations[0];
+    return {dueDate:o.dueDate,history:o.occurrenceHistory.length,lastDue:o.occurrenceHistory.at(-1)?.dueDate||''};
+  });
+  assert(recurrenceAfter.history===recurrenceBefore.history+1,'Completing a recurring period did not append occurrence history');
+  assert(recurrenceAfter.lastDue===recurrenceBefore.dueDate,'Occurrence history did not preserve the completed due date');
+  assert(recurrenceAfter.dueDate===recurrenceBefore.next,'Recurring obligation did not advance to the next due date');
 
   await page.locator('#cpTaskTitle').fill('Kiểm tra lịch quan trắc nội bộ');
   await page.locator('#cpTaskDate').fill(isoAfter(10));
@@ -112,11 +130,13 @@ try{
   const path=await download.path();
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
-  assert(exported.schema==='ccplmt-workspace-v3','Workspace export schema was not upgraded for obligations');
+  assert(exported.schema==='ccplmt-workspace-v4','Workspace export schema was not upgraded for recurring obligations');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.evidence?.length===1,'Workspace export omitted evidence references');
+  assert(exported.complianceProfiles[0]?.obligations?.[0]?.recurrence==='monthly','Workspace export omitted recurring cadence');
+  assert(exported.complianceProfiles[0]?.obligations?.[0]?.occurrenceHistory?.length===1,'Workspace export omitted recurring occurrence history');
 
   await page.reload({waitUntil:'networkidle'});
   await go('work');
@@ -133,9 +153,10 @@ try{
   console.log('  signal-driven legal branches checked');
   console.log('  manual deadline + user-declared GPMT date checked');
   console.log('  obligation source + owner + due basis + evidence checked');
+  console.log('  recurring cadence + projected calendar + period completion checked');
   console.log('  article -> obligation register action checked');
   console.log('  home pulse + profile-aware legal radar checked');
-  console.log('  workspace v3 export includes obligations and evidence references');
+  console.log('  workspace v4 export includes recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
