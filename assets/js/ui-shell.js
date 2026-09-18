@@ -61,23 +61,29 @@ function renderWizard(){
   $('wizardBody').innerHTML=`<div class="wizard-step-no">Bước ${i+1} / ${p.st.length} · ${done.includes(i)?'Đã hoàn thành':'Chưa hoàn thành'}</div><h2 class="wizard-step-title">${s[0]}</h2><p class="wizard-step-text">${s[1]}</p><div class="progress"><span style="width:${(i+1)/p.st.length*100}%"></span></div><div class="wizard-dots">${p.st.map((_,n)=>`<span class="wizard-dot ${done.includes(n)?'done':''} ${n===i?'current':''}"></span>`).join('')}</div><div class="wizard-controls"><button class="btn bs" data-wiz="prev" ${i===0?'disabled':''} type="button">← Trước</button><div class="row"><button class="btn ${done.includes(i)?'bs':'bp'}" data-wiz="toggle" type="button">${done.includes(i)?'Bỏ hoàn thành':'✓ Đánh dấu hoàn thành'}</button><button class="btn bs" data-wiz="next" ${i===p.st.length-1?'disabled':''} type="button">Tiếp →</button></div></div>`;
 }
 function readingProgressStore(){
-  return STORE.get("v14_reading_progress",{});
+  const data=STORE.get("v14_reading_progress",{});
+  return data&&typeof data==='object'&&!Array.isArray(data)?data:{};
+}
+let readingPending=null,readingSaveTimer=null;
+function readingProgressFlush(){
+  clearTimeout(readingSaveTimer);readingSaveTimer=null;
+  if(!readingPending)return;
+  const {docId,pct,section}=readingPending;
+  const all=readingProgressStore(),prev=all[docId]||{};
+  all[docId]={pct:Math.round(pct*10)/10,maxPct:Math.max(Math.min(100,Number(prev.maxPct)||0),pct),section,updatedAt:Date.now()};
+  if(STORE.set('v14_reading_progress',all)){readingPending=null;window.__legalosReadingLastSave=Date.now()}
 }
 function readingProgressSave(docId,pct,section){
   if(!docId||!Number.isFinite(pct))return;
+  if(readingPending&&readingPending.docId!==docId)readingProgressFlush();
+  readingPending={docId,pct:Math.max(0,Math.min(100,pct)),section:String(section||'').slice(0,140)};
   const now=Date.now();
-  if(window.__legalosReadingLastSave&&now-window.__legalosReadingLastSave<700)return;
-  window.__legalosReadingLastSave=now;
-  const all=readingProgressStore();
-  const prev=all[docId]||{};
-  all[docId]={
-    pct:Math.round(Math.max(0,Math.min(100,pct))*10)/10,
-    maxPct:Math.max(Number(prev.maxPct)||0,pct),
-    section:String(section||"").slice(0,140),
-    updatedAt:now
-  };
-  STORE.set("v14_reading_progress",all);
+  const delay=Math.max(0,700-(now-(window.__legalosReadingLastSave||0)));
+  if(!delay){readingProgressFlush();return}
+  if(readingSaveTimer===null)readingSaveTimer=setTimeout(readingProgressFlush,delay);
 }
+window.addEventListener('pagehide',readingProgressFlush);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')readingProgressFlush()});
 function readingProgressTarget(){
   return document.querySelector('#art.page.on #legalText')||document.querySelector('#art.page.on .art-content');
 }
@@ -174,6 +180,7 @@ function readingProgressUpdate(){
   const bar=ensureSmartReadingProgress();
   const target=readingProgressTarget();
   if(!bar||!target){
+    readingProgressFlush();
     if(bar){bar.classList.remove("on");bar.setAttribute("aria-hidden","true")}
     window.__legalosReadingActive=false;
     return;
@@ -181,6 +188,7 @@ function readingProgressUpdate(){
 
   const docId=currentArticleDocId||"";
   if(!window.__legalosReadingActive||window.__legalosReadingDocId!==docId){
+    readingProgressFlush();
     window.__legalosReadingActive=true;
     window.__legalosReadingDocId=docId;
     window.__legalosReadingLastSave=0;

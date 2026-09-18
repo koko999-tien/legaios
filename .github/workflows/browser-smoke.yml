@@ -90,6 +90,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/idb-storage.mjs
 
+      - name: Verify workspace and reading data safety
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/data-safety-smoke.mjs
+
       - name: Verify real mobile sidebar interaction
         env:
           LEGALOS_URL: http://127.0.0.1:4173/

@@ -35,16 +35,24 @@ function exportWorkspace(){
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="LegalOS-workspace.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 function importWorkspace(file){
+  if(!file||file.size>10*1024*1024){toast('File sao lưu vượt giới hạn 10 MB');return}
   const r=new FileReader();
   r.onload=()=>{try{
     const d=JSON.parse(r.result);
-    saved=Array.isArray(d.saved)?d.saved.map(x=>safeId(x,"doc")).filter(id=>D.some(v=>v.id===id)):[];recent=Array.isArray(d.recent)?d.recent.map(x=>safeId(x,"doc")).filter(id=>D.some(v=>v.id===id)):[];
-    notes={};if(d.notes&&typeof d.notes==="object"&&!Array.isArray(d.notes))Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{notes[safeId(k,"doc")]=safeImportedText(v,50000)});
-    procDone={};if(d.procDone&&typeof d.procDone==="object"&&!Array.isArray(d.procDone))Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{procDone[safeId(k,"proc")]=Array.isArray(v)?v.filter(Number.isInteger).slice(0,200):[]});
-    cases=Array.isArray(d.cases)?d.cases.slice(0,500).map(normalizeImportedCase):[];expertBriefs=Array.isArray(d.expertBriefs)?d.expertBriefs.slice(0,500).map(normalizeExpertBrief):[];
-    STORE.set("w3_saved",saved);STORE.set("w3_recent",recent);STORE.set("w3_notes",notes);STORE.set("w3_proc",procDone);STORE.set("w3_cases",cases);STORE.set("v10_expert_briefs",expertBriefs);
+    const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
+    if(!object(d)||d.app!=='LegalOS'||!Array.isArray(d.saved)||!Array.isArray(d.recent)||!object(d.notes)||!object(d.procDone)||!Array.isArray(d.cases)||(d.expertBriefs!==undefined&&!Array.isArray(d.expertBriefs))){toast('Đây không phải bản sao lưu workspace LegalOS hợp lệ. Dữ liệu hiện tại được giữ nguyên.');return}
+    const next={saved:d.saved.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),recent:d.recent.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),notes:Object.create(null),procDone:Object.create(null),cases:d.cases.slice(0,500).map(normalizeImportedCase),expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief)};
+    Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{next.notes[safeId(k,'doc')]=safeImportedText(v,50000)});
+    Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{next.procDone[safeId(k,'proc')]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]});
+    if(!confirm(`Thay thế mục đã lưu, ghi chú theo văn bản, tiến độ thủ tục và hồ sơ hiện tại bằng bản sao lưu (${next.saved.length} mục đã lưu, ${next.cases.length} hồ sơ)? Hãy xuất JSON hiện tại trước nếu cần giữ lại.`)){toast('Đã hủy nhập workspace');return}
+    const entries=[['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs]];
+    if(!STORE.setBatch(entries)){toast('Không thể lưu bản nhập. Workspace đang mở chưa bị thay thế.');return}
+    ({saved,recent,notes,procDone,cases,expertBriefs}=next);
+    currentCaseId=null;
+    if($('caseDetail')){$('caseDetail').className='empty';$('caseDetail').textContent='Chọn hồ sơ để xem chi tiết.'}
     renderWorkspace();renderProcList();docs(curTopic(),$("q").value);toast("Đã nhập workspace");
   }catch{toast("File JSON không hợp lệ")}};
+  r.onerror=()=>toast('Không đọc được file sao lưu. Dữ liệu hiện tại được giữ nguyên.');
   r.readAsText(file);
 }
 function cmdResults(q=""){

@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   $("procQ").oninput=debounce(renderProcList,100);$("procFilter").onchange=renderProcList;$("procCat").onchange=renderProcList;
   $("caseQ").oninput=debounce(renderWorkspace,100);
   $("exportW").onclick=exportWorkspace;if($("exportCatalog"))$("exportCatalog").onclick=exportCatalogCSV;if($("exportPack"))$("exportPack").onclick=exportLegalPack;if($("importPack"))$("importPack").onclick=()=>$("packFile").click();if($("packFile"))$("packFile").onchange=()=>{if($("packFile").files[0])importLegalPack($("packFile").files[0])};if($("clearPack"))$("clearPack").onclick=clearLegalPack;$("importW").onclick=()=>$("importFile").click();
-  $("importFile").onchange=()=>{if($("importFile").files[0])importWorkspace($("importFile").files[0])};
+  $("importFile").onchange=()=>{const input=$("importFile");if(input.files[0])importWorkspace(input.files[0]);input.value=''};
   $("cmdOpen").onclick=openCmd;$("topSearch").onclick=openCmd;
   $("clearQ").onclick=()=>{$("q").value="";vs(false);$("q").focus()};$("cmdBg").onclick=e=>{if(e.target===$("cmdBg"))closeCmd()};
   $("cmdQ").oninput=()=>renderCmd($("cmdQ").value);

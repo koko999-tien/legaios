@@ -18,7 +18,7 @@ Do not merge structural refactors directly to `main`. Work on `dev`, let GitHub 
 
 ## V14 front-end layout
 
-The old single-file application is being split gradually while retaining classic-script execution order:
+The front end is split into ordered classic scripts. The legacy `app.js` has been retired:
 
 ```text
 index.html
@@ -35,10 +35,19 @@ assets/js/activity-workspace.js
 assets/js/project-tools.js
 assets/js/library.js
 assets/js/procedures.js
-assets/js/app.js
+assets/js/workspace.js
+assets/js/legal-hub.js
+assets/js/expert.js
+assets/js/navigation.js
+assets/js/library-search.js
+assets/js/classifier.js
+assets/js/boot.js
+assets/js/oss-upgrades.js
 ```
 
-`app.js` is still the final compatibility/runtime layer and will shrink further as remaining responsibilities are isolated.
+`boot.js` connects the modules. Progressive enhancements add diagnostics, accessibility and PWA support. `index.html` is the source of truth for the complete script order.
+
+See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
 
 ## Validation
 

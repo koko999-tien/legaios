@@ -1,5 +1,5 @@
 /* LegalOS V14 — small native service worker inspired by Workbox caching patterns. */
-const CACHE_NAME='legalos-v14-shell-20260918-30';
+const CACHE_NAME='legalos-v14-shell-20260918-31';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -100,3 +100,4 @@ self.addEventListener('fetch',event=>{
   }
   event.respondWith(networkFirstAsset(request));
 });
+
