@@ -169,6 +169,12 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 .compare-ref-col.common{border-color:color-mix(in srgb,var(--bd) 65%,#16a34a 35%)}
 .compare-ref-col.left-only,.compare-ref-col.right-only{border-color:color-mix(in srgb,var(--bd) 65%,#f59e0b 35%)}
 
+@media(pointer:coarse){
+  .smart-reading-progress .reading-progress-track{height:24px}
+  .smart-reading-progress .reading-progress-track::before,
+  .smart-reading-progress .reading-progress-fill{height:5px!important}
+}
+
 @media(max-width:960px){
   button,
   .btn,
@@ -480,7 +486,7 @@ body.article-view header.site{
   position:relative;
   width:100%;
   max-width:none;
-  height:24px;
+  height:4px;
   background:transparent;
   border-radius:999px;
   cursor:pointer;
