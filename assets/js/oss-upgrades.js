@@ -5,18 +5,46 @@
   const DIAG_KEY='legalos_diag_errors_v1';
   function diagText(value,max=500){return String(value??'').replace(/\s+/g,' ').trim().slice(0,max)}
   function diagSource(value){
-    try{const u=new URL(String(value||''),location.href);return u.origin===location.origin?u.pathname.split('/').slice(-3).join('/'):u.origin}catch{return ''}
+    if(!value)return '';
+    try{
+      const u=new URL(String(value),location.href);
+      // Only report shipped same-origin script paths, never imported filenames or URLs.
+      const known=[...document.scripts].some(script=>{
+        if(!script.src)return false;
+        const src=new URL(script.src,location.href);
+        return src.origin===location.origin&&src.pathname===u.pathname&&/^\/assets\/js\/[a-z-]+\.js$/.test(src.pathname);
+      });
+      return u.origin===location.origin&&known?u.pathname:'';
+    }catch{return ''}
   }
-  function readDiagErrors(){try{const x=JSON.parse(sessionStorage.getItem(DIAG_KEY)||'[]');return Array.isArray(x)?x.slice(-12):[]}catch{return []}}
+  function safeDiagError(row){
+    if(!row||typeof row!=='object')return null;
+    const messages={
+      error:'Browser runtime error (details omitted for privacy)',
+      unhandledrejection:'Unhandled promise rejection (details omitted for privacy)',
+      'diagnostics-export':'Diagnostics export failed (details omitted for privacy)'
+    };
+    const kind=Object.hasOwn(messages,row.kind)?row.kind:'error';
+    const position=value=>Number.isSafeInteger(value)&&value>=0?value:0;
+    const at=typeof row.at==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(row.at)?row.at:'';
+    return {at,kind,message:messages[kind],source:diagSource(row.source),line:position(row.line),col:position(row.col)};
+  }
+  function readDiagErrors(){
+    try{
+      const x=JSON.parse(sessionStorage.getItem(DIAG_KEY)||'[]');
+      // Sanitize older session records too; they may contain raw error text.
+      return Array.isArray(x)?x.slice(-12).map(safeDiagError).filter(Boolean):[];
+    }catch{return []}
+  }
   function writeDiagErrors(rows){try{sessionStorage.setItem(DIAG_KEY,JSON.stringify(rows.slice(-12)))}catch{}}
-  function recordDiagError(kind,message,source='',line=0,col=0){
+  function recordDiagError(kind,source='',line=0,col=0){
     const rows=readDiagErrors();
-    rows.push({at:new Date().toISOString(),kind:diagText(kind,40),message:diagText(message),source:diagSource(source),line:Number(line)||0,col:Number(col)||0});
+    rows.push(safeDiagError({at:new Date().toISOString(),kind,source,line,col}));
     writeDiagErrors(rows);
   }
   function installDiagnosticsCapture(){
-    window.addEventListener('error',e=>recordDiagError('error',e.message||e.error?.message||'Browser error',e.filename,e.lineno,e.colno));
-    window.addEventListener('unhandledrejection',e=>recordDiagError('unhandledrejection',e.reason?.message||e.reason||'Unhandled promise rejection'));
+    window.addEventListener('error',e=>recordDiagError('error',e.filename,e.lineno,e.colno));
+    window.addEventListener('unhandledrejection',()=>recordDiagError('unhandledrejection'));
   }
   async function diagnosticSnapshot(){
     let storage={supported:Boolean(navigator.storage?.estimate)};
@@ -55,7 +83,7 @@
       if(!item)return;
       e.preventDefault();e.stopImmediatePropagation();
       document.getElementById('cmdBg')?.classList.remove('on');
-      downloadDiagnostics().catch(err=>recordDiagError('diagnostics-export',err?.message||err));
+      downloadDiagnostics().catch(err=>recordDiagError('diagnostics-export'));
     },true);
   }
   function installDiagnosticsSettings(){
@@ -73,7 +101,7 @@
     button.type='button';
     button.textContent='Xuất file chẩn đoán';
     button.addEventListener('click',()=>downloadDiagnostics().catch(err=>{
-      recordDiagError('diagnostics-export',err?.message||err);
+      recordDiagError('diagnostics-export');
       if(typeof window.toast==='function')window.toast('Không thể xuất chẩn đoán');
     }));
     group.append(title,note,button);
