@@ -109,6 +109,17 @@ body:not([data-theme="dark"]) .coverage-pill{
   color:#8a4300!important;
 }
 
+/* Keep tiny library/article metadata safely above WCAG AA in Chromium. */
+body:not([data-theme="dark"]) .topic-all>span,
+body:not([data-theme="dark"]) button[data-view="list"],
+body:not([data-theme="dark"]) .legal-tip b,
+body:not([data-theme="dark"]) .doc .meta .tag{
+  color:#1e58c7!important;
+}
+body:not([data-theme="dark"]) .library-filters .chip small{
+  color:#586174!important;
+}
+
 /* Modern-web-guidance pattern: skip layout/paint work for long below-the-fold lists.
    contain-intrinsic-size keeps the scrollbar stable while an item is skipped. */
 @supports(content-visibility:auto){
