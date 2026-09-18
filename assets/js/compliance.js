@@ -38,6 +38,30 @@ function normalizeComplianceProfile(row){
       createdAt:complianceText(x.createdAt||now,60)
     };
   }).filter(function(x){return !!x.title}):[];
+  const obligations=Array.isArray(row.obligations)?row.obligations.slice(0,300).map(function(x){
+    x=x||{};
+    const evidence=Array.isArray(x.evidence)?x.evidence.slice(0,30).map(function(ev){
+      ev=ev||{};
+      return {id:complianceText(ev.id||"",160),name:complianceText(ev.name||"",300)};
+    }).filter(function(ev){return ev.id||ev.name}):[];
+    return {
+      id:complianceText(x.id||complianceId("obl"),120),
+      title:complianceText(x.title||"Mục nghĩa vụ cần xác minh",300),
+      branch:complianceText(x.branch||"env",80),
+      status:["verify","active","met","not_applicable"].includes(x.status)?x.status:"verify",
+      legalDocId:complianceText(x.legalDocId||"",120),
+      legalRef:complianceText(x.legalRef||"",500),
+      owner:complianceText(x.owner||"",180),
+      dueDate:/^\d{4}-\d{2}-\d{2}$/.test(String(x.dueDate||""))?String(x.dueDate):"",
+      dueBasis:["manual","permit","legal_source","verified"].includes(x.dueBasis)?x.dueBasis:"manual",
+      dueSource:complianceText(x.dueSource||"",500),
+      evidence:evidence,
+      evidenceNote:complianceText(x.evidenceNote||"",1200),
+      note:complianceText(x.note||"",2000),
+      createdAt:complianceText(x.createdAt||now,60),
+      updatedAt:complianceText(x.updatedAt||now,60)
+    };
+  }).filter(function(x){return !!x.title}):[];
   return {
     id:complianceText(row.id||complianceId(),120),
     name:complianceText(row.name||"Hồ sơ chưa đặt tên",180),
@@ -51,6 +75,7 @@ function normalizeComplianceProfile(row){
       expires:/^\d{4}-\d{2}-\d{2}$/.test(String(row.permit&&row.permit.expires||""))?String(row.permit.expires):""
     },
     deadlines:deadlines,
+    obligations:obligations,
     note:complianceText(row.note||"",4000),
     createdAt:complianceText(row.createdAt||now,60),
     updatedAt:complianceText(row.updatedAt||now,60)
@@ -106,11 +131,136 @@ function complianceTasks(p){
 function complianceUrgent(p){
   return complianceTasks(p).filter(function(x){const d=complianceDays(x.date);return !x.done&&x.date&&d!==null&&d<=30}).sort(function(a,b){return String(a.date).localeCompare(String(b.date))});
 }
+function complianceObligationStatusLabel(v){
+  return ({verify:"Cần xác minh",active:"Đang thực hiện",met:"Đã đáp ứng",not_applicable:"Không áp dụng · người dùng đánh dấu"})[v]||"Cần xác minh";
+}
+function complianceDueBasisLabel(v){
+  return ({manual:"Người dùng nhập",permit:"Theo giấy phép/hồ sơ",legal_source:"Theo căn cứ pháp luật",verified:"Đã đối chiếu nguồn"})[v]||"Người dùng nhập";
+}
+function complianceOpenObligations(p){
+  return p&&Array.isArray(p.obligations)?p.obligations.filter(function(x){return x.status==="verify"||x.status==="active"}):[];
+}
+function complianceObligationUrgent(p){
+  return complianceOpenObligations(p).filter(function(x){
+    const d=complianceDays(x.dueDate);return x.dueDate&&d!==null&&d<=30;
+  }).sort(function(a,b){return String(a.dueDate).localeCompare(String(b.dueDate))});
+}
+function complianceEvidenceResolved(ref){
+  return typeof importedDocs!=="undefined"&&importedDocs.some(function(x){return x.id===ref.id});
+}
+function complianceLegalDoc(id){return id?D.find(function(d){return d.id===id})||null:null}
+function complianceObligationHtml(o){
+  const doc=complianceLegalDoc(o.legalDocId),days=complianceDays(o.dueDate);
+  const due=o.dueDate?'<span class="deadline-pill '+(days<0?"late":days<=30?"soon":"")+'">'+complianceDueLabel(o.dueDate)+'</span>':"";
+  const evidence=o.evidence.length?o.evidence.map(function(ref){
+    const ok=complianceEvidenceResolved(ref);
+    return '<span class="obligation-evidence '+(ok?"":"missing")+'" title="'+(ok?"Tài liệu đang có trên thiết bị":"Tài liệu tham chiếu không có trên thiết bị này")+'">'+(ok?"✓ ":"⚠ ")+esc(ref.name||ref.id)+'</span>';
+  }).join(""):'<span class="muted">Chưa gắn bằng chứng</span>';
+  return '<article class="obligation-row" data-obligation-row="'+esc(o.id)+'">'+
+    '<div class="obligation-main"><div class="obligation-title-line"><span class="obligation-status '+esc(o.status)+'">'+esc(complianceObligationStatusLabel(o.status))+'</span><b>'+esc(o.title)+'</b></div>'+
+    '<div class="obligation-meta">'+(o.owner?'<span>Phụ trách: '+esc(o.owner)+'</span>':'<span>Chưa giao người phụ trách</span>')+(o.dueDate?'<span>'+esc(complianceDueBasisLabel(o.dueBasis))+' · '+esc(o.dueDate)+'</span>':'<span>Chưa có deadline</span>')+'</div>'+
+    (doc?'<button class="obligation-source" data-open="'+esc(doc.id)+'" type="button"><b>Căn cứ:</b> '+esc(doc.ttl)+'</button>':o.legalRef?'<div class="obligation-source text-only"><b>Căn cứ ghi chú:</b> '+esc(o.legalRef)+'</div>':'<div class="obligation-source text-only muted">Chưa gắn căn cứ</div>')+
+    '<div class="obligation-evidence-list">'+evidence+'</div>'+
+    (o.note?'<p class="obligation-note">'+esc(o.note)+'</p>':"")+
+    '</div><div class="obligation-side">'+due+'<button class="tiny" data-obligation-edit="'+esc(o.id)+'" type="button">Sửa</button><button class="tiny danger-soft" data-obligation-delete="'+esc(o.id)+'" type="button">Xóa</button></div></article>';
+}
+function complianceObligationOptions(selected){
+  return '<option value="">Chưa gắn văn bản</option>'+D.map(function(d){return '<option value="'+esc(d.id)+'" '+(d.id===selected?"selected":"")+'>'+esc(d.ttl)+'</option>'}).join("");
+}
+function complianceEvidenceChecklist(selected){
+  selected=Array.isArray(selected)?selected:[];
+  if(typeof importedDocs==="undefined"||!importedDocs.length)return '<div class="obligation-no-evidence">Chưa có tài liệu nhập. Bạn vẫn có thể ghi mô tả bằng chứng, hoặc sang “Nhập tài liệu” để thêm PDF/Word.</div>';
+  return importedDocs.slice(0,80).map(function(f){
+    const checked=selected.some(function(x){return x.id===f.id});
+    return '<label class="obligation-evidence-choice"><input type="checkbox" data-obligation-evidence-id="'+esc(f.id)+'" data-obligation-evidence-name="'+esc(f.name)+'" '+(checked?"checked":"")+'><span><b>'+esc(f.name)+'</b><small>.'+esc(f.ext||"file")+' · '+esc(importCategoryName(f.category))+'</small></span></label>';
+  }).join("");
+}
+function obligationEditorHtml(p,o){
+  o=o||{id:"",title:"",branch:"env",status:"verify",legalDocId:"",legalRef:"",owner:"",dueDate:"",dueBasis:"manual",dueSource:"",evidence:[],evidenceNote:"",note:""};
+  return '<details class="obligation-editor" id="obligationEditor" open><summary><span><b>'+(o.id?"Chỉnh sửa mục nghĩa vụ":"Thêm mục nghĩa vụ")+'</b><small>Trạng thái do người dùng quản lý; hệ thống không tự kết luận tuân thủ.</small></span><span>⌄</span></summary>'+
+  '<div class="obligation-editor-body"><input id="obligationEditorId" type="hidden" value="'+esc(o.id||"")+'"><div class="obligation-form-grid">'+
+  '<label><span>Tên nghĩa vụ / việc cần xác minh *</span><input id="oblTitle" value="'+esc(o.title||"")+'" placeholder="Ví dụ: Xác minh yêu cầu quan trắc định kỳ"></label>'+
+  '<label><span>Nhánh</span><select id="oblBranch">'+COMPLIANCE_TRACKS.map(function(t){return '<option value="'+esc(t.id)+'" '+(t.id===o.branch?"selected":"")+'>'+esc(t.label)+'</option>'}).join("")+'</select></label>'+
+  '<label><span>Trạng thái</span><select id="oblStatus"><option value="verify" '+(o.status==="verify"?"selected":"")+'>Cần xác minh</option><option value="active" '+(o.status==="active"?"selected":"")+'>Đang thực hiện</option><option value="met" '+(o.status==="met"?"selected":"")+'>Đã đáp ứng</option><option value="not_applicable" '+(o.status==="not_applicable"?"selected":"")+'>Không áp dụng · người dùng đánh dấu</option></select></label>'+
+  '<label><span>Người phụ trách</span><input id="oblOwner" value="'+esc(o.owner||"")+'" placeholder="Tên / bộ phận"></label>'+
+  '<label class="wide"><span>Căn cứ chính</span><select id="oblLegalDoc">'+complianceObligationOptions(o.legalDocId)+'</select></label>'+
+  '<label class="wide"><span>Điều/Khoản hoặc ghi chú căn cứ</span><input id="oblLegalRef" value="'+esc(o.legalRef||"")+'" placeholder="Ví dụ: Điều 39, khoản 2; cần đối chiếu phụ lục…"></label>'+
+  '<label><span>Deadline</span><input id="oblDueDate" type="date" value="'+esc(o.dueDate||"")+'"></label>'+
+  '<label><span>Nguồn deadline</span><select id="oblDueBasis"><option value="manual" '+(o.dueBasis==="manual"?"selected":"")+'>Người dùng nhập</option><option value="permit" '+(o.dueBasis==="permit"?"selected":"")+'>Theo giấy phép/hồ sơ</option><option value="legal_source" '+(o.dueBasis==="legal_source"?"selected":"")+'>Theo căn cứ pháp luật</option><option value="verified" '+(o.dueBasis==="verified"?"selected":"")+'>Đã đối chiếu nguồn</option></select></label>'+
+  '<label class="wide"><span>Mô tả nguồn deadline</span><input id="oblDueSource" value="'+esc(o.dueSource||"")+'" placeholder="Số giấy phép, Điều/Khoản, nguồn chính thức hoặc lý do đặt lịch"></label>'+
+  '</div><div class="obligation-evidence-editor"><div><b>Bằng chứng / tài liệu liên quan</b><span>Chỉ lưu tham chiếu tới file đã nhập; backup workspace không chứa file gốc.</span></div><div class="obligation-evidence-choices">'+complianceEvidenceChecklist(o.evidence)+'</div><label><span>Mô tả bằng chứng</span><textarea id="oblEvidenceNote" rows="2" placeholder="Ví dụ: Biên bản ngày…, báo cáo quan trắc quý…, chứng từ CTNH…">'+esc(o.evidenceNote||"")+'</textarea></label></div>'+
+  '<label class="obligation-note-field"><span>Ghi chú</span><textarea id="oblNote" rows="3" placeholder="Việc còn thiếu, cách xác minh, kết quả trao đổi…">'+esc(o.note||"")+'</textarea></label>'+
+  '<div class="obligation-editor-actions"><button class="btn bs" data-obligation-cancel type="button">Hủy</button><button class="btn bp" data-obligation-save type="button">Lưu vào Sổ nghĩa vụ</button></div></div></details>';
+}
+function openObligationEditor(obligationId,seed){
+  const p=complianceProfile();if(!p){toast("Tạo Hồ sơ tuân thủ trước");return}
+  const host=$("obligationEditorMount");if(!host)return;
+  const found=p.obligations.find(function(x){return x.id===obligationId})||null;
+  const base=found||Object.assign({id:"",title:"",branch:"env",status:"verify",legalDocId:"",legalRef:"",owner:"",dueDate:"",dueBasis:"manual",dueSource:"",evidence:[],evidenceNote:"",note:""},seed||{});
+  host.innerHTML=obligationEditorHtml(p,base);
+  $("obligationEditor")&&$("obligationEditor").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function readObligationEditor(){
+  const evidence=[...document.querySelectorAll("#obligationEditor [data-obligation-evidence-id]:checked")].map(function(el){return {id:el.dataset.obligationEvidenceId,name:el.dataset.obligationEvidenceName||""}});
+  return {
+    id:$("obligationEditorId")&&$("obligationEditorId").value||complianceId("obl"),
+    title:complianceText($("oblTitle")&&$("oblTitle").value||"",300),
+    branch:complianceText($("oblBranch")&&$("oblBranch").value||"env",80),
+    status:$("oblStatus")&&$("oblStatus").value||"verify",
+    legalDocId:complianceText($("oblLegalDoc")&&$("oblLegalDoc").value||"",120),
+    legalRef:complianceText($("oblLegalRef")&&$("oblLegalRef").value||"",500),
+    owner:complianceText($("oblOwner")&&$("oblOwner").value||"",180),
+    dueDate:$("oblDueDate")&&$("oblDueDate").value||"",
+    dueBasis:$("oblDueBasis")&&$("oblDueBasis").value||"manual",
+    dueSource:complianceText($("oblDueSource")&&$("oblDueSource").value||"",500),
+    evidence:evidence,
+    evidenceNote:complianceText($("oblEvidenceNote")&&$("oblEvidenceNote").value||"",1200),
+    note:complianceText($("oblNote")&&$("oblNote").value||"",2000),
+    updatedAt:new Date().toISOString()
+  };
+}
+function saveObligationEditor(){
+  const p=complianceProfile(),row=readObligationEditor();if(!p)return;
+  if(!row.title){toast("Nhập tên nghĩa vụ hoặc việc cần xác minh");return}
+  const i=p.obligations.findIndex(function(x){return x.id===row.id});
+  if(i>=0)p.obligations[i]=Object.assign({},p.obligations[i],row);else p.obligations.unshift(Object.assign({createdAt:new Date().toISOString()},row));
+  p.updatedAt=new Date().toISOString();saveComplianceProfiles();toast("Đã lưu vào Sổ nghĩa vụ");
+}
+function addTrackAsObligation(trackId){
+  const p=complianceProfile(),t=COMPLIANCE_TRACKS.find(function(x){return x.id===trackId});if(!p||!t)return;
+  const first=t.refs.find(function(id){return D.some(function(d){return d.id===id})})||"";
+  openObligationEditor("",{title:"Rà soát "+t.label,branch:t.id,status:"verify",legalDocId:first,legalRef:t.reason});
+}
+function addDocumentAsObligation(docId){
+  const p=complianceProfile();if(!p){go("work");setTimeout(function(){toast("Tạo Hồ sơ tuân thủ trước khi gắn văn bản vào Sổ nghĩa vụ")},50);return}
+  const d=D.find(function(x){return x.id===docId});if(!d)return;
+  go("work");renderComplianceWorkspace();setTimeout(function(){
+    openObligationEditor("",{title:"Xác minh nghĩa vụ liên quan "+d.ttl,legalDocId:d.id,status:"verify"});
+  },80);
+}
+function complianceReportMarkdown(p){
+  if(!p)return "";
+  const lines=["# Báo cáo theo dõi tuân thủ — "+p.name,"","- Loại hồ sơ: "+complianceProfileTypeLabel(p.profileType),"- Lĩnh vực: "+(p.sector||"Chưa khai"),"- Địa điểm: "+(p.location||"Chưa khai"),"- Giai đoạn: "+compliancePhaseLabel(p.phase),"- Xuất lúc: "+new Date().toISOString(),"","> Đây là báo cáo tổ chức công việc từ dữ liệu người dùng và lớp tra cứu. Không thay thế văn bản gốc hoặc kết luận của cơ quan có thẩm quyền.","","## Sổ nghĩa vụ"];
+  if(!p.obligations.length)lines.push("Chưa có mục nghĩa vụ.");
+  p.obligations.forEach(function(o,i){
+    const d=complianceLegalDoc(o.legalDocId);
+    lines.push("",(i+1)+". **"+o.title+"**","   - Trạng thái: "+complianceObligationStatusLabel(o.status),"   - Người phụ trách: "+(o.owner||"Chưa giao"),"   - Căn cứ: "+(d?d.ttl:(o.legalRef||"Chưa gắn")),"   - Deadline: "+(o.dueDate||"Chưa có")+" · "+complianceDueBasisLabel(o.dueBasis),"   - Nguồn deadline: "+(o.dueSource||"Chưa ghi"),"   - Bằng chứng: "+(o.evidence.length?o.evidence.map(function(x){return x.name||x.id}).join("; "):"Chưa gắn"),"   - Ghi chú: "+(o.note||""));
+  });
+  lines.push("","## Việc cần làm & deadline");
+  complianceTasks(p).forEach(function(t){lines.push("- "+(t.done?"[x] ":"[ ] ")+t.title+(t.date?" — "+t.date:""))});
+  return lines.join("\n");
+}
+function exportComplianceReport(){
+  const p=complianceProfile();if(!p)return;
+  const blob=new Blob([complianceReportMarkdown(p)],{type:"text/markdown;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="bao-cao-tuan-thu-"+p.id+".md";a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},500);
+}
 function complianceStatus(p){
   if(!p)return "Chưa có hồ sơ";
-  const urgent=complianceUrgent(p);
-  if(urgent.some(function(x){return complianceDays(x.date)<0}))return "Có việc đã quá ngày theo dõi";
-  if(urgent.length)return "Có việc sắp đến hạn";
+  const urgent=complianceUrgent(p),oblUrgent=complianceObligationUrgent(p);
+  if(urgent.some(function(x){return complianceDays(x.date)<0})||oblUrgent.some(function(x){return complianceDays(x.dueDate)<0}))return "Có nghĩa vụ/việc đã quá ngày theo dõi";
+  if(urgent.length||oblUrgent.length)return "Có nghĩa vụ/việc sắp đến hạn";
+  if(complianceOpenObligations(p).length)return complianceOpenObligations(p).length+" mục nghĩa vụ đang mở";
   if(complianceCompleteness(p)<75)return "Cần bổ sung dữ liệu nền";
   const n=complianceTracks(p).length;
   return n>1?n+" nhánh cần đối chiếu":"Sẵn sàng rà căn cứ nền";
@@ -126,14 +276,14 @@ function complianceTrackHtml(track){
   const docs=track.docs.length?track.docs.slice(0,5).map(function(d){
     return '<button data-open="'+esc(d.id)+'" type="button">'+esc(d.ttl.replace(/\s*\(.*/,""))+'</button>';
   }).join(""):'<span class="muted">Chưa có văn bản khớp trong kho hiện tại.</span>';
-  return '<article class="compliance-track"><div><div class="section-kicker">CẦN KIỂM TRA</div><h4>'+esc(track.label)+'</h4><p>'+esc(track.reason)+'</p></div><div class="compliance-track-actions"><button class="tiny" data-compliance-search="'+esc(track.query)+'" type="button">Tra căn cứ →</button></div><div class="compliance-track-docs">'+docs+'</div></article>';
+  return '<article class="compliance-track"><div><div class="section-kicker">CẦN KIỂM TRA</div><h4>'+esc(track.label)+'</h4><p>'+esc(track.reason)+'</p></div><div class="compliance-track-actions"><button class="tiny" data-compliance-search="'+esc(track.query)+'" type="button">Tra căn cứ →</button><button class="tiny" data-track-to-obligation="'+esc(track.id)+'" type="button">+ Sổ nghĩa vụ</button></div><div class="compliance-track-docs">'+docs+'</div></article>';
 }
 function renderComplianceStats(){
   const host=$("complianceStats");if(!host)return;
-  const urgent=complianceProfiles.flatMap(complianceUrgent).length;
+  const urgent=complianceProfiles.flatMap(complianceUrgent).length+complianceProfiles.flatMap(complianceObligationUrgent).length;
+  const openObl=complianceProfiles.reduce(function(n,p){return n+complianceOpenObligations(p).length},0);
   const incomplete=complianceProfiles.filter(function(p){return complianceCompleteness(p)<75}).length;
-  const trackCount=complianceProfiles.reduce(function(n,p){return n+complianceTracks(p).length},0);
-  host.innerHTML='<div><b>'+complianceProfiles.length+'</b><span>Hồ sơ tuân thủ</span></div><div><b>'+urgent+'</b><span>Việc ≤30 ngày</span></div><div><b>'+incomplete+'</b><span>Hồ sơ cần bổ sung</span></div><div><b>'+trackCount+'</b><span>Nhánh đang theo dõi</span></div>';
+  host.innerHTML='<div><b>'+complianceProfiles.length+'</b><span>Hồ sơ tuân thủ</span></div><div><b>'+openObl+'</b><span>Nghĩa vụ đang mở</span></div><div><b>'+urgent+'</b><span>Mục ≤30 ngày</span></div><div><b>'+incomplete+'</b><span>Hồ sơ cần bổ sung</span></div>';
 }
 function renderComplianceProfileList(){
   const host=$("complianceProfileList");if(!host)return;
@@ -160,7 +310,8 @@ function renderComplianceDetail(){
   host.innerHTML='<div class="compliance-detail-head"><div><div class="section-kicker">'+complianceProfileTypeLabel(p.profileType)+' · '+esc(compliancePhaseLabel(p.phase))+'</div><h2>'+esc(p.name)+'</h2><p>'+esc(p.sector||"Chưa khai lĩnh vực")+(p.location?" · "+esc(p.location):"")+'</p></div><div class="compliance-score"><b>'+complianceCompleteness(p)+'%</b><span>độ đầy đủ dữ liệu nền</span></div></div>'+
     '<div class="compliance-status-line"><b>'+esc(complianceStatus(p))+'</b><span>Không phải kết luận đạt/không đạt tuân thủ.</span></div>'+
     (unknown.length?'<div class="compliance-missing"><b>Còn chưa rõ:</b> '+unknown.slice(0,6).map(esc).join(" · ")+(unknown.length>6?"…":"")+'</div>':"")+
-    '<div class="compliance-detail-actions"><button class="btn bs" data-compliance-edit="'+esc(p.id)+'" type="button">Sửa hồ sơ</button><button class="btn bs" data-go="expert" type="button">Rà soát sâu hơn</button><button class="btn bs" data-go="upd" type="button">Xem cập nhật pháp luật</button><button class="btn bs danger-soft" data-compliance-delete="'+esc(p.id)+'" type="button">Xóa hồ sơ</button></div>'+
+    '<div class="compliance-detail-actions"><button class="btn bs" data-compliance-edit="'+esc(p.id)+'" type="button">Sửa hồ sơ</button><button class="btn bs" data-go="expert" type="button">Rà soát sâu hơn</button><button class="btn bs" data-go="upd" type="button">Xem cập nhật pháp luật</button><button class="btn bs" data-compliance-report type="button">Xuất báo cáo</button><button class="btn bs danger-soft" data-compliance-delete="'+esc(p.id)+'" type="button">Xóa hồ sơ</button></div>'+
+    '<section class="compliance-section obligation-register"><div class="compliance-section-head"><div><div class="section-kicker">Sổ nghĩa vụ tuân thủ</div><h3>Căn cứ · trách nhiệm · deadline · bằng chứng</h3></div><div class="obligation-register-actions"><span>'+p.obligations.length+' mục</span><button class="tiny" data-obligation-new type="button">+ Thêm nghĩa vụ</button></div></div><p class="micro-note">Trạng thái do người dùng quản lý. “Đã đáp ứng” hoặc “Không áp dụng” không phải kết luận của hệ thống.</p><div class="obligation-list">'+(p.obligations.length?p.obligations.map(complianceObligationHtml).join(""):'<div class="obligation-empty"><b>Chưa có mục nghĩa vụ</b><p>Thêm thủ công, hoặc dùng nút “+ Sổ nghĩa vụ” ở các nhánh cần đối chiếu bên dưới.</p></div>')+'</div><div id="obligationEditorMount"></div></section>'+
     '<section class="compliance-section"><div class="compliance-section-head"><div><div class="section-kicker">Ưu tiên</div><h3>Việc cần làm & deadline</h3></div></div><ul class="compliance-task-list">'+(tasks.length?tasks.map(complianceTaskHtml).join(""):'<li class="empty-mini">Chưa có việc theo dõi.</li>')+'</ul><div class="compliance-task-add"><input id="cpTaskTitle" placeholder="Ví dụ: Kiểm tra hạn báo cáo / lịch quan trắc…"><input id="cpTaskDate" type="date"><button class="btn bp" data-compliance-task-add type="button">Thêm việc</button></div><p class="micro-note">Deadline thủ công chỉ là lịch theo dõi của bạn. Hệ thống không tự suy ra hạn pháp lý nếu chưa có dữ liệu đã xác minh.</p></section>'+
     '<section class="compliance-section"><div class="compliance-section-head"><div><div class="section-kicker">Bản đồ nghĩa vụ</div><h3>Nhánh cần đối chiếu</h3></div><small>'+tracks.length+' nhánh theo dữ liệu đã khai</small></div><div class="compliance-track-grid">'+tracks.map(complianceTrackHtml).join("")+'</div></section>'+
     (p.note?'<section class="compliance-section"><div class="section-kicker">Ghi chú hồ sơ</div><p class="compliance-note">'+esc(p.note)+'</p></section>':"");
@@ -175,8 +326,8 @@ function renderComplianceHome(){
     host.innerHTML='<div class="home-compliance-empty"><div><div class="section-kicker">Theo dõi tuân thủ</div><b>Biến quy định thành việc cần làm</b><p>Tạo hồ sơ cơ sở/dự án để gom căn cứ, nhánh cần kiểm tra và deadline vào một nơi.</p></div><button class="btn bp" data-compliance-new type="button">Tạo hồ sơ tuân thủ</button></div>';
     return;
   }
-  const p=complianceProfile(complianceProfiles[0].id)||complianceProfiles[0],urgent=complianceUrgent(p),tracks=complianceTracks(p);
-  host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">Hồ sơ đang theo dõi</div><h2>'+esc(p.name)+'</h2><p>'+esc(complianceStatus(p))+' · '+complianceCompleteness(p)+'% dữ liệu nền</p></div><button class="btn bs" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="home-compliance-grid"><div><b>'+urgent.length+'</b><span>việc gần hạn</span></div><div><b>'+tracks.length+'</b><span>nhánh cần rà</span></div><div><b>'+complianceUnknowns(p).length+'</b><span>tín hiệu chưa rõ</span></div></div>';
+  const p=complianceProfile(complianceProfiles[0].id)||complianceProfiles[0],urgent=complianceUrgent(p).length+complianceObligationUrgent(p).length,tracks=complianceTracks(p),openObl=complianceOpenObligations(p).length;
+  host.innerHTML='<div class="home-compliance-head"><div><div class="section-kicker">Hồ sơ đang theo dõi</div><h2>'+esc(p.name)+'</h2><p>'+esc(complianceStatus(p))+' · '+complianceCompleteness(p)+'% dữ liệu nền</p></div><button class="btn bs" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="home-compliance-grid"><div><b>'+openObl+'</b><span>nghĩa vụ đang mở</span></div><div><b>'+urgent+'</b><span>mục gần hạn</span></div><div><b>'+tracks.length+'</b><span>nhánh cần rà</span></div><div><b>'+complianceUnknowns(p).length+'</b><span>tín hiệu chưa rõ</span></div></div>';
 }
 function renderComplianceRadar(targetId){
   targetId=targetId||"complianceRadarHub";
@@ -186,7 +337,7 @@ function renderComplianceRadar(targetId){
     return;
   }
   const p=complianceProfile()||complianceProfiles[0],tracks=complianceTracks(p);
-  const docs=[];tracks.forEach(function(t){t.docs.forEach(function(d){if(!docs.some(function(x){return x.id===d.id}))docs.push(d)})});
+  const docs=[];p.obligations.forEach(function(o){const d=complianceLegalDoc(o.legalDocId);if(d&&!docs.some(function(x){return x.id===d.id}))docs.push(d)});tracks.forEach(function(t){t.docs.forEach(function(d){if(!docs.some(function(x){return x.id===d.id}))docs.push(d)})});
   host.innerHTML='<section class="compliance-radar"><div class="compliance-radar-head"><div><div class="section-kicker">Radar theo hồ sơ</div><h3>'+esc(p.name)+'</h3><p>Các văn bản dưới đây được ghép theo tín hiệu đã khai; đây là danh sách ưu tiên đọc, không phải kết luận văn bản chắc chắn áp dụng.</p></div><button class="tiny" data-compliance-open="'+esc(p.id)+'" type="button">Mở hồ sơ</button></div><div class="compliance-radar-docs">'+(docs.length?docs.slice(0,8).map(function(d){return '<button data-open="'+d.id+'" type="button"><b>'+esc(d.ttl)+'</b><small>'+d.k+' · '+esc(topicName(d.t))+'</small></button>'}).join(""):'<span class="muted">Chưa có văn bản phù hợp trong kho hiện tại.</span>')+'</div></section>';
 }
 function fillComplianceEditor(p){
@@ -203,7 +354,7 @@ function readComplianceEditor(){
     profileType:$("cpType")&&$("cpType").value||"facility",sector:$("cpSector")&&$("cpSector").value||"",
     location:$("cpLocation")&&$("cpLocation").value||"",phase:$("cpPhase")&&$("cpPhase").value||"",
     features:features,permit:{gpmtNumber:$("cpGpmtNumber")&&$("cpGpmtNumber").value||"",expires:$("cpGpmtExpires")&&$("cpGpmtExpires").value||""},
-    note:$("cpNote")&&$("cpNote").value||"",deadlines:old&&old.deadlines||[],createdAt:old&&old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()
+    note:$("cpNote")&&$("cpNote").value||"",deadlines:old&&old.deadlines||[],obligations:old&&old.obligations||[],createdAt:old&&old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()
   }));
 }
 function saveComplianceEditor(){
@@ -241,6 +392,14 @@ function initComplianceUI(){
     if(e.target.closest("[data-compliance-save]")){e.preventDefault();saveComplianceEditor();return}
     if(e.target.closest("[data-compliance-cancel]")){e.preventDefault();if($("complianceEditor"))$("complianceEditor").open=false;return}
     if(e.target.closest("[data-compliance-task-add]")){e.preventDefault();addComplianceDeadline();return}
+    if(e.target.closest("[data-obligation-new]")){e.preventDefault();openObligationEditor("",{});return}
+    const oe=e.target.closest("[data-obligation-edit]");if(oe){e.preventDefault();openObligationEditor(oe.dataset.obligationEdit);return}
+    const od=e.target.closest("[data-obligation-delete]");if(od){e.preventDefault();const p=complianceProfile();if(p&&confirm("Xóa mục nghĩa vụ này khỏi sổ?")){p.obligations=p.obligations.filter(function(x){return x.id!==od.dataset.obligationDelete});p.updatedAt=new Date().toISOString();saveComplianceProfiles();toast("Đã xóa mục nghĩa vụ")}return}
+    if(e.target.closest("[data-obligation-save]")){e.preventDefault();saveObligationEditor();return}
+    if(e.target.closest("[data-obligation-cancel]")){e.preventDefault();const host=$("obligationEditorMount");if(host)host.innerHTML="";return}
+    const to=e.target.closest("[data-track-to-obligation]");if(to){e.preventDefault();addTrackAsObligation(to.dataset.trackToObligation);return}
+    const fd=e.target.closest("[data-obligation-from-doc]");if(fd){e.preventDefault();addDocumentAsObligation(fd.dataset.obligationFromDoc);return}
+    if(e.target.closest("[data-compliance-report]")){e.preventDefault();exportComplianceReport();return}
     const toggle=e.target.closest("[data-compliance-task-toggle]");if(toggle){const p=complianceProfile(),t=p&&p.deadlines.find(function(x){return x.id===toggle.dataset.complianceTaskToggle});if(t){t.done=!t.done;p.updatedAt=new Date().toISOString();saveComplianceProfiles()}return}
     const tdel=e.target.closest("[data-compliance-task-delete]");if(tdel){const p=complianceProfile();if(p){p.deadlines=p.deadlines.filter(function(x){return x.id!==tdel.dataset.complianceTaskDelete});p.updatedAt=new Date().toISOString();saveComplianceProfiles()}return}
   });
