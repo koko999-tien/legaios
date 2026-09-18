@@ -31,9 +31,6 @@ if (!cspMeta) {
 } else if (!/frame-src[^;]*https:\/\/app\.netlify\.com/i.test(cspMeta)) {
   fail('CSP frame-src must allow https://app.netlify.com so an explicitly enabled Netlify Drawer cannot fail as a broken frame.');
 }
-if (!html.includes('ntl-drawer-state') || !/deploy-preview-\\d\+--/.test(html)) {
-  fail('Missing Deploy Preview auto-hide guard for the Netlify Drawer.');
-}
 
 const ids = [...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(m => m[1]);
 const seen = new Set();
@@ -114,6 +111,10 @@ const executableCode = [...inlineScripts.map(item => item.code), ...localScripts
 // Remove script bodies from the HTML scan so inline JavaScript is not counted twice.
 const htmlWithoutScriptBodies = html.replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>)/gi, '$1$2');
 const securityText = [htmlWithoutScriptBodies, ...executableCode].join('\n');
+
+if (!securityText.includes('ntl-drawer-state') || !/deploy-preview-\\d\+--/.test(securityText)) {
+  fail('Missing Deploy Preview auto-hide guard for the Netlify Drawer.');
+}
 
 if (/\beval\s*\(/.test(securityText)) fail('eval(...) detected.');
 if (/\bnew\s+Function\s*\(/.test(securityText)) fail('new Function(...) detected.');
