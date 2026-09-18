@@ -111,17 +111,42 @@ function ensureSmartReadingProgress(){
   bar.dataset.smartReady="1";
   bar.classList.add("smart-reading-progress");
   bar.setAttribute("aria-hidden","true");
-  bar.innerHTML=`<div class="reading-progress-shell">
-    <div class="reading-progress-copy">
-      <b id="readingProgressSection">Nội dung tóm lược</b>
-      <span id="readingProgressMeta">0% · đang tính thời gian đọc…</span>
-    </div>
-    <button class="reading-resume" id="readingResume" type="button" hidden>Tiếp tục</button>
-  </div>
-  <div class="reading-progress-track" id="readingProgressTrack" role="slider" tabindex="0" aria-label="Tiến độ đọc văn bản" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-    <span class="reading-progress-fill"></span><i class="reading-progress-thumb" aria-hidden="true"></i>
-  </div>`;
-  const track=$('readingProgressTrack');
+  bar.replaceChildren();
+  const shell=document.createElement("div");
+  shell.className="reading-progress-shell";
+  const copy=document.createElement("div");
+  copy.className="reading-progress-copy";
+  const section=document.createElement("b");
+  section.id="readingProgressSection";
+  section.textContent="Nội dung tóm lược";
+  const meta=document.createElement("span");
+  meta.id="readingProgressMeta";
+  meta.textContent="0% · đang tính thời gian đọc…";
+  copy.append(section,meta);
+  const resume=document.createElement("button");
+  resume.className="reading-resume";
+  resume.id="readingResume";
+  resume.type="button";
+  resume.hidden=true;
+  resume.textContent="Tiếp tục";
+  shell.append(copy,resume);
+
+  const track=document.createElement("div");
+  track.className="reading-progress-track";
+  track.id="readingProgressTrack";
+  track.setAttribute("role","slider");
+  track.tabIndex=0;
+  track.setAttribute("aria-label","Tiến độ đọc văn bản");
+  track.setAttribute("aria-valuemin","0");
+  track.setAttribute("aria-valuemax","100");
+  track.setAttribute("aria-valuenow","0");
+  const fill=document.createElement("span");
+  fill.className="reading-progress-fill";
+  const thumb=document.createElement("i");
+  thumb.className="reading-progress-thumb";
+  thumb.setAttribute("aria-hidden","true");
+  track.append(fill,thumb);
+  bar.append(shell,track);
   const jump=e=>{
     const r=track.getBoundingClientRect();
     if(!r.width)return;
