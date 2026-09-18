@@ -42,7 +42,7 @@
       <button data-go="home" class="on" type="button"><span class="nav-ico">⌂</span><span>Tổng quan</span></button>
       <button data-go="lib" type="button"><span class="nav-ico">§</span><span>Tra cứu pháp luật</span></button>
       <button data-go="expert" type="button"><span class="nav-ico">◎</span><span>Rà soát hồ sơ</span></button>
-      <button data-go="work" type="button"><span class="nav-ico">▣</span><span>Hồ sơ công việc</span></button>
+      <button data-go="work" type="button"><span class="nav-ico">▣</span><span>Hồ sơ tuân thủ</span></button>
     </div>
     <details class="nav-more" id="navMore">
       <summary><span class="nav-ico">•••</span><span>Công cụ khác</span><span class="nav-more-arrow">⌄</span></summary>
@@ -127,6 +127,8 @@
     </div>
   </header>
 
+  <section id="homeCompliancePulse" class="home-compliance-pulse" aria-label="Tổng quan tuân thủ"></section>
+
   <section class="home113-section home113-main-choice">
     <div class="home113-section-head">
       <div>
@@ -163,17 +165,17 @@
         <div class="home113-card-foot"><span>Rà soát hồ sơ</span><b>→</b></div>
       </button>
 
-      <button class="home113-primary-card procedure-card compact-primary-card" id="homeResumeCard" data-go="work" type="button" aria-label="Mở Hồ sơ công việc">
+      <button class="home113-primary-card procedure-card compact-primary-card" id="homeResumeCard" data-go="work" type="button" aria-label="Mở Hồ sơ tuân thủ">
         <div class="home113-card-top">
           <span class="home113-icon">≣</span>
           <span class="home113-card-label">TIẾP TỤC</span>
         </div>
         <div class="home113-card-body compact-card-body">
-          <h3 id="homeResumeTitle">Tôi muốn tiếp tục công việc đang làm</h3>
-          <p id="homeResumeCopy">Mở lại hồ sơ, ghi chú, văn bản đã lưu và những việc đang theo dõi trên thiết bị này.</p>
+          <h3 id="homeResumeTitle">Tôi muốn theo dõi nghĩa vụ và deadline</h3>
+          <p id="homeResumeCopy">Gom hồ sơ cơ sở/dự án, việc cần kiểm tra, deadline, ghi chú và căn cứ đang theo dõi trên thiết bị này.</p>
           <div class="card-mini-list"><span>Hồ sơ</span><span>Ghi chú</span><span>Văn bản đã lưu</span></div>
         </div>
-        <div class="home113-card-foot"><span id="homeResumeFoot">Mở công việc của tôi</span><b>→</b></div>
+        <div class="home113-card-foot"><span id="homeResumeFoot">Mở hồ sơ tuân thủ</span><b>→</b></div>
       </button>
     </div>
   </section>
@@ -209,9 +211,9 @@
         <span class="home113-tile-go">→</span>
       </button>
 
-      <button class="home113-tile compact-tile" data-go="work" type="button" aria-label="Mở Hồ sơ công việc">
+      <button class="home113-tile compact-tile" data-go="work" type="button" aria-label="Mở Hồ sơ tuân thủ">
         <span class="home113-tile-icon">▣</span>
-        <div><b>Hồ sơ công việc</b><small>Lưu hồ sơ, ghi chú, văn bản đã mở, việc đang làm và tiến độ xử lý.</small></div>
+        <div><b>Hồ sơ tuân thủ</b><small>Lưu hồ sơ, ghi chú, văn bản đã mở, việc đang làm và tiến độ xử lý.</small></div>
         <span class="home113-tile-go">→</span>
       </button>
 
@@ -821,7 +823,7 @@
     </div>
     <div class="section-actions">
       <button class="btn bs" data-go="lib" type="button">Tra cứu thêm</button>
-      <button class="btn bs" data-go="work" type="button">Hồ sơ công việc</button>
+      <button class="btn bs" data-go="work" type="button">Hồ sơ tuân thủ</button>
       <button class="btn bs" data-go="proc" type="button">Lộ trình thủ tục</button>
       <button class="btn bs" id="memoExport" type="button">Xuất Markdown</button>
       <button class="btn bs" id="memoExportData" type="button">Xuất gói dữ liệu</button>
@@ -914,8 +916,53 @@
 </div></section>
 
 <section id="work" class="page"><div class="wrap">
-  <div class="section-head"><div><div class="section-kicker">Hồ sơ</div><h1>Hồ sơ công việc</h1><p class="lead">Một nơi để giữ kết quả sàng lọc, văn bản đã lưu, ghi chú và tiến độ thủ tục. Dữ liệu cá nhân vẫn ở trình duyệt.</p></div></div>
+  <div class="section-head"><div><div class="section-kicker">Workspace tuân thủ</div><h1>Hồ sơ tuân thủ</h1><p class="lead">Biến quy định thành việc cần làm: lưu bối cảnh cơ sở/dự án, theo dõi nhánh pháp lý, deadline và căn cứ cần đối chiếu. Dữ liệu vẫn ở trình duyệt của bạn.</p></div><div class="section-actions"><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ tuân thủ</button></div></div>
+
+  <section class="compliance-workspace" id="workCompliance">
+    <div class="compliance-workspace-head">
+      <div><div class="section-kicker">Tổng quan tuân thủ</div><h2>Việc gì đang cần chú ý?</h2><p>Đây là bảng tổ chức công việc, không phải kết luận doanh nghiệp/cơ sở đã đạt hay chưa đạt tuân thủ.</p></div>
+      <button class="btn bs" data-go="upd" type="button">Mở Radar pháp luật</button>
+    </div>
+    <div class="compliance-stats" id="complianceStats"></div>
+
+    <details class="compliance-editor" id="complianceEditor">
+      <summary><span><b>Tạo / chỉnh sửa hồ sơ</b><small>Khai dữ liệu nền một lần để ưu tiên đúng nhánh cần kiểm tra.</small></span><span>⌄</span></summary>
+      <div class="compliance-editor-body">
+        <input id="complianceEditorId" type="hidden">
+        <div class="compliance-form-grid">
+          <label><span>Tên cơ sở / dự án *</span><input id="cpName" placeholder="Ví dụ: Nhà máy A"></label>
+          <label><span>Loại hồ sơ</span><select id="cpType"><option value="facility">Cơ sở</option><option value="project">Dự án</option><option value="company">Doanh nghiệp</option></select></label>
+          <label><span>Lĩnh vực hoạt động</span><input id="cpSector" placeholder="Ví dụ: sản xuất nhựa, chế biến thực phẩm…"></label>
+          <label><span>Địa điểm</span><input id="cpLocation" placeholder="Tỉnh/thành, KCN hoặc khu vực"></label>
+          <label><span>Giai đoạn</span><select id="cpPhase"><option value="">Chưa xác định</option><option value="preparation">Chuẩn bị</option><option value="construction">Thi công</option><option value="operation">Vận hành</option><option value="change">Thay đổi / mở rộng</option><option value="closure">Đóng cửa / kết thúc</option></select></label>
+          <label><span>Số GPMT (nếu có)</span><input id="cpGpmtNumber" placeholder="Nhập theo giấy phép gốc"></label>
+          <label><span>Ngày hết hạn GPMT do bạn khai báo</span><input id="cpGpmtExpires" type="date"></label>
+        </div>
+        <div class="compliance-signal-head"><b>Tín hiệu môi trường</b><span>Chọn “Chưa rõ” nếu chưa đủ dữ liệu; hệ thống sẽ coi đó là việc cần xác minh.</span></div>
+        <div class="compliance-signal-grid">
+          <label><span>Nước thải</span><select id="cp-water"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>Khí thải / bụi</span><select id="cp-air"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>CTNH</span><select id="cp-ctnh"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>Khai thác / sử dụng nước</span><select id="cp-waterUse"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>Có thể liên quan EPR</span><select id="cp-epr"><option value="unknown">Chưa rõ</option><option value="yes">Có tín hiệu</option><option value="no">Chưa thấy tín hiệu</option></select></label>
+          <label><span>Có thể liên quan KNK</span><select id="cp-knk"><option value="unknown">Chưa rõ</option><option value="yes">Có tín hiệu</option><option value="no">Chưa thấy tín hiệu</option></select></label>
+          <label><span>Đất / rừng</span><select id="cp-land"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>Đa dạng sinh học</span><select id="cp-bio"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+          <label><span>Hóa chất</span><select id="cp-chemical"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
+        </div>
+        <label class="compliance-note-field"><span>Ghi chú hồ sơ</span><textarea id="cpNote" rows="3" placeholder="Thông tin cần nhớ, điểm cần xác minh, tình trạng hồ sơ…"></textarea></label>
+        <div class="compliance-editor-actions"><button class="btn bs" data-compliance-cancel type="button">Hủy</button><button class="btn bp" data-compliance-save type="button">Lưu hồ sơ</button></div>
+      </div>
+    </details>
+
+    <div class="compliance-layout">
+      <aside><div class="compliance-list-head"><b>Hồ sơ đang theo dõi</b><small>Chọn để xem việc cần làm</small></div><div id="complianceProfileList" class="compliance-profile-list"></div></aside>
+      <div id="complianceProfileDetail" class="compliance-profile-detail"></div>
+    </div>
+  </section>
+
   <div class="workspace-jump">
+    <button data-jump="workCompliance" type="button">Tuân thủ</button>
     <button data-jump="workActivity" type="button">Nhịp làm việc</button>
     <button data-jump="workExpert" type="button">Phiếu chuyên gia</button>
     <button data-jump="workCases" type="button">Hồ sơ</button>
@@ -924,7 +971,8 @@
     <button data-jump="workBackup" type="button">Sao lưu</button><button data-go="import" type="button">Nhập tài liệu</button>
   </div>
   <div class="workspace-top">
-      <div class="workspace-card"><b id="wkCases">0</b><small>Hồ sơ đã lưu</small></div>
+      <div class="workspace-card"><b id="wkCompliance">0</b><small>Hồ sơ tuân thủ</small></div>
+      <div class="workspace-card"><b id="wkCases">0</b><small>Hồ sơ sàng lọc</small></div>
       <div class="workspace-card"><b id="wkSaved">0</b><small>Văn bản đã lưu</small></div>
       <div class="workspace-card"><b id="wkNotes">0</b><small>Ghi chú</small></div>
       <div class="workspace-card"><b id="wkProgress">0%</b><small>Tiến độ quy trình</small></div><div class="workspace-card"><b id="wkFiles">0</b><small>Tài liệu đã nhập</small></div><div class="workspace-card"><b id="wkExpert">0</b><small>Phiếu chuyên gia</small></div>
@@ -975,13 +1023,13 @@
           <input id="importFile" type="file" accept=".json,application/json" hidden>
         </div>
       </div>
-      <h2 id="workCases" style="margin-top:18px">Hồ sơ đã lưu</h2>
+      <h2 id="workCases" style="margin-top:18px">Hồ sơ sàng lọc đã lưu</h2>
       <input class="case-search" id="caseQ" placeholder="Tìm hồ sơ…">
       <div class="case-list" id="caseList"></div>
     </div>
     <div>
       <h2 style="margin-top:0">Chi tiết hồ sơ</h2>
-      <div id="caseDetail" class="empty">Chưa chọn hồ sơ. Hãy sang “Phân loại đối tượng”, nhập dữ liệu và lưu kết quả.</div>
+      <div id="caseDetail" class="empty">Chưa chọn hồ sơ sàng lọc. Bạn có thể tạo Hồ sơ tuân thủ ở phần đầu trang hoặc mở một hồ sơ sàng lọc đã lưu.</div>
       <h2 id="workSaved">Văn bản đã lưu</h2>
       <div class="docs" id="savedList"></div>
       <section class="notes-center" id="workNotes"><div class="notes-center-head"><div><div class="k">Ghi chú</div><h2>Trung tâm ghi chú</h2></div><button class="btn bs" id="clearQuickNote" type="button">Xóa ghi chú nhanh</button></div><div class="g2"><div class="card"><b>Ghi chú nhanh</b><textarea class="case-notes" id="workspaceQuickNote" placeholder="Ghi ý tưởng, việc cần kiểm tra, số hiệu cần đọc…"></textarea><small class="autosave">Tự động lưu trên trình duyệt</small></div><div class="card"><b>Ghi chú theo văn bản</b><div id="articleNotesList" class="note-index"></div></div></div></section>
@@ -998,7 +1046,7 @@
     <div class="timeline" id="ulist"></div>
   </div>
   <div class="lawhub-panel" data-lawpanel="upcoming" hidden><div class="lawhub-callout"><b>Lịch hiệu lực</b><p style="margin:5px 0 0;font-size:12px">Danh sách tính theo ngày trên thiết bị. Ưu tiên kiểm tra văn bản sắp có hiệu lực và những văn bản vừa có hiệu lực trong 60 ngày gần nhất.</p></div><div class="upcoming-list" id="upcomingList"></div></div>
-  <div class="lawhub-panel" data-lawpanel="impact" hidden><div class="lawhub-callout"><b>Đọc cập nhật theo công việc</b><p style="margin:5px 0 0;font-size:12px">Một thay đổi pháp luật có thể ảnh hưởng nhiều thủ tục. Các thay đổi được gom theo luồng công việc để tránh chỉ nhìn theo ngày ban hành.</p></div><div class="impact-grid" id="impactGrid"></div></div>
+  <div class="lawhub-panel" data-lawpanel="impact" hidden><div class="lawhub-callout"><b>Đọc cập nhật theo công việc</b><p style="margin:5px 0 0;font-size:12px">Một thay đổi pháp luật có thể ảnh hưởng nhiều thủ tục. Các thay đổi được gom theo luồng công việc để tránh chỉ nhìn theo ngày ban hành.</p></div><div id="complianceRadarHub" class="compliance-radar-hub"></div><div class="impact-grid" id="impactGrid"></div></div>
 
   <div class="lawhub-panel" data-lawpanel="core" hidden><div class="lawhub-callout"><b>Chuỗi BVMT cốt lõi</b><p style="margin:5px 0 0;font-size:12px">Không nên đọc NĐ 08/2022 một mình: cần ghép với NĐ 05/2025, NĐ 48/2026 và Luật 146/2025. Mẫu/hướng dẫn ở TT 02/2022 cũng đã có các lần sửa trong 2025–2026.</p></div><div class="core-map" id="coreMapHub"></div></div>
   
@@ -1119,6 +1167,7 @@
 <script src="assets/js/project-tools.js"></script>
 <script src="assets/js/library.js"></script>
 <script src="assets/js/procedures.js"></script>
+<script src="assets/js/compliance.js"></script>
 <script src="assets/js/workspace.js"></script>
 <script src="assets/js/legal-hub.js"></script>
 <script src="assets/js/expert.js"></script>
@@ -1133,7 +1182,7 @@
   <button data-go="lib" type="button">§<br>Văn bản</button>
   <button data-go="expert" type="button">◎<br>Rà soát</button>
   <button data-go="import" type="button">⇩<br>Nhập file</button>
-  <button data-go="work" type="button">▣<br>Hồ sơ</button>
+  <button data-go="work" type="button">▣<br>Tuân thủ</button>
 </nav>
 
 </body>
