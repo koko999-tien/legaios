@@ -50,6 +50,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/browser-smoke.mjs
 
+      - name: Verify sticky application header
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/header-sticky-smoke.mjs
+
       - name: Verify V14 UX polish
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
