@@ -58,7 +58,7 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
 9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
 10. Added `tools/check-v14-structure.mjs`, which locks the ordered script load, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
-11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal radar and workspace-v3 backup compatibility.
+11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal radar and workspace-v4 backup compatibility.
 
 ## Compliance workspace boundaries
 
@@ -66,9 +66,10 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 - A profile stores declared context and tracking dates; it does **not** represent a finding of legal compliance.
 - Automatic branches are review priorities derived from user-declared signals. They must not be phrased as definitive applicability or non-applicability.
 - The system does not invent statutory deadlines. Manual tasks and user-entered permit dates are labeled as tracking data and should be checked against original records.
-- `ccplmt-workspace-v3` exports compliance profiles with the existing workspace data. The importer still accepts backups that predate this field.
+- `ccplmt-workspace-v4` exports compliance profiles with the existing workspace data. The importer still accepts backups that predate this field.
 - `tools/compliance-smoke.mjs` covers create → signal mapping → deadline → radar → export → reload → mobile geometry.
 - The obligation register is nested inside each compliance profile and stores user-managed status, legal source, ownership, deadline basis/source, evidence references and notes. Imported evidence file bytes are not embedded in workspace JSON.
+- Recurring obligations use a user-configured cadence (`monthly`, `quarterly`, `yearly`). Completing a period appends occurrence history and advances the next due date. Calendar projections are explicitly labeled as projected tracking dates, not inferred statutory deadlines.
 
 ## Remaining before V14 merge
 
