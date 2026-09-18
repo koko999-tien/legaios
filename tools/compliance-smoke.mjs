@@ -25,7 +25,7 @@ try{
   assert(await page.locator('#homeCompliancePulse [data-compliance-new]').count()===1,'Empty home state does not invite the first compliance profile');
 
   await go('work');
-  await page.locator('[data-compliance-new]').first().click();
+  await page.locator('#work .section-head [data-compliance-new]').click();
   await page.locator('#cpName').fill('Nhà máy QA');
   await page.locator('#cpSector').fill('Sản xuất thử nghiệm');
   await page.locator('#cpLocation').fill('KCN QA');
