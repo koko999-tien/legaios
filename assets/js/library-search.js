@@ -1,6 +1,6 @@
 /* Căn cứ Pháp lý Môi trường — document-library search result rendering. */
 function docs(topic="all",q=""){
-  const qq=q.trim(),type=$("typeF")?.value||"all",sort=$("sortF")?.value||"default",scope=$("scopeF")?.value||"all",year=$("yearF")?.value||"all",source=$("sourceF")?.value||"all",asOf=$("asOfF")?.value||"";
+  const qq=q.trim(),type=$("typeF")?.value||"all",sort=$("sortF")?.value||"default",scope=$("scopeF")?.value||"all",year=$("yearF")?.value||"all",effect=$("effectF")?.value||"all",source=$("sourceF")?.value||"all",asOf=$("asOfF")?.value||"";
   let list=D.filter(d=>{
     const m=metaOf(d.id);
     return (topic==="all"||d.t===topic)
@@ -9,6 +9,7 @@ function docs(topic="all",q=""){
       &&searchEligible(d,qq)
       &&(scope==="all"||(scope==="2026"&&is2026Doc(d))||(scope==="core"&&CORE_IDS.includes(d.id))||(scope==="consolidated"&&isConsolidated(d)))
       &&(year==="all"||docYear(d)===year)
+      &&(effect==="all"||(effect==="dated"&&!!m.eff)||(effect==="partial"&&/hết hiệu lực một phần/i.test(m.rel||""))||(effect==="unknown"&&!m.eff&&!/hết hiệu lực một phần/i.test(m.rel||"")))
       &&(source==="all"||(source==="verified"&&!!m.src)||(source==="prof"&&!!professorVerified(d.id)))&&(!asOf||!m.eff||!parseVNDate(m.eff)||parseVNDate(m.eff)<=new Date(asOf+"T23:59:59"));
   }).map(d=>({d,...legalSearchScore(d,qq)}));
 
