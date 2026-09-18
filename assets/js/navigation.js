@@ -58,6 +58,13 @@ function go(p){
     syncHomeCleanMode(p);
     document.body.classList.toggle('article-view',p==='art');
     document.querySelectorAll("nav.links button").forEach(b=>b.classList.toggle("on",b.dataset.go===p||(p==="art"&&b.dataset.go==="lib")||(p==="pone"&&b.dataset.go==="proc")));
+    const navMore=$("navMore");
+    if(navMore){
+      const routed=p==="art"?"lib":p==="pone"?"proc":p;
+      const inside=navMore.querySelector(`[data-go="${routed}"]`);
+      if(inside)navMore.open=true;
+      else if(["home","lib","expert","work"].includes(routed))navMore.open=false;
+    }
     $("nav").classList.remove("open");
     $("navScrim")?.classList.remove("on");
     window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
