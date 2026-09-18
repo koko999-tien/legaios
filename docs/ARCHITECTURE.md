@@ -30,6 +30,7 @@ assets/
     project-tools.js       # update feed, case helpers and exports
     library.js             # library filters, saved/recent docs, article reader
     procedures.js          # procedure checklist/progress/detail runtime
+    compliance.js           # local compliance profiles, deadlines and profile-aware legal radar
     workspace.js           # workspace and command-palette runtime
     legal-hub.js           # legal-pack, data-vault and update-hub runtime
     expert.js              # expert dossier review runtime
@@ -56,8 +57,17 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 7. Isolated shell UI, UI utilities, activity/comparison UI, project tools, library/reader and procedure runtime.
 8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
 9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
-10. Added `tools/check-v14-structure.mjs`, which locks the 20-script load order, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
-11. Regenerated `docs/JS_DEPENDENCIES.md` from the final 20-module script order.
+10. Added `tools/check-v14-structure.mjs`, which locks the ordered script load, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
+11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal radar and workspace-v2 backup compatibility.
+
+## Compliance workspace boundaries
+
+- `compliance.js` owns `ccplmt_compliance_profiles_v1` and loads before `workspace.js` so backup/import can include normalized profiles.
+- A profile stores declared context and tracking dates; it does **not** represent a finding of legal compliance.
+- Automatic branches are review priorities derived from user-declared signals. They must not be phrased as definitive applicability or non-applicability.
+- The system does not invent statutory deadlines. Manual tasks and user-entered permit dates are labeled as tracking data and should be checked against original records.
+- `ccplmt-workspace-v2` exports compliance profiles with the existing workspace data. The importer still accepts backups that predate this field.
+- `tools/compliance-smoke.mjs` covers create → signal mapping → deadline → radar → export → reload → mobile geometry.
 
 ## Remaining before V14 merge
 
