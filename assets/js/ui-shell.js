@@ -60,6 +60,138 @@ function renderWizard(){
   const p=P.find(x=>x.id===wizardState.pid);if(!p)return;const i=wizardState.index,s=p.st[i],done=procDone[p.id]||[];$('wizardTitle').textContent=p.ttl;
   $('wizardBody').innerHTML=`<div class="wizard-step-no">Bước ${i+1} / ${p.st.length} · ${done.includes(i)?'Đã hoàn thành':'Chưa hoàn thành'}</div><h2 class="wizard-step-title">${s[0]}</h2><p class="wizard-step-text">${s[1]}</p><div class="progress"><span style="width:${(i+1)/p.st.length*100}%"></span></div><div class="wizard-dots">${p.st.map((_,n)=>`<span class="wizard-dot ${done.includes(n)?'done':''} ${n===i?'current':''}"></span>`).join('')}</div><div class="wizard-controls"><button class="btn bs" data-wiz="prev" ${i===0?'disabled':''} type="button">← Trước</button><div class="row"><button class="btn ${done.includes(i)?'bs':'bp'}" data-wiz="toggle" type="button">${done.includes(i)?'Bỏ hoàn thành':'✓ Đánh dấu hoàn thành'}</button><button class="btn bs" data-wiz="next" ${i===p.st.length-1?'disabled':''} type="button">Tiếp →</button></div></div>`;
 }
+function readingProgressStore(){
+  return STORE.get("v14_reading_progress",{});
+}
+function readingProgressSave(docId,pct,section){
+  if(!docId||!Number.isFinite(pct))return;
+  const now=Date.now();
+  if(window.__legalosReadingLastSave&&now-window.__legalosReadingLastSave<700)return;
+  window.__legalosReadingLastSave=now;
+  const all=readingProgressStore();
+  const prev=all[docId]||{};
+  all[docId]={
+    pct:Math.round(Math.max(0,Math.min(100,pct))*10)/10,
+    maxPct:Math.max(Number(prev.maxPct)||0,pct),
+    section:String(section||"").slice(0,140),
+    updatedAt:now
+  };
+  STORE.set("v14_reading_progress",all);
+}
+function readingProgressTarget(){
+  return document.querySelector('#art.page.on #legalText')||document.querySelector('#art.page.on .art-content');
+}
+function readingProgressMetrics(target){
+  const rect=target.getBoundingClientRect();
+  const top=window.scrollY+rect.top;
+  const height=Math.max(1,target.scrollHeight||target.offsetHeight||rect.height);
+  const readingLine=window.scrollY+Math.min(window.innerHeight*.42,360);
+  const end=Math.max(top+1,top+height-Math.min(window.innerHeight*.28,240));
+  const pct=Math.max(0,Math.min(100,(readingLine-top)/(end-top)*100));
+  return {top,end,pct,height};
+}
+function readingProgressSection(target){
+  const line=Math.min(window.innerHeight*.42,360);
+  const headings=[...target.querySelectorAll('h2,h3,h4,.summary-block h3,.indexed-law-article h3')]
+    .filter(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return s.display!=="none"&&r.height>0&&r.top<=line+12});
+  const heading=headings.at(-1);
+  return (heading?.textContent||"Nội dung tóm lược").replace(/\s+/g," ").trim().slice(0,140);
+}
+function readingProgressJumpTo(pct,behavior="smooth"){
+  const target=readingProgressTarget();if(!target)return;
+  const m=readingProgressMetrics(target);
+  const clamped=Math.max(0,Math.min(100,Number(pct)||0));
+  const readingOffset=Math.min(window.innerHeight*.42,360);
+  const y=m.top+(m.end-m.top)*(clamped/100)-readingOffset;
+  window.scrollTo({top:Math.max(0,y),behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":behavior});
+}
+function ensureSmartReadingProgress(){
+  const bar=$('readingProgress');if(!bar)return null;
+  if(bar.dataset.smartReady==="1")return bar;
+  bar.dataset.smartReady="1";
+  bar.classList.add("smart-reading-progress");
+  bar.setAttribute("aria-hidden","true");
+  bar.innerHTML=`<div class="reading-progress-shell">
+    <div class="reading-progress-copy">
+      <b id="readingProgressSection">Nội dung tóm lược</b>
+      <span id="readingProgressMeta">0% · đang tính thời gian đọc…</span>
+    </div>
+    <button class="reading-resume" id="readingResume" type="button" hidden>Tiếp tục</button>
+  </div>
+  <div class="reading-progress-track" id="readingProgressTrack" role="slider" tabindex="0" aria-label="Tiến độ đọc văn bản" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <span class="reading-progress-fill"></span><i class="reading-progress-thumb" aria-hidden="true"></i>
+  </div>`;
+  const track=$('readingProgressTrack');
+  const jump=e=>{
+    const r=track.getBoundingClientRect();
+    if(!r.width)return;
+    readingProgressJumpTo((e.clientX-r.left)/r.width*100);
+  };
+  track.addEventListener("click",jump);
+  track.addEventListener("keydown",e=>{
+    const now=Number(track.getAttribute("aria-valuenow"))||0;
+    if(e.key==="ArrowLeft"||e.key==="ArrowDown"){e.preventDefault();readingProgressJumpTo(now-10)}
+    if(e.key==="ArrowRight"||e.key==="ArrowUp"){e.preventDefault();readingProgressJumpTo(now+10)}
+    if(e.key==="Home"){e.preventDefault();readingProgressJumpTo(0)}
+    if(e.key==="End"){e.preventDefault();readingProgressJumpTo(100)}
+  });
+  $('readingResume').addEventListener("click",()=>{
+    const pct=Number($('readingResume').dataset.pct)||0;
+    $('readingResume').hidden=true;
+    readingProgressJumpTo(pct);
+  });
+  window.addEventListener("resize",()=>requestAnimationFrame(readingProgressUpdate),{passive:true});
+  return bar;
+}
 function readingProgressUpdate(){
-  const art=document.querySelector('#art.page.on .art-content');if(!art){$('readingProgress')?.classList.remove('on');return}const r=art.getBoundingClientRect(),total=Math.max(1,art.offsetHeight-window.innerHeight*.55),passed=Math.max(0,-r.top+110),pct=Math.max(0,Math.min(100,passed/total*100));$('readingProgress')?.classList.add('on');$('readingProgress').querySelector('span').style.width=pct+'%';
+  const bar=ensureSmartReadingProgress();
+  const target=readingProgressTarget();
+  if(!bar||!target){
+    if(bar){bar.classList.remove("on");bar.setAttribute("aria-hidden","true")}
+    window.__legalosReadingActive=false;
+    return;
+  }
+
+  const docId=currentArticleDocId||"";
+  if(!window.__legalosReadingActive||window.__legalosReadingDocId!==docId){
+    window.__legalosReadingActive=true;
+    window.__legalosReadingDocId=docId;
+    window.__legalosReadingLastSave=0;
+    const savedState=readingProgressStore()[docId];
+    const resume=$('readingResume');
+    if(resume&&savedState&&savedState.pct>=5&&savedState.pct<97){
+      resume.dataset.pct=String(savedState.pct);
+      resume.textContent=`Tiếp tục ${Math.round(savedState.pct)}%`;
+      resume.hidden=false;
+    }else if(resume){
+      resume.hidden=true;
+      resume.removeAttribute("data-pct");
+    }
+  }
+
+  const m=readingProgressMetrics(target);
+  const pct=m.pct;
+  const section=readingProgressSection(target);
+  const words=(target.innerText.match(/\S+/g)||[]).length;
+  const remainingWords=Math.max(0,Math.round(words*(1-pct/100)));
+  const minutes=Math.max(0,Math.ceil(remainingWords/190));
+  const meta=pct>=99
+    ?"100% · Đã đọc xong"
+    :pct<1
+      ?`0% · khoảng ${Math.max(1,Math.ceil(words/190))} phút đọc`
+      :`${Math.round(pct)}% · ${minutes<=1?"còn <1 phút":`còn ~${minutes} phút`}`;
+
+  bar.classList.add("on");
+  bar.setAttribute("aria-hidden","false");
+  $('readingProgressSection').textContent=section;
+  $('readingProgressMeta').textContent=meta;
+  const track=$('readingProgressTrack');
+  track.setAttribute("aria-valuenow",String(Math.round(pct)));
+  track.setAttribute("aria-valuetext",`${Math.round(pct)} phần trăm, ${section}`);
+  const fill=bar.querySelector(".reading-progress-fill");
+  const thumb=bar.querySelector(".reading-progress-thumb");
+  if(fill)fill.style.width=pct+"%";
+  if(thumb)thumb.style.left=pct+"%";
+
+  if(pct>=2)readingProgressSave(docId,pct,section);
 }
