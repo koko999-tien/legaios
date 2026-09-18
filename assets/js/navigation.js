@@ -36,22 +36,8 @@ function go(p){
     }
     $("nav").classList.remove("open");
     $("navScrim")?.classList.remove("on");
-    window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+    window.scrollTo({top:0,behavior:"auto"});
     requestAnimationFrame(()=>{setCrumb();syncMobileNav();renderCommandCenter();if(p==="home"){renderHomeActivity();renderHomeContinue();renderHomePortal()}if(p==="corekb"){renderCoreKnowledge($("coreKbQ")?.value||"")}if(p==="memo"){renderMemoV13()}if(p==="import"){refreshImportedDocs()}if(p==="expert"){renderExpertBriefs();renderImportStats();if($("expFileCount"))$("expFileCount").textContent=importedDocs.length}if(p==="work"){renderWorkspace();renderWorkspaceStats();renderComplianceWorkspace()}if(p!=="art"){$('readingProgress')?.classList.remove('on');window.__legalosReadingActive=false;document.body.classList.remove('read-focus','read-large','read-small')}});
   };
-  if(document.startViewTransition&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
-    try{
-      window.__legalosPageTransition?.skipTransition?.();
-      const transition=document.startViewTransition(activate);
-      window.__legalosPageTransition=transition;
-      transition.ready?.catch(()=>{});
-      transition.updateCallbackDone?.catch(()=>{});
-      transition.finished?.catch(()=>{}).finally(()=>{
-        if(window.__legalosPageTransition===transition)window.__legalosPageTransition=null;
-      });
-    }catch{
-      window.__legalosPageTransition=null;
-      activate();
-    }
-  }else activate();
+  activate();
 }
