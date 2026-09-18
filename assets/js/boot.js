@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const vs=(remember=false)=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value);if(remember&&$("q").value.trim())addLegalSearchHistory($("q").value)};
   $("qBtn").onclick=()=>vs(true);$("q").addEventListener("keydown",e=>{if(e.key==="Enter")vs(true)});
   $("q").addEventListener("input",debounce(()=>vs(false),90));
-  $("typeF").onchange=()=>vs(false);$("sortF").onchange=()=>vs(false);$("yearF").onchange=()=>vs(false);$("sourceF").onchange=()=>vs(false);$("scopeF").onchange=()=>vs(false);
+  $("typeF").onchange=()=>vs(false);$("sortF").onchange=()=>vs(false);$("yearF").onchange=()=>vs(false);$("effectF").onchange=()=>vs(false);$("sourceF").onchange=()=>vs(false);$("scopeF").onchange=()=>vs(false);
   $("searchMode").onclick=e=>{const b=e.target.closest("[data-searchmode]");if(!b)return;setLegalSearchMode(b.dataset.searchmode);vs(false)};
   $("refFind").onclick=()=>{const q=buildRefQuery();if(!q){toast("Nhập ít nhất Điều hoặc số hiệu văn bản");return}$("q").value=q;setLegalSearchMode("ref");vs(true)};
   ["refDoc","refArticle","refClause","refPoint"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")$("refFind").click()}));
