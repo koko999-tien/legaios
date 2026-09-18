@@ -7,7 +7,7 @@
   const baseLegalSearchScore=legalSearchScore;
   const profileCache=new Map();
   const MATCH_REASON=/Tên văn bản khớp|Đúng số hiệu|Có nhắc (?:Điều|Khoản|Điểm)|Đúng (?:Khoản|Điểm)|Điều .*đã bóc|Khớp cụm|Thỏa điều kiện/i;
-  const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','ve','la','toi','minh','co','can','phai','khong','thi','nao','gi','hay','neu','muon','hoi']);
+  const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','ve','la','toi','minh','phai','khong','thi','nao','gi','hay','neu','muon','hoi']);
 
   function tokenizeVN(value=''){
     return (cleanLegalQuery(value).match(/[\p{L}\p{M}\p{N}_]+/gu)||[])
@@ -94,7 +94,7 @@
     const intent=typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]};
     const baseMatched=(base.reasons||[]).some(r=>MATCH_REASON.test(r))
       ||(intent.labels.length>0&&base.score>0&&(base.reasons||[]).some(r=>/từ khóa khớp/i.test(r)));
-    const needed=fuzzy.total<=1?1:Math.ceil(fuzzy.total*0.6);
+    const needed=fuzzy.total<=1?1:(intent.labels.length?Math.max(2,Math.ceil(fuzzy.total*0.45)):Math.ceil(fuzzy.total*0.6));
     const matched=baseMatched||(fuzzy.hits>=needed&&fuzzy.hits>0);
     const fuzzySummary=fuzzy.total&&fuzzy.hits?`${fuzzy.hits}/${fuzzy.total} từ khóa khớp hoặc gần đúng`:'';
     const reasons=[...fuzzy.reasons,...(base.reasons||[])];
