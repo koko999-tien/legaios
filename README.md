@@ -58,7 +58,7 @@ The application deliberately avoids presenting automated screening as a legal co
 - **Sổ nghĩa vụ** stores user-managed obligation status, legal source, owner, sourced/manual deadline and evidence references.
 - **Lịch tuân thủ** renders user-entered/sourced dates plus projected occurrences for user-configured monthly, quarterly or yearly tracking. Completing a recurring period records history and advances the next due date.
 - **Nhánh cần đối chiếu** maps declared signals to legal topics/documents that should be reviewed.
-- **Radar pháp luật** prioritizes documents using the active compliance profile, but does not claim that a document certainly applies.
+- **Cập nhật pháp luật** prioritizes documents using the active compliance profile, but does not claim that a document certainly applies.
 - Dates such as a GPMT expiry are treated as user-declared tracking data unless independently verified from an authoritative source.
 - Dossier review and screening results can be converted into a compliance profile instead of being re-entered.
 - Workspace export schema `ccplmt-workspace-v4` includes compliance profiles, obligation-register entries, recurring cadence/history, manual/user-declared deadlines and evidence references. Imported file bytes remain outside the JSON backup.
