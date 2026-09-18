@@ -36,7 +36,6 @@
   style.id='legalosMobileArticleFixes';
   style.textContent=`
   @media(max-width:700px){
-    body.article-view .reading-progress{display:none!important}
     body.article-view .mobile-quick{display:none!important}
     body.article-view main{padding-bottom:44px!important}
     #art .art-content{min-width:0!important;overflow-wrap:anywhere}
