@@ -1,5 +1,4 @@
-/* Căn cứ Pháp lý Môi trường V14 — open-source-inspired progressive enhancement layer.
-   Patterns informed by GOV.UK Frontend and USWDS; implemented locally. */
+
 
 :root{
   --tap-min:44px;
@@ -82,7 +81,6 @@
   outline-offset:3px!important;
 }
 
-/* WCAG AA contrast hardening for small metadata text in the light theme. */
 body:not([data-theme="dark"]) .nav-label,
 body:not([data-theme="dark"]) .crumb>span,
 body:not([data-theme="dark"]) .library-wrap-v11 .section-head .lead,
@@ -109,7 +107,6 @@ body:not([data-theme="dark"]) .coverage-pill{
   color:#8a4300!important;
 }
 
-/* Keep tiny library/article metadata safely above WCAG AA in Chromium. */
 body:not([data-theme="dark"]) .topic-all>span,
 body:not([data-theme="dark"]) button[data-view="list"],
 body:not([data-theme="dark"]) .legal-tip b,
@@ -120,8 +117,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   color:#586174!important;
 }
 
-/* Modern-web-guidance pattern: skip layout/paint work for long below-the-fold lists.
-   contain-intrinsic-size keeps the scrollbar stable while an item is skipped. */
 @supports(content-visibility:auto){
   #docs>.doc,
   #importList>.import-file,
@@ -184,13 +179,13 @@ body:not([data-theme="dark"]) .library-filters .chip small{
     min-height:var(--tap-min);
   }
 
-  /* Keep Settings reachable on real phones; app.css hides auxiliary header tools on narrow screens. */
+  
   header.site #settingsBtn{
     display:grid!important;
     place-items:center;
   }
 
-  /* Tiny 8px legal metadata was hard to read on phones; retain compactness without micro-text. */
+  
   .tag,.legal-badge,.role-badge,.doc-state{
     font-size:10px!important;
   }
@@ -264,15 +259,12 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   .mobile-quick,.right-drawer,nav.links.side-nav{background:Canvas!important;color:CanvasText!important}
 }
 
-
-/* ===== V14 product polish: clearer hierarchy, readable metadata, calmer mobile ===== */
 :root{
   --legalos-card-radius:14px;
   --legalos-meta-size:11px;
   --legalos-small-size:12px;
 }
 
-/* Home: keep the three primary jobs dominant; supporting copy must remain readable. */
 .home113-card-label{font-size:10px!important}
 .compact-card-body p{font-size:12px!important;line-height:1.6!important}
 .card-mini-list span{font-size:10px!important;padding:5px 9px!important}
@@ -288,7 +280,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 .home114-details>summary b{font-size:11px!important}
 .home114-details>summary small{font-size:10px!important;line-height:1.45!important}
 
-/* Library: controls and helper text should not look like footnotes. */
 .search-help-v11,
 .search-suggest-row>span,
 .search-suggest-row button,
@@ -305,7 +296,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 .library-filters .chip small{font-size:10px!important}
 .library-filters .chip span{font-size:11px!important}
 
-/* Core knowledge: remove the legacy 6–8px typography without changing legal data. */
 .guide-card-v131 p,
 .guide-card-v131 li,
 .guide-card-v131 small,
@@ -340,7 +330,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 .corekb-stats-clickable>button{min-height:96px!important}
 .corekb-docs article{min-height:142px!important}
 
-/* Memo/case tools: these are working surfaces, not dense dashboards. */
 .memo-stats-v13 span,
 .memo-panel-v13>p,
 .memo-panel-head small,
@@ -365,7 +354,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 }
 .memo-item-v13 textarea{font-size:12px!important;line-height:1.5!important}
 
-/* Calm visual rhythm across the main working cards. */
 .home113-primary-card,
 .home113-tile,
 .home114-panel,
@@ -380,8 +368,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   border-radius:var(--legalos-card-radius)!important;
 }
 
-/* On phones the hero already has search + the three main jobs directly below.
-   Hide the duplicate shortcut strip to reduce first-screen clutter. */
 @media(max-width:900px){
   #home .quick-actions-line{display:none!important}
   .compact-home-hero{padding-top:0!important}
@@ -390,8 +376,6 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   .home113-main-choice{margin-top:14px!important}
 }
 
-
-/* ===== Global sticky application header ===== */
 html,body{
   max-width:100%;
   overflow-x:clip!important;
@@ -403,7 +387,6 @@ header.site{
   isolation:isolate;
 }
 
-/* ===== Smart article reading progress ===== */
 body.article-view{
   overflow-x:clip!important;
 }
@@ -531,7 +514,6 @@ body.article-view header.site{
 .reading-progress-track:hover .reading-progress-thumb,
 .reading-progress-track:focus-visible .reading-progress-thumb{opacity:1}
 
-/* The progress row is part of the sticky header, so main content no longer needs compensation. */
 body.article-view main{padding-top:28px!important}
 
 @media(min-width:961px){
@@ -591,8 +573,6 @@ body.article-view main{padding-top:28px!important}
   body.article-view main{padding-top:0!important}
 }
 
-
-/* ===== Compare selection bar polish ===== */
 .compare-bar{
   background:var(--c)!important;
   color:var(--text)!important;
@@ -654,8 +634,6 @@ body.article-view main{padding-top:28px!important}
   }
 }
 
-
-/* ===== Mobile hamburger optical alignment ===== */
 @media(max-width:960px){
   #menuBtn{
     display:grid!important;
@@ -690,8 +668,6 @@ body.article-view main{padding-top:28px!important}
   #menuBtn>span::after{top:6px!important}
 }
 
-
-/* V14 mobile article contrast hardening — 2026-09-18 */
 body:not([data-theme="dark"]) .crumb>button,
 body:not([data-theme="dark"]) #art .back{
   color:#1e58c7!important;
@@ -701,8 +677,6 @@ body:not([data-theme="dark"]) #articleRefIndex>span{
   font-size:10px!important;
 }
 
-
-/* Library mobile contrast refinement — 2026-09-18 */
 body:not([data-theme="dark"]) #lib .natural-search-examples button,
 body:not([data-theme="dark"]) #lib #dcount{
   color:#586174!important;
