@@ -59,6 +59,18 @@ try{
   assert(coach.includes('câu hỏi về giấy phép môi trường'),'Search coach did not explain the detected conversational intent');
   assert(coach.includes('không phải câu trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
 
+  const dmcIntent=await page.evaluate(()=>detectLegalIntent('ĐMC'));
+  assert(dmcIntent.labels.includes('Câu hỏi về ĐMC'),`ĐMC intent was not recognized: ${JSON.stringify(dmcIntent)}`);
+  await q.fill('ĐMC');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const dmcCount=await page.locator('#docs [data-open]').count();
+  assert(dmcCount>0,'ĐMC query returned no legal documents');
+  const dmcText=(await page.locator('#docs').innerText()).toLowerCase();
+  assert(dmcText.includes('bảo vệ môi trường')||dmcText.includes('đmc'),'ĐMC search did not surface an environmental-law source');
+  const dmcCoach=(await page.locator('#searchCoach').innerText()).toLowerCase();
+  assert(dmcCoach.includes('câu hỏi về đmc'),'Search coach did not explain the ĐMC intent');
+
   console.log('Căn cứ Pháp lý Môi trường search quality test passed.');
   console.log(`  fuzzy engine document: ${engineProbe.title}`);
   console.log(`  fuzzy engine hits: ${engineProbe.fuzzyHits}`);
@@ -66,6 +78,7 @@ try{
   console.log('  nonsense query returns zero results');
   console.log('  exact legal-number search still works');
   console.log(`  conversational GPMT query results: ${naturalCount}`);
+  console.log(`  ĐMC query results: ${dmcCount}`);
 }finally{
   await browser.close();
 }
