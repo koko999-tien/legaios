@@ -72,11 +72,38 @@ const SEARCH_SYNONYMS={
   xlnt:["xu ly nuoc thai"],
   qcvn:["quy chuan ky thuat quoc gia"]
 };
+const SEARCH_STOPWORDS=new Set(["cua","toi","minh","co","can","phai","khong","thi","nao","gi","nhung","mot","cac","cho","ve","la","va","voi","trong","theo","duoc","hay","neu","muon","hoi"]);
+const SEARCH_CONTEXT_EXPANSIONS=[
+  {re:/\b(xuong|nha may|co so san xuat|co so)\b/,tokens:["co","so","san","xuat"]},
+  {re:/\b(mo rong|nang cong suat|thay doi du an)\b/,tokens:["thay","doi","mo","rong","du","an"]},
+  {re:/\b(nuoc thai|xa thai|thoat nuoc)\b/,tokens:["nuoc","thai","xa","thai"]},
+  {re:/\b(khi thai|bui)\b/,tokens:["khi","thai","bui"]},
+  {re:/\b(chat thai nguy hai|ctnh)\b/,tokens:["chat","thai","nguy","hai"]}
+];
+const SEARCH_INTENT_RULES=[
+  {id:"gpmt",label:"Câu hỏi về giấy phép môi trường",re:/\b(gpmt|giay phep moi truong)\b/,tokens:["giay","phep","moi","truong","doi","tuong","cap","phep"]},
+  {id:"dtm",label:"Câu hỏi về ĐTM",re:/\b(dtm|danh gia tac dong moi truong)\b/,tokens:["danh","gia","tac","dong","moi","truong","doi","tuong","du","an"]},
+  {id:"dkmt",label:"Câu hỏi về đăng ký môi trường",re:/\b(dkmt|dang ky moi truong)\b/,tokens:["dang","ky","moi","truong","doi","tuong"]},
+  {id:"water",label:"Câu hỏi về nước thải / tài nguyên nước",re:/\b(nuoc thai|xa thai|thoat nuoc|khai thac nuoc|su dung nuoc)\b/,tokens:["nuoc","thai","tai","nguyen","nuoc","xa","thai"]},
+  {id:"waste",label:"Câu hỏi về chất thải",re:/\b(ctnh|chat thai nguy hai|chat thai)\b/,tokens:["chat","thai","nguy","hai","quan","ly"]},
+  {id:"emission",label:"Câu hỏi về khí thải / bụi",re:/\b(khi thai|bui|phat thai)\b/,tokens:["khi","thai","bui","phat","thai"]}
+];
+function detectLegalIntent(q=""){
+  const f=cleanLegalQuery(q),matches=SEARCH_INTENT_RULES.filter(x=>x.re.test(f));
+  const context=SEARCH_CONTEXT_EXPANSIONS.filter(x=>x.re.test(f)).flatMap(x=>x.tokens);
+  return {
+    ids:matches.map(x=>x.id),
+    labels:matches.map(x=>x.label),
+    tokens:[...new Set([...matches.flatMap(x=>x.tokens),...context])],
+    question:/\?|\b(co can|can phai|phai lam|quy dinh gi|thu tuc gi|kiem tra gi|co phai)\b/.test(f)
+  };
+}
 function expandTokens(q){
-  const base=cleanLegalQuery(q).split(/\s+/).filter(x=>x.length>1);
+  const base=cleanLegalQuery(q).split(/\s+/).filter(x=>x.length>1&&!SEARCH_STOPWORDS.has(x));
   const more=[];
   base.forEach(t=>{if(SEARCH_SYNONYMS[t])SEARCH_SYNONYMS[t].forEach(x=>more.push(...x.split(" ")))});
-  return [...new Set([...base,...more])];
+  const intent=detectLegalIntent(q);
+  return [...new Set([...base,...more,...intent.tokens].filter(x=>x.length>1&&!SEARCH_STOPWORDS.has(x)))];
 }
 function parseLegalQuery(q=""){
   const raw=String(q).trim(),f=foldVN(raw);
@@ -88,7 +115,7 @@ function parseLegalQuery(q=""){
   if(art)refs.push(`Điều ${art}`);
   if(clause)refs.push(`Khoản ${clause}`);
   if(point)refs.push(`Điểm ${point}`);
-  return {raw,fold:f,article:art,clause,point,number,refs,tokens:expandTokens(raw)};
+  return {raw,fold:f,article:art,clause,point,number,refs,tokens:expandTokens(raw),intent:detectLegalIntent(raw)};
 }
 function extractLegalRefs(text=""){
   const s=plain(text).replace(/\s+/g," ");
