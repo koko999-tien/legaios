@@ -567,3 +567,66 @@ body.article-view main{padding-top:28px!important}
   .smart-reading-progress{display:none!important}
   body.article-view main{padding-top:0!important}
 }
+
+
+/* ===== Compare selection bar polish ===== */
+.compare-bar{
+  background:var(--c)!important;
+  color:var(--text)!important;
+  border:1px solid var(--bd)!important;
+  box-shadow:0 12px 34px rgba(16,24,40,.14)!important;
+  border-radius:12px!important;
+}
+[data-theme="dark"] .compare-bar{color:var(--text)!important}
+.compare-bar button{
+  border:1px solid var(--bd)!important;
+  background:var(--bg)!important;
+  color:var(--text)!important;
+}
+.compare-bar button:hover:not(:disabled){border-color:var(--a)!important;color:var(--a)!important}
+.compare-bar button:disabled{opacity:.5;cursor:not-allowed}
+
+@media(max-width:700px){
+  .compare-bar{
+    left:50%!important;
+    right:auto!important;
+    bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;
+    max-width:calc(100vw - 24px)!important;
+    min-height:44px;
+    padding:7px 8px 7px 12px!important;
+    gap:8px!important;
+    justify-content:flex-start!important;
+    transform:translate(-50%,120px)!important;
+    white-space:nowrap;
+    font-size:11px;
+  }
+  .compare-bar.on{transform:translate(-50%,0)!important}
+  .compare-bar>span:first-child{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .compare-bar>span:last-child{flex:0 0 auto!important}
+  .compare-bar[data-ready="0"] #compareOpen{display:none!important}
+  .compare-bar[data-ready="0"] #compareClear{
+    width:32px;height:32px;padding:0!important;
+    font-size:0;
+    position:relative;
+  }
+  .compare-bar[data-ready="0"] #compareClear:after{
+    content:"×";
+    font-size:18px;
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+  }
+  .compare-bar[data-ready="1"]{
+    width:calc(100vw - 24px)!important;
+    justify-content:space-between!important;
+  }
+  body.article-view .compare-bar{
+    bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
