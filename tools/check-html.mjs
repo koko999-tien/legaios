@@ -24,6 +24,16 @@ if (!/<html\b[^>]*\blang=["']vi["']/i.test(html)) warn('Expected <html lang="vi"
 if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) fail('Missing viewport meta tag.');
 if (!/<title>[^<]+<\/title>/i.test(html)) fail('Missing non-empty <title>.');
 
+const cspMeta = html.match(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] || '';
+if (!cspMeta) {
+  fail('Missing Content-Security-Policy meta tag.');
+} else if (!/frame-src[^;]*https:\/\/app\.netlify\.com/i.test(cspMeta)) {
+  fail('CSP frame-src must allow https://app.netlify.com so an explicitly enabled Netlify Drawer cannot fail as a broken frame.');
+}
+if (!html.includes('ntl-drawer-state') || !/deploy-preview-\\d\+--/.test(html)) {
+  fail('Missing Deploy Preview auto-hide guard for the Netlify Drawer.');
+}
+
 const ids = [...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(m => m[1]);
 const seen = new Set();
 const duplicates = new Set();
