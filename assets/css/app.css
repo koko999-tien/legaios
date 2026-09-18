@@ -150,7 +150,6 @@
       .float-search{right:12px;bottom:12px}
     }
 
-
     
     :root{
       --ease:cubic-bezier(.2,.75,.25,1);
@@ -352,7 +351,6 @@
       .compare-bar{bottom:76px;width:calc(100% - 20px);justify-content:space-between}
     }
 
-
     
     :root{--sidew:248px;--head:64px;--content:1180px}
     .wrap{max-width:var(--content)}
@@ -466,7 +464,6 @@
       .law-now-head{display:block}.law-now-head .btn{margin-top:9px}
     }
 
-
     
     header.site{
       backdrop-filter:none!important;
@@ -514,7 +511,6 @@
       .workspace-top{grid-template-columns:1fr 1fr}
     }
 
-
     
     .vault-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
     .vault-stat{background:var(--c);border:1px solid var(--bd);border-radius:12px;padding:12px}
@@ -530,8 +526,6 @@
     .filter-row{align-items:center}
     @media(max-width:900px){.vault-stats{grid-template-columns:1fr 1fr}.vault-grid{grid-template-columns:1fr 1fr}.data-vault-head{flex-direction:column}}
     @media(max-width:560px){.vault-grid{grid-template-columns:1fr}.vault-stats{grid-template-columns:1fr 1fr}}
-
-
 
 .term-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:start}
 .term-side{position:sticky;top:82px;background:var(--c);border:1px solid var(--bd);border-radius:14px;padding:12px}
@@ -567,7 +561,6 @@
 
 @media(max-width:900px){.term-layout{grid-template-columns:1fr}.term-side{position:static}.term-cats{display:flex;overflow:auto;padding-bottom:4px}.term-cat{min-width:max-content;width:auto}.term-grid-v7,.impact-grid{grid-template-columns:1fr}.proc-logic,.update-stats{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.term-grid-v7,.proc-logic,.update-stats{grid-template-columns:1fr}.term-main-head{align-items:stretch}.term-main-head .term-search{min-width:0;flex-basis:100%}}
-
 
     
     :root{--side-mini:74px;--ui-scale:1;--card-gap:10px}
@@ -625,7 +618,6 @@
     @media(max-width:1100px){.command-grid{grid-template-columns:1fr 1fr}.library-hint{flex-basis:100%;margin-left:0}.wizard-launch{align-items:flex-start;flex-direction:column}.wizard-launch-actions{width:100%}.wizard-launch-actions select{flex:1;min-width:0}}
     @media(max-width:700px){#docs.grid-view{grid-template-columns:1fr}.command-grid{grid-template-columns:1fr}.shortcut-grid{grid-template-columns:1fr}.workspace-jump{top:68px;overflow:auto;flex-wrap:nowrap}.workspace-jump button{white-space:nowrap}.right-drawer{top:0;z-index:140}.drawer-scrim{inset:0;z-index:135}.wizard-launch-actions{display:grid;grid-template-columns:1fr;width:100%}.wizard-launch-actions select{width:100%}.reading-progress{left:0}.notes-center .g2{grid-template-columns:1fr}}
 
-
     
     .home-portal{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:14px;margin-bottom:16px}
     .home-search-box,.home-status-box{background:var(--c);border:1px solid var(--bd);border-radius:17px;box-shadow:var(--shadow)}
@@ -658,7 +650,6 @@
     @media(max-width:1050px){.module-list{grid-template-columns:1fr 1fr}.home-law-grid{grid-template-columns:1fr}.home-law-grid #topics.g3{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:860px){#work .workspace-top{grid-template-columns:1fr 1fr}.home-portal,.import-hero,.import-layout{grid-template-columns:1fr}.import-detail{position:static}.module-hub{grid-template-columns:1fr}.module-list{grid-template-columns:repeat(3,1fr)}.home-split{grid-template-columns:1fr 1fr}}
     @media(max-width:700px){.home-search-box h1{font-size:24px}.module-list{grid-template-columns:1fr 1fr}.home-split{grid-template-columns:1fr}.home-law-grid #topics.g3{grid-template-columns:1fr 1fr}.import-toolbar{grid-template-columns:1fr 1fr}.import-toolbar input{grid-column:1/-1}.import-fields{grid-template-columns:1fr}.import-fields textarea{grid-column:auto}.import-preview iframe{height:360px}.backtop{bottom:82px;right:12px}}
-
 
     
     .home-wrap-v91{max-width:1280px}
@@ -712,7 +703,7 @@
     .home-topics-details #topics.g3{grid-template-columns:repeat(4,1fr)}
     .home-topics-details #topics .topic{min-height:82px;padding:11px}
 
-    /* Trang chủ không lặp lại sidebar: sidebar chỉ xuất hiện khi đã đi vào một khu vực chức năng. */
+    
     @media(min-width:961px){
       body.home-clean-v91 nav.links.side-nav{display:none!important}
       body.home-clean-v91 main,
@@ -743,7 +734,6 @@
       .home-tools-grid{grid-template-columns:1fr}
       .home-topics-details #topics.g3{grid-template-columns:1fr}
     }
-
 
     
     .home-wrap-v92{max-width:1280px;padding-bottom:28px}
@@ -843,7 +833,7 @@
     .home-law-v92 .law-now-grid{grid-template-columns:repeat(3,1fr)}
     .home-legal-note-v92{margin-top:12px;margin-bottom:0}
 
-    /* Trang chủ = một màn hình lựa chọn độc lập. Sidebar chỉ dùng sau khi vào chức năng. */
+    
     @media(min-width:961px){
       body.home-clean-v91 nav.links.side-nav{display:none!important}
       body.home-clean-v91 main,
@@ -871,7 +861,6 @@
       .entry-search-row-v92{display:grid;grid-template-columns:1fr}
       .entry-search-all-v92 .shortcut{display:none}
     }
-
 
     
     .entry-card-v92.professor-entry{
@@ -948,7 +937,6 @@
       .verify-summary{grid-template-columns:1fr}
       .workspace-top{grid-template-columns:1fr 1fr}
     }
-
 
     
     .library-wrap-v11{max-width:1320px}
@@ -1055,8 +1043,6 @@
       .results-head-v11{display:block}.query-summary{text-align:left;margin-top:3px}
     }
 
-
-
 :root{
   --text:#172033;
   --m:#667085;
@@ -1093,7 +1079,6 @@
   --shadow-float:0 18px 46px rgba(0,0,0,.28);
 }
 
-/* Global rhythm */
 html{background:var(--bg)}
 body{
   background:var(--bg);
@@ -1110,7 +1095,6 @@ h2{letter-spacing:-.02em}
 .section-head{margin-bottom:16px}
 .section-kicker{letter-spacing:.08em;font-size:9px;color:var(--a)}
 
-/* Header */
 header.site{
   height:64px;
   background:color-mix(in srgb,var(--c) 92%,transparent);
@@ -1134,7 +1118,6 @@ header.site{
 }
 .global-search-btn:hover,.ib:hover{border-color:color-mix(in srgb,var(--a) 35%,var(--bd));background:var(--as)}
 
-/* Sidebar */
 @media(min-width:961px){
   :root{--sidew:236px;--side-mini:68px}
   nav.links.side-nav{
@@ -1189,7 +1172,6 @@ header.site{
   .sidebar-collapse{margin-top:6px}
 }
 
-/* Cards & controls */
 .card,.topic,.doc,.workspace-card,.assist-card-v11,.continue-panel-v92,
 .expert-side-card,.expert-result-card,.home-mini-panel{
   border-color:var(--bd);
@@ -1219,7 +1201,6 @@ input,select,textarea,.in{
 }
 .tag,.legal-badge,.role-badge,.doc-state{font-size:8px!important}
 
-/* Home: 3 strong primary choices + 6 compact tools */
 .home-wrap-v92{max-width:1220px}
 .entry-head-v92{
   grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);
@@ -1303,7 +1284,6 @@ input,select,textarea,.in{
   border-radius:12px!important;
 }
 
-/* Search page: less cramped, clearer hierarchy */
 .library-wrap-v11{max-width:1300px}
 .legal-search-hub{
   padding:14px;
@@ -1378,7 +1358,6 @@ input,select,textarea,.in{
 }
 .guide-arrow{color:var(--m)}
 
-/* Always use 2-column search layout; helper cards move below */
 .library-layout-v11,
 .library-layout-v11.filters-mini{
   grid-template-columns:190px minmax(0,1fr)!important;
@@ -1467,7 +1446,6 @@ input,select,textarea,.in{
 }
 .doc-tools-v11 .mini{width:100%;height:28px}
 
-/* Article */
 .art-layout{
   grid-template-columns:minmax(0,1fr) 210px!important;
   gap:16px!important;
@@ -1493,7 +1471,6 @@ input,select,textarea,.in{
   box-shadow:none;
 }
 
-/* Workspace / forms */
 .workspace-top{gap:8px}
 .workspace-card{
   border-radius:11px;
@@ -1504,14 +1481,12 @@ input,select,textarea,.in{
 .expert-principles>div{border-radius:11px}
 .scope-matrix label,.evidence-checks label{border-radius:8px}
 
-/* Modal / drawer polish */
 .cmd,.right-drawer,.settings-panel{
   border-radius:16px;
   box-shadow:var(--shadow-float);
 }
 .toast{border-radius:999px;padding:8px 13px}
 
-/* Mobile/tablet */
 @media(max-width:1100px){
   .entry-grid-v92{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .entry-card-v92:nth-child(n){grid-column:auto!important;min-height:96px!important;grid-template-columns:38px minmax(0,1fr) auto!important}
@@ -1584,11 +1559,6 @@ input,select,textarea,.in{
   .goto-match,.preview-btn,.doc-tools-v11 .mini{width:auto}
   .art-content>h1{font-size:23px}
 }
-
-
-
-
-
 
 .home113{max-width:1240px}
 .home113-hero{
@@ -1669,7 +1639,6 @@ input,select,textarea,.in{
   max-width:360px;
 }
 
-/* 3 luồng chính: gần vuông nhưng không lãng phí chiều cao */
 .home113-primary-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
@@ -1752,7 +1721,6 @@ input,select,textarea,.in{
   background:var(--as);
 }
 
-/* 6 công cụ hỗ trợ: ô gần vuông, gọn và phân cấp thấp hơn */
 .home113-support-section{margin-top:19px}
 .home113-support-grid{
   display:grid;
@@ -1836,7 +1804,6 @@ input,select,textarea,.in{
   background:var(--as);color:var(--a);
 }
 
-/* Phần tiếp tục công việc */
 .home113-continue{
   margin-top:22px;
   padding:14px;
@@ -1882,13 +1849,11 @@ input,select,textarea,.in{
 .home113-advanced>details{margin-top:0!important}
 .home113-note{margin-top:10px!important;margin-bottom:0!important}
 
-/* Product consistency */
 #shortcutsModal .k,
 #compareModal .k,
 #settingsPanel .k{letter-spacing:.08em}
 footer.site .data-fresh{white-space:nowrap}
 
-/* Tablet */
 @media(max-width:1050px){
   .home113-hero{grid-template-columns:1fr;gap:13px}
   .home113-primary-grid{grid-template-columns:repeat(3,1fr)}
@@ -1897,7 +1862,6 @@ footer.site .data-fresh{white-space:nowrap}
   .home113-tile{aspect-ratio:1.28 / 1}
 }
 
-/* Tablet nhỏ */
 @media(max-width:760px){
   .home113{padding-left:16px!important;padding-right:16px!important}
   .home113-intro h1{font-size:30px}
@@ -1910,7 +1874,6 @@ footer.site .data-fresh{white-space:nowrap}
   .home113-continue-grid,.home113-advanced{grid-template-columns:1fr}
 }
 
-/* Mobile: card không bị ép vuông nên tên dài vẫn đọc được */
 @media(max-width:520px){
   .home113-hero{padding-top:0}
   .home113-intro h1{font-size:27px}
@@ -1935,13 +1898,10 @@ footer.site .data-fresh{white-space:nowrap}
   .home113-stats{margin-top:7px}
 }
 
-/* Rất nhỏ: ưu tiên đọc được hơn giữ hình học cứng */
 @media(max-width:370px){
   .home113-support-grid{grid-template-columns:1fr}
   .home113-tile{min-height:112px}
 }
-
-
 
 .corekb-wrap{max-width:1280px}
 .corekb-alert{display:flex;gap:10px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--ok) 28%,var(--bd));background:color-mix(in srgb,var(--okb) 70%,var(--c));border-radius:13px;padding:11px 12px;margin-bottom:10px}
@@ -1976,8 +1936,6 @@ footer.site .data-fresh{white-space:nowrap}
 @media(max-width:950px){.corekb-layout{grid-template-columns:1fr}.corekb-side{position:static;grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.corekb-stats{grid-template-columns:1fr 1fr}.corekb-docs,.corekb-article-grid{grid-template-columns:1fr}.corekb-side{grid-template-columns:1fr}.corekb-searchrow{grid-template-columns:1fr 1fr}.corekb-searchrow input{grid-column:1/-1}.corekb-head{display:block}.corekb-head>small{display:block;text-align:left;margin-top:3px}}
 
-
-
 .corekb-coverage{border:1px solid var(--bd);background:var(--c);border-radius:12px;padding:10px;margin-bottom:10px}
 .corekb-coverage-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:8px}
 .corekb-coverage-head h2{font-size:15px;margin:1px 0 0}.corekb-coverage-head small{font-size:8px;color:var(--m);max-width:390px;text-align:right}
@@ -2004,8 +1962,6 @@ footer.site .data-fresh{white-space:nowrap}
 @media(max-width:850px){.corekb-coverage-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.corekb-coverage-grid{grid-template-columns:1fr 1fr}.corekb-coverage-head,.indexed-law-head{display:block}.corekb-coverage-head small,.indexed-law-head small{display:block;text-align:left;margin-top:3px}}
 
-
-
 *,*::before,*::after{box-sizing:border-box}
 html,body{max-width:100%;overflow-x:hidden}
 body{min-width:0}
@@ -2030,7 +1986,6 @@ a.official,.corekb-source-list a{word-break:break-word}
 .article-ref-index,.ref-strip,.match-reasons,.corekb-theme-filter{max-width:100%}
 input,select,textarea{max-width:100%}
 
-/* Final core modules */
 .core-final-details{
   border:1px solid var(--bd);background:var(--c);border-radius:13px;
   margin-bottom:10px;overflow:hidden
@@ -2068,7 +2023,6 @@ input,select,textarea{max-width:100%}
 .final-form-grid span{font-size:7px;color:var(--m);line-height:1.4}
 .final-quality-card{border-color:color-mix(in srgb,var(--ok) 24%,var(--bd))!important}
 
-/* Rich article index */
 .article-practice-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px
 }
@@ -2081,7 +2035,6 @@ input,select,textarea{max-width:100%}
 .article-audit-line{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 .article-audit-line span{font-size:6.5px;border:1px solid var(--bd);background:var(--c);color:var(--m);border-radius:999px;padding:2px 5px}
 
-/* Deep document guides */
 .deep-law-guide{
   margin:14px 0;border:1px solid var(--bd);background:color-mix(in srgb,var(--c) 94%,var(--as));
   border-radius:12px;padding:10px
@@ -2094,7 +2047,6 @@ input,select,textarea{max-width:100%}
 .deep-guide-grid b{display:block;font-size:8.5px;margin-bottom:3px}
 .deep-guide-grid p{font-size:7.8px;color:var(--m);line-height:1.5;margin:0}
 
-/* Reading experience */
 #legalText{max-width:100%}
 #legalText .long-summary,#legalText .indexed-law-articles,#legalText .deep-law-guide{width:100%}
 .art-content textarea{width:100%}
@@ -2103,7 +2055,6 @@ input,select,textarea{max-width:100%}
 .docmain{overflow:hidden}
 .doc-tools-v11{flex:0 0 auto}
 
-/* Safer responsive behavior */
 @media(max-width:1100px){
   .art-layout{grid-template-columns:minmax(0,1fr)!important}
   .art-side{display:none}
@@ -2141,7 +2092,6 @@ input,select,textarea{max-width:100%}
   .section-actions .btn{width:100%}
 }
 
-/* Print should never clip content */
 @media print{
   html,body{overflow:visible!important}
   header.site,nav.links,.mobile-quick,.art-side,.artbar,.in-doc-finder,.reading-progress,.toast,.site footer{display:none!important}
@@ -2151,8 +2101,6 @@ input,select,textarea{max-width:100%}
   .wrap,.art-content{max-width:none!important;width:100%!important;padding:0!important}
   .summary-block,.indexed-law-article,.deep-guide-grid article{break-inside:avoid}
 }
-
-
 
 .home113-v123{padding-bottom:6px}
 .compact-home-hero{grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:18px;padding:6px 0 18px}
@@ -2189,8 +2137,6 @@ input,select,textarea{max-width:100%}
 @media (max-width:1200px){.compact-support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.compact-home-hero{grid-template-columns:1fr;gap:14px}.compact-primary-grid{grid-template-columns:1fr}.compact-primary-card{min-height:215px}.hint-strip{grid-template-columns:1fr}}
 @media (max-width:700px){.home-search-subgrid{grid-template-columns:1fr}.compact-support-grid{grid-template-columns:1fr}.compact-tile{min-height:138px}}
-
-
 
 .home113-v123{max-width:1240px}
 .compact-home-hero{
@@ -2233,7 +2179,7 @@ input,select,textarea{max-width:100%}
 .home114-details-body{padding:10px}.home114-topics{grid-template-columns:repeat(4,minmax(0,1fr))!important}.home114-topics .topic{min-height:76px!important}
 .home114-law-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.home114-law-grid>div{min-width:0}.home114-law-grid .law-now-grid{grid-template-columns:1fr!important}
 .home114-law-grid .core-map{display:grid;gap:5px}
-/* click surface */
+
 button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .home113-primary-card,.home113-tile{position:relative;isolation:isolate}
 .home113-primary-card::before,.home113-tile::before{content:"";position:absolute;inset:0;z-index:2}
@@ -2242,8 +2188,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 @media(max-width:850px){.compact-primary-grid{grid-template-columns:1fr}.home114-workspace,.home114-law-grid{grid-template-columns:1fr}.home114-status{grid-template-columns:repeat(2,1fr)}.home114-topics{grid-template-columns:repeat(2,1fr)!important}}
 @media(max-width:560px){.compact-home-hero{padding:15px!important;border-radius:14px}.home114-status{grid-template-columns:1fr 1fr}.home114-topics{grid-template-columns:1fr!important}.home114-workspace{grid-template-columns:1fr}.compact-tile{min-height:128px}}
 
-
-/* Editorial polish */
 .section-kicker{
   text-transform:none!important;
   letter-spacing:.015em!important;
@@ -2272,8 +2216,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 .data-level-pill,.coverage-pill,.search-rank{font-weight:700!important;letter-spacing:0!important}
 .final-quality-card{background:var(--bg)!important}
 
-
-/* ===== Căn cứ Pháp lý Môi trường V13.2 Professional ===== */
 .date-filter-v13{
   min-height:36px;border:1px solid var(--bd);background:var(--c);border-radius:9px;
   padding:4px 7px;display:grid;grid-template-columns:auto minmax(100px,1fr);align-items:center;gap:6px;
@@ -2364,8 +2306,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   .clause-pack-head small,.legal-trail-head small,.memo-panel-head small{display:block;text-align:left;margin-top:3px}
 }
 
-
-/* ===== V13.1 core knowledge layout refinement ===== */
 .corekb-layout-v131{display:grid;gap:12px;align-items:start}
 .corekb-guidance-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .guide-card-v131{
@@ -2482,8 +2422,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   .corekb-searchrow .btn{min-width:0;width:100%}
 }
 
-
-/* ===== V13.2 hard fix for core knowledge layout ===== */
 .corekb-layout-v131{
   display:grid !important;
   grid-template-columns:1fr !important;
@@ -2577,8 +2515,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   }
 }
 
-
-/* ===== V13.2.1 — chỉ chỉnh trang Văn bản trọng tâm ===== */
 .corekb-stats-clickable{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .corekb-stats-clickable>button{min-height:86px;border:1px solid var(--bd);background:var(--c);border-radius:12px;padding:10px 12px;text-align:left;display:grid;grid-template-rows:auto auto 1fr;align-items:start;transition:.15s ease}
 .corekb-stats-clickable>button:hover,.corekb-stats-clickable>button.on{border-color:var(--a);background:color-mix(in srgb,var(--as) 54%,var(--c))}
@@ -2596,10 +2532,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 @media(max-width:1200px){.corekb-stats-clickable{grid-template-columns:repeat(2,minmax(0,1fr))}#corekb .corekb-guidance-grid{grid-template-columns:1fr 1fr !important}#corekb .guide-card-sources-v131{grid-column:1/-1 !important}.core-stat-doc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.core-stat-doc-grid.compact{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.corekb-stats-clickable,#corekb .corekb-guidance-grid,.core-stat-article-groups,.core-stat-coverage{grid-template-columns:1fr !important}#corekb .guide-card-sources-v131{grid-column:auto !important}#corekb .guide-card-sources-v131 .corekb-source-list,.core-stat-doc-grid,.core-stat-doc-grid.compact,.core-stat-article-groups>section>div,#corekb .corekb-docs{grid-template-columns:1fr !important}.corekb-scope-bar{grid-template-columns:1fr}.core-stat-detail-head{display:block}.core-stat-detail-head .tiny{margin-top:7px}}
 
-
-/* ===== V13.2.2 — Các Điều đã lập mục + fix khoảng trống ===== */
-
-/* Fix trực tiếp nguyên nhân khoảng trống nếu bất kỳ CSS global nào còn tác động */
 #corekb .corekb-main-v131{
   margin-left:0 !important;
   width:100% !important;
@@ -2621,7 +2553,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #corekb .corekb-main-v131{gap:8px !important}
 #corekb .corekb-chain-panel-v131{margin-top:0 !important}
 
-/* Các ô Phân nhóm/ĐTM/GPMT/ĐKMT/EPR là nút thực sự */
 #corekb .corekb-coverage-grid>button{
   min-height:100px;
   display:grid;
@@ -2645,7 +2576,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   font-weight:800;
 }
 
-/* Nội dung mở ngay dưới danh mục */
 #corekb .corekb-theme-detail{
   margin-top:10px;
 }
@@ -2732,7 +2662,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   margin-top:7px;
 }
 
-/* Tất cả 24 Điều ở dạng gọn */
 #corekb .core-theme-quick-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
@@ -2759,7 +2688,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   line-height:1.4;
 }
 
-/* Kéo Chuỗi văn bản lên sát phần hướng dẫn, không còn khoảng rỗng */
 #corekb .corekb-guidance-grid{margin-bottom:0 !important}
 #corekb .corekb-scope-bar{margin:0 !important}
 
@@ -2774,8 +2702,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   #corekb .core-theme-quick-grid{grid-template-columns:1fr}
 }
 
-
-/* ===== V13.2.3 — Sticky + compact library UX ===== */
 #lib .library-layout-v11{
   grid-template-columns:220px minmax(0,1fr) !important;
   gap:12px !important;
@@ -2818,7 +2744,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   padding:7px 9px !important;
 }
 
-/* Toolbar stays visible while browsing long lists */
 #lib .filterbar-v11{
   position:sticky !important;
   top:70px !important;
@@ -2841,7 +2766,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #lib .library-actions{margin:0 !important;gap:6px !important}
 #lib .library-hint{font-size:9px !important}
 
-/* Tips panel is optional, not permanent clutter */
 #lib .library-assist-v11{
   display:none !important;
   position:sticky !important;
@@ -2851,7 +2775,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 }
 #lib .library-layout-v11.assist-open .library-assist-v11{display:grid !important}
 
-/* Compact by default */
 #lib #docs.compact-view{gap:7px !important}
 #lib #docs.compact-view .doc{padding:11px 13px !important;border-radius:12px}
 #lib #docs.compact-view .docrow{align-items:center !important}
@@ -2896,7 +2819,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   background:var(--okb);color:var(--ok);font-size:7px;font-weight:800
 }
 
-/* Other side tools use the same stay-in-place principle */
 .classifier-side,.term-side,.expert-side{
   position:sticky !important;
   top:74px !important;
@@ -2942,8 +2864,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   .scroll-top-quick-v1323{right:12px;bottom:76px}
 }
 
-
-/* Product refinement: grouped filters, wizard, compact updates */
 #lib .topic-filter-search{
   display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:5px;
   border:1px solid var(--bd);background:var(--bg);border-radius:9px;padding:3px 6px;margin-bottom:8px
@@ -3020,9 +2940,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   #upd .update-compact-body{padding:0 10px 9px}
 }
 
-
-/* ===== Compact list row fix =====
-   Mục tiêu: chế độ Gọn phải thực sự gọn, không để 3 nút xếp dọc kéo chiều cao mỗi văn bản. */
 #lib #docs.compact-view:not(.grid-view) .doc{
   padding:9px 11px !important;
   min-height:0 !important;
@@ -3079,7 +2996,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   line-height:1.3 !important;
 }
 
-/* Với màn hình vừa, giữ Mở + Xem nhanh, nhưng chuyển sao lưu xuống dạng nút nhỏ vẫn cùng hàng. */
 @media(max-width:1080px){
   #lib #docs.compact-view:not(.grid-view) .docrow{
     grid-template-columns:22px minmax(0,1fr) !important;
@@ -3091,7 +3007,6 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   }
 }
 
-/* Mobile: các nút vẫn ngắn, không quay lại kiểu card rất cao. */
 @media(max-width:620px){
   #lib #docs.compact-view:not(.grid-view) .doc{
     padding:8px 10px !important;
