@@ -132,10 +132,10 @@ function renderExpertResult(d,a){
     </div>
     <section class="expert-result-card expert-next-plan"><div class="section-kicker">Ưu tiên tiếp theo</div><h3>Việc nên làm tiếp</h3><ol>${situation.next.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></section>
     <section class="expert-result-card"><h3>Văn bản nên xem tiếp</h3><div class="expert-ref-list">${refs.length?refs.map(x=>`<button data-open="${x.id}" type="button"><b>${x.ttl}</b><small>${x.k} · ${topicName(x.t)}</small></button>`).join(""):`<p class="muted">Chưa có gợi ý văn bản cụ thể từ dữ liệu hiện tại.</p>`}</div></section>
-    <div class="expert-next"><button class="btn bp" id="expSaveBrief" type="button">Lưu phiếu</button><button class="btn bs" data-go="proc" type="button">Mở Lộ trình thủ tục</button><button class="btn bs" data-go="work" type="button">Mở Hồ sơ công việc</button><button class="btn bs" data-go="lib" type="button">Tra Kho văn bản</button><button class="btn bs" data-go="import" type="button">Bổ sung PDF/Word</button></div>
+    <div class="expert-next"><button class="btn bp" id="expSaveBrief" type="button">Lưu phiếu</button><button class="btn bs" id="expToCompliance" type="button">Đưa vào Hồ sơ tuân thủ</button><button class="btn bs" data-go="proc" type="button">Mở Lộ trình thủ tục</button><button class="btn bs" data-go="work" type="button">Mở Hồ sơ tuân thủ</button><button class="btn bs" data-go="lib" type="button">Tra Kho văn bản</button><button class="btn bs" data-go="import" type="button">Bổ sung PDF/Word</button></div>
     <p class="note" style="margin-top:12px"><b>Giới hạn:</b> “độ đầy đủ thông tin” chỉ đo mức hoàn thiện dữ liệu đầu vào. Các nhánh trên là danh sách cần kiểm tra, không phải kết luận rằng dự án chắc chắn có hoặc không có một nghĩa vụ pháp lý.</p>`;
   lastExpertAnalysis={data:d,analysis:a};
-  $("expSaveBrief").onclick=()=>saveExpertBrief();
+  $("expSaveBrief").onclick=()=>saveExpertBrief();if($("expToCompliance"))$("expToCompliance").onclick=()=>createComplianceFromExpertData(d);
 }
 function analyzeExpert(){
   const d=collectExpertForm(),a=expertAnalyzeData(d);
