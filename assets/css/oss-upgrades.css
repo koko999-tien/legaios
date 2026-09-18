@@ -397,7 +397,7 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   position:fixed!important;
   left:var(--sidew)!important;
   right:0!important;
-  top:calc(var(--head) + 8px)!important;
+  top:var(--head)!important;
   height:auto!important;
   min-height:0;
   z-index:38!important;
@@ -425,8 +425,8 @@ body.article-view main{padding-top:58px!important}
   background:color-mix(in srgb,var(--c) 96%,transparent);
   border:1px solid color-mix(in srgb,var(--bd) 88%,transparent);
   border-bottom:0;
-  border-radius:12px 12px 8px 8px;
-  box-shadow:0 8px 22px rgba(16,24,40,.08);
+  border-radius:0 0 10px 10px;
+  box-shadow:0 8px 18px rgba(16,24,40,.07);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   pointer-events:auto;
