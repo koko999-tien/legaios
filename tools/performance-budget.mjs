@@ -36,7 +36,7 @@ const jsTotal=js.reduce((n,x)=>n+x.size,0);
 const shellTotal=index.size+cssTotal+jsTotal;
 const largest=[...js].sort((a,b)=>b.size-a.size)[0];
 
-console.log('LegalOS static performance budget');
+console.log('Căn cứ Pháp lý Môi trường static performance budget');
 assertBudget('index.html',index.size,limits.index);
 assertBudget('CSS total',cssTotal,limits.cssTotal);
 assertBudget('JavaScript total',jsTotal,limits.jsTotal);
@@ -45,4 +45,4 @@ assertBudget(`largest JS (${relative(root,largest.path)})`,largest.size,limits.l
 
 console.log(`  JS files: ${js.length}`);
 console.log(`  CSS files: ${css.length}`);
-console.log('LegalOS performance budget passed.');
+console.log('Căn cứ Pháp lý Môi trường performance budget passed.');
