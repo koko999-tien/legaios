@@ -29,7 +29,7 @@ function logActivity(type,id,label){
 function renderHomeActivity(){
   const host=$("homeActivity");if(!host)return;
   const arr=STORE.get("w4_activity",[]);
-  const icon={doc:"VB",case:"HS",proc:"QT",fee:"₫"};
+  const icon={doc:"VB",case:"HS",compliance:"TU",proc:"QT",fee:"₫"};
   host.innerHTML=arr.length?arr.slice(0,6).map(x=>`
     <div class="activity-item">
       <div class="activity-icon">${icon[x.type]||"•"}</div>
@@ -44,7 +44,12 @@ function renderHomeContinue(){
     if(d>0&&d<p.st.length)openSteps.push({p,d});
   });
   const latest=cases[0];
+  const latestCompliance=(typeof complianceProfiles!=="undefined"&&complianceProfiles.length)?complianceProfiles[0]:null;
   const parts=[];
+  if(latestCompliance){
+    const urgent=typeof complianceUrgent==="function"?complianceUrgent(latestCompliance).length:0;
+    parts.push(`<div class="activity-item"><div class="activity-icon">TU</div><div class="grow"><b>${esc(latestCompliance.name)}</b><small>${esc(complianceStatus(latestCompliance))}${urgent?` · ${urgent} việc gần hạn`:""}</small><div style="margin-top:8px"><button class="tiny" data-compliance-open="${latestCompliance.id}" type="button">Mở hồ sơ tuân thủ</button></div></div></div>`);
+  }
   if(openSteps.length){
     const x=openSteps[0];
     parts.push(`<div class="activity-item"><div class="activity-icon">QT</div><div class="grow"><b>${x.p.ttl}</b><small>${x.d}/${x.p.st.length} bước</small><div class="progress" style="margin-top:7px"><span style="width:${x.d/x.p.st.length*100}%"></span></div><div style="margin-top:8px"><button class="tiny" data-open-proc="${x.p.id}" type="button">Tiếp tục</button></div></div></div>`);
