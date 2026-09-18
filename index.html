@@ -26,31 +26,29 @@
     <span><b>LegalOS</b><small>Tra cứu pháp luật môi trường &amp; quản lý hồ sơ</small></span>
   </button>
   <nav class="links side-nav" id="nav" aria-label="Điều hướng chính">
-    <div class="nav-group">
-      <div class="nav-label">Bắt đầu</div>
+    <div class="nav-group nav-primary">
+      <div class="nav-label">Công việc chính</div>
       <button data-go="home" class="on" type="button"><span class="nav-ico">⌂</span><span>Tổng quan</span></button>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Tra cứu</div>
-      <button data-go="lib" type="button"><span class="nav-ico">§</span><span>Kho văn bản</span></button>
-      <button data-go="corekb" type="button"><span class="nav-ico">◫</span><span>Văn bản trọng tâm 2026</span></button>
-      <button data-go="memo" type="button"><span class="nav-ico">¶</span><span>Căn cứ đã lưu</span></button>
-      <button data-go="term" type="button"><span class="nav-ico">Aa</span><span>Thuật ngữ</span></button>
-      <button data-go="upd" type="button"><span class="nav-ico">↻</span><span>Cập nhật pháp luật</span></button>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Thủ tục & công cụ</div>
+      <button data-go="lib" type="button"><span class="nav-ico">§</span><span>Tra cứu pháp luật</span></button>
       <button data-go="expert" type="button"><span class="nav-ico">◎</span><span>Rà soát hồ sơ</span></button>
-      <button data-go="proc" type="button"><span class="nav-ico">≣</span><span>Lộ trình thủ tục</span></button>
-      <button data-go="cls" type="button"><span class="nav-ico">✓</span><span>Sàng lọc dự án</span></button>
-      <button data-go="fee" type="button"><span class="nav-ico">₫</span><span>Phí & nghĩa vụ</span></button>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Hồ sơ</div>
       <button data-go="work" type="button"><span class="nav-ico">▣</span><span>Hồ sơ công việc</span></button>
-      <button data-go="import" type="button"><span class="nav-ico">⇩</span><span>Nhập tài liệu</span></button>
     </div>
-    <div class="nav-side-foot"><b>Rà soát nguồn chính thức</b><span>09/09/2026</span><small>Ưu tiên Cổng TTĐT Chính phủ.</small></div>
+    <details class="nav-more" id="navMore">
+      <summary><span class="nav-ico">•••</span><span>Công cụ khác</span><span class="nav-more-arrow">⌄</span></summary>
+      <div class="nav-more-body">
+        <div class="nav-label">Tra cứu sâu</div>
+        <button data-go="corekb" type="button"><span class="nav-ico">◫</span><span>Văn bản trọng tâm 2026</span></button>
+        <button data-go="memo" type="button"><span class="nav-ico">¶</span><span>Căn cứ đã lưu</span></button>
+        <button data-go="term" type="button"><span class="nav-ico">Aa</span><span>Thuật ngữ</span></button>
+        <button data-go="upd" type="button"><span class="nav-ico">↻</span><span>Cập nhật pháp luật</span></button>
+        <div class="nav-label">Thủ tục & tiện ích</div>
+        <button data-go="proc" type="button"><span class="nav-ico">≣</span><span>Lộ trình thủ tục</span></button>
+        <button data-go="cls" type="button"><span class="nav-ico">✓</span><span>Sàng lọc dự án</span></button>
+        <button data-go="fee" type="button"><span class="nav-ico">₫</span><span>Phí & nghĩa vụ</span></button>
+        <button data-go="import" type="button"><span class="nav-ico">⇩</span><span>Nhập tài liệu</span></button>
+      </div>
+    </details>
+    <div class="nav-side-foot"><b>Nguồn pháp lý</b><span>Rà soát 10/09/2026</span><small>Mở văn bản gốc trước khi áp dụng.</small></div>
     <button class="sidebar-collapse" id="sidebarCollapse" type="button"><span>⇤</span><b>Thu gọn thanh bên</b></button>
   </nav>
   <div class="nav-tools">
@@ -437,7 +435,7 @@
 
     <div class="master-search-v11">
       <span class="master-search-icon">⌕</span>
-      <input id="q" autocomplete="off" placeholder="Ví dụ: Điều 39 GPMT · khoản 2 Điều 49 · 72/2020/QH14 · CTNH 100 kg/tháng…">
+      <input id="q" autocomplete="off" placeholder="Nhập số hiệu, Điều/Khoản hoặc hỏi như: Xưởng của tôi có cần GPMT không?…">
       <button class="clearq" id="clearQ" type="button" aria-label="Xóa từ khóa">×</button>
       <button class="btn bp" id="qBtn" type="button">Tra cứu</button>
     </div>
@@ -449,6 +447,13 @@
       <button data-search-example="Điều 49 ĐKMT" type="button">Điều 49 · ĐKMT</button>
       <button data-search-example="Điều 54 EPR" type="button">Điều 54 · EPR</button>
       <button data-search-example="72/2020/QH14" type="button">72/2020/QH14</button>
+    </div>
+
+    <div class="search-suggest-row natural-search-examples">
+      <span>Chưa biết căn cứ:</span>
+      <button data-search-example="Xưởng của tôi có cần giấy phép môi trường không?" type="button">Xưởng có cần GPMT?</button>
+      <button data-search-example="Nhà máy có nước thải thì cần kiểm tra quy định gì?" type="button">Có nước thải cần kiểm tra gì?</button>
+      <button data-search-example="Dự án mở rộng có phải rà lại ĐTM không?" type="button">Mở rộng có phải rà ĐTM?</button>
     </div>
 
     <div class="citation-finder" id="citationFinder" hidden>
@@ -467,7 +472,7 @@
     </div>
 
     <div class="search-intelligence">
-      <div id="searchCoach" class="search-coach"><span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Ví dụ: “khoản 2 Điều 39 giấy phép môi trường” hoặc “NĐ 48/2026 sửa NĐ 08”.</p></div></div>
+      <div id="searchCoach" class="search-coach"><span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Bạn có thể nhập căn cứ chính xác hoặc hỏi theo tình huống đời thường; LegalOS sẽ tìm các căn cứ liên quan để bạn kiểm tra tiếp.</p></div></div>
       <div class="recent-search-box"><span>Tìm gần đây</span><div id="recentSearches" class="recent-searches"></div></div>
     </div>
   </section>
