@@ -1,11 +1,11 @@
-# LegalOS: ưu tiên sản phẩm sau V14
+# Căn cứ Pháp lý Môi trường: ưu tiên sản phẩm sau V14
 
 Rà soát ngày 18/09/2026. Đây là kế hoạch phát triển, không phải chứng nhận tính chính xác của nội dung pháp luật.
 
 ## Đã bổ sung trên dev
 
 - Diagnostics không xuất nguyên thông báo lỗi hay tên tài liệu từ bản ghi lỗi; có kiểm thử tải JSON trực tiếp từ Settings.
-- Nhập workspace kiểm tra dấu nhận diện LegalOS và cấu trúc dữ liệu; JSON không liên quan không được làm trống dữ liệu hiện tại.
+- Nhập workspace kiểm tra dấu nhận diện Căn cứ Pháp lý Môi trường và cấu trúc dữ liệu; JSON không liên quan không được làm trống dữ liệu hiện tại.
 - Xác nhận trước khi thay thế workspace, chuẩn hóa trước khi ghi, chỉ thay trạng thái đang mở sau khi toàn bộ lần ghi thành công.
 - Nếu một lần ghi thất bại, thử khôi phục các khóa đã ghi trong lần nhập đó. Đây không phải giao dịch bền vững trước sự cố trình duyệt/hệ điều hành; nếu khôi phục cũng thất bại thì cảnh báo vẫn hiển thị.
 - Cảnh báo dễ thấy khi localStorage không ghi được; không đưa nội dung riêng tư vào thông báo.
