@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'self' blob: https://app.netlify.com; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <meta name="description" content="LegalOS — tra cứu pháp luật môi trường, quản lý hồ sơ và theo dõi thủ tục.">
-  <title>LegalOS — Pháp luật môi trường</title>
+  <meta name="description" content="Căn cứ Pháp lý Môi trường — tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường.">
+  <title>Căn cứ Pháp lý Môi trường</title>
   <script>
     // Keep public Deploy Preview links clean by default; users can still force the Netlify Drawer with ?ntl-drawer-state=visible.
     (()=>{try{
@@ -21,9 +21,9 @@
 </head>
 <body>
 <header class="site"><div class="wrap site-in">
-  <button class="brand" data-go="home" type="button">
-    <span class="mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2.5" width="10" height="11" stroke="#2783DE" stroke-width="1.5"/><path d="M6 6h4M6 8.5h4M6 11h2.2" stroke="#2C2C2B" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-    <span><b>LegalOS</b><small>Tra cứu pháp luật môi trường &amp; quản lý hồ sơ</small></span>
+  <button class="brand academic-brand" data-go="home" type="button" aria-label="Căn cứ Pháp lý Môi trường — về trang tổng quan">
+    <img class="brand-logo" src="assets/icons/can-cu-phap-ly-moi-truong.svg" alt="" aria-hidden="true">
+    <span class="brand-copy"><b><span>Căn cứ Pháp lý</span><em>Môi trường</em></b><small>Tra cứu · Rà soát · Hồ sơ · Thủ tục</small></span>
   </button>
   <nav class="links side-nav" id="nav" aria-label="Điều hướng chính">
     <div class="nav-group nav-primary">
@@ -70,22 +70,28 @@
 
 <section id="home" class="page on"><div class="wrap home113 home113-v123">
 
-  <header class="home113-hero compact-home-hero">
-    <div class="home113-intro">
-      <div class="eyebrow">LegalOS · Pháp luật môi trường</div>
-      <h1>Bạn cần làm gì hôm nay?</h1>
-      <p class="lead">Chọn công việc bạn đang cần. LegalOS sẽ đưa bạn vào đúng công cụ — không cần nhớ tên chức năng hay thuật ngữ trước.</p>
+  <header class="home113-hero compact-home-hero academic-home-hero">
+    <div class="home113-intro academic-hero-copy">
+      <div class="academic-overline">TRI THỨC PHÁP LUẬT · MÔI TRƯỜNG BỀN VỮNG</div>
+      <h1>Bạn đang cần <span>tra cứu</span> hay xử lý việc gì?</h1>
+      <p class="lead">Tra cứu căn cứ pháp luật về môi trường, rà soát hồ sơ, theo dõi thủ tục và tìm đúng văn bản áp dụng cho công việc của bạn.</p>
+      <div class="academic-hero-points" aria-label="Giá trị chính">
+        <div><span aria-hidden="true">§</span><p><b>Tra cứu căn cứ</b><small>Đi từ vấn đề đến văn bản gốc.</small></p></div>
+        <div><span aria-hidden="true">✓</span><p><b>Nguồn rõ ràng</b><small>Ưu tiên dẫn chiếu nguồn chính thức.</small></p></div>
+        <div><span aria-hidden="true">≣</span><p><b>Theo dõi hồ sơ</b><small>Giữ việc cần rà và tiến độ trong một nơi.</small></p></div>
+      </div>
     </div>
 
-    <div class="home113-search compact-home-search">
+    <div class="home113-search compact-home-search academic-search-panel">
+      <div class="academic-panel-label">TRA CỨU NHANH</div>
       <div class="home113-search-main">
-        <span>⌕</span>
+        <span aria-hidden="true">⌕</span>
         <input id="hq" autocomplete="off" placeholder="Tìm số hiệu, Điều 39, GPMT, CTNH…">
-        <button class="btn bp" id="hgo" type="button">Tìm luật</button>
+        <button class="btn bp" id="hgo" type="button">Tra cứu</button>
       </div>
       <div class="home-search-subgrid">
         <button class="home113-search-all" data-home-action="cmd" type="button">
-          <span>Tìm toàn hệ thống: luật + PDF/Word</span>
+          <span>Tìm toàn hệ thống: văn bản + PDF/Word</span>
           <span class="shortcut">Ctrl K</span>
         </button>
       </div>
@@ -93,7 +99,7 @@
         <span class="legal-trust-mark" aria-hidden="true">✓</span>
         <div>
           <b>Kiểm tra nguồn trước khi áp dụng</b>
-          <small>LegalOS dùng tóm tắt để tra nhanh và ưu tiên liên kết nguồn chính thức. Khi trích dẫn hoặc ra quyết định, hãy mở văn bản gốc và kiểm tra hiệu lực, sửa đổi và điều khoản chuyển tiếp.</small>
+          <small>Hệ thống dùng tóm tắt để tra nhanh và ưu tiên liên kết nguồn chính thức. Khi trích dẫn hoặc ra quyết định, hãy mở văn bản gốc và kiểm tra hiệu lực, sửa đổi và điều khoản chuyển tiếp.</small>
         </div>
         <button data-home-action="sources" type="button">Xem nguồn</button>
       </div>
@@ -417,7 +423,7 @@
     </div>
   </div>
 
-  <div class="corekb-note"><b>Lưu ý sử dụng:</b> khi tóm tắt LegalOS khác văn bản gốc, ưu tiên văn bản chính thức. Nội dung ở đây dùng để dẫn đường, không thay thế trích dẫn pháp lý.</div>
+  <div class="corekb-note"><b>Lưu ý sử dụng:</b> khi tóm tắt của hệ thống khác văn bản gốc, ưu tiên văn bản chính thức. Nội dung ở đây dùng để dẫn đường, không thay thế trích dẫn pháp lý.</div>
 </div></section>
 
 <section id="lib" class="page"><div class="wrap library-wrap-v11">
@@ -468,18 +474,18 @@
         <label><span>Điểm</span><input id="refPoint" placeholder="a"></label>
         <button class="btn bp" id="refFind" type="button">Tìm căn cứ</button>
       </div>
-      <p class="citation-note">Nếu tóm tắt LegalOS chưa chứa đúng Điều/Khoản/Điểm, hệ thống sẽ không giả vờ có toàn văn mà sẽ hướng bạn mở nguồn chính thức.</p>
+      <p class="citation-note">Nếu tóm tắt của hệ thống chưa chứa đúng Điều/Khoản/Điểm, hệ thống sẽ không giả vờ có toàn văn mà sẽ hướng bạn mở nguồn chính thức.</p>
     </div>
 
     <div class="search-intelligence">
-      <div id="searchCoach" class="search-coach"><span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Bạn có thể nhập căn cứ chính xác hoặc hỏi theo tình huống đời thường; LegalOS sẽ tìm các căn cứ liên quan để bạn kiểm tra tiếp.</p></div></div>
+      <div id="searchCoach" class="search-coach"><span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Bạn có thể nhập căn cứ chính xác hoặc hỏi theo tình huống đời thường; Hệ thống sẽ tìm các căn cứ liên quan để bạn kiểm tra tiếp.</p></div></div>
       <div class="recent-search-box"><span>Tìm gần đây</span><div id="recentSearches" class="recent-searches"></div></div>
     </div>
   </section>
 
   <details class="search-guidance-v111">
   <summary><span>§</span><b>Nguyên tắc tra cứu chuẩn</b><small>Mở khi cần kiểm tra cách sử dụng kết quả</small><span class="guide-arrow">⌄</span></summary>
-  <div>Ưu tiên tìm đúng điều khoản trước, sau đó kiểm tra văn bản sửa đổi/bổ sung, hiệu lực, phụ lục và điều khoản chuyển tiếp. Kết quả “có nhắc Điều 39” không đồng nghĩa LegalOS đang lưu toàn văn Điều 39.</div>
+  <div>Ưu tiên tìm đúng điều khoản trước, sau đó kiểm tra văn bản sửa đổi/bổ sung, hiệu lực, phụ lục và điều khoản chuyển tiếp. Kết quả “có nhắc Điều 39” không đồng nghĩa hệ thống đang lưu toàn văn Điều 39.</div>
 </details>
 
   <div class="library-layout library-layout-v11">
@@ -669,7 +675,7 @@
       </div>
       <div class="expert-side-card">
         <div class="section-kicker">Tài liệu cá nhân</div>
-        <h3><span id="expFileCount">0</span> file đang có trong LegalOS</h3>
+        <h3><span id="expFileCount">0</span> file đang có trong hệ thống</h3>
         <p>PDF/Word có thể dùng làm tài liệu nền, nhưng không tự được coi là nguồn pháp lý chính thức.</p>
         <button class="btn bs" data-go="import" type="button">Mở kho tài liệu</button>
       </div>
@@ -695,7 +701,7 @@
     <select id="procFilter"><option value="all">Tất cả tiến độ</option><option value="todo">Chưa hoàn thành</option><option value="done">Đã hoàn thành</option></select>
   </div>
   <div class="wizard-launch">
-    <div><div class="k">Chế độ hướng dẫn</div><b>Đi từng bước thay vì đọc cả quy trình một lúc</b><p>Chọn quy trình, LegalOS sẽ chỉ hiện một bước tại một thời điểm và lưu tiến độ.</p></div>
+    <div><div class="k">Chế độ hướng dẫn</div><b>Đi từng bước thay vì đọc cả quy trình một lúc</b><p>Chọn quy trình, Hệ thống sẽ chỉ hiện một bước tại một thời điểm và lưu tiến độ.</p></div>
     <div class="wizard-launch-actions"><select id="procWizardSelect" aria-label="Chọn quy trình"></select><button class="btn bp" id="procWizardStart" type="button">Bắt đầu hướng dẫn</button></div>
   </div>
   <div class="g2" id="plist"></div>
@@ -707,7 +713,7 @@
 
 <section id="cls" class="page"><div class="wrap read">
   <div class="section-head"><div><div class="section-kicker">Thủ tục & công cụ</div><h1>Sàng lọc dự án</h1><p class="lead">Công cụ cảnh báo sơ bộ, không phải chức năng kết luận nhóm pháp lý. Kết quả luôn kèm chuỗi văn bản cần đối chiếu.</p></div></div>
-  <div class="legal-tip"><span>!</span><div><b>Lưu ý khi sàng lọc:</b> phân nhóm chính thức còn phụ thuộc loại hình và Phụ lục II–V NĐ 08/2022 sau các lần sửa đổi. Các số liệu dưới đây chỉ kích hoạt các nhánh cần rà; LegalOS không tự gán Nhóm I–IV bằng một công thức chung.</div></div>
+  <div class="legal-tip"><span>!</span><div><b>Lưu ý khi sàng lọc:</b> phân nhóm chính thức còn phụ thuộc loại hình và Phụ lục II–V NĐ 08/2022 sau các lần sửa đổi. Các số liệu dưới đây chỉ kích hoạt các nhánh cần rà; Hệ thống không tự gán Nhóm I–IV bằng một công thức chung.</div></div>
   <div class="classifier-layout"><div><div class="class-toolbar">
       <button class="preset" data-preset="industrial" type="button">Nhà máy mẫu</button>
       <button class="preset" data-preset="mining" type="button">Mỏ mẫu</button>
@@ -778,8 +784,8 @@
 
 
 <section id="import" class="page"><div class="wrap">
-  <div class="section-head"><div><div class="section-kicker">Hồ sơ</div><h1>Nhập &amp; quản lý tài liệu</h1><p class="lead">Đưa PDF, Word và các tài liệu dự án vào LegalOS để lưu cục bộ, xem lại, ghi chú và liên kết với hồ sơ.</p></div><div class="section-actions"><button class="btn bs" id="importIndexExport" type="button">Xuất danh mục JSON</button><button class="btn bs" id="importClearAll" type="button">Xóa toàn bộ</button></div></div>
-  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong LegalOS; “Nhập tài liệu” là file cá nhân của bạn. File Word/PDF nhập vào không tự được coi là văn bản pháp luật đã xác minh.</div></div>
+  <div class="section-head"><div><div class="section-kicker">Hồ sơ</div><h1>Nhập &amp; quản lý tài liệu</h1><p class="lead">Đưa PDF, Word và các tài liệu dự án vào hệ thống để lưu cục bộ, xem lại, ghi chú và liên kết với hồ sơ.</p></div><div class="section-actions"><button class="btn bs" id="importIndexExport" type="button">Xuất danh mục JSON</button><button class="btn bs" id="importClearAll" type="button">Xóa toàn bộ</button></div></div>
+  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong hệ thống; “Nhập tài liệu” là file cá nhân của bạn. File Word/PDF nhập vào không tự được coi là văn bản pháp luật đã xác minh.</div></div>
   <div class="import-hero">
     <div class="import-card">
       <div class="dropzone" id="importDrop" tabindex="0"><div class="drop-icon">⇩</div><b>Kéo file vào đây hoặc bấm để chọn</b><p>Hỗ trợ PDF, Word DOC/DOCX, ODT, RTF, TXT, Markdown, HTML, JSON và CSV. Có thể chọn nhiều file một lần.</p><div class="format-chips"><span class="format-chip">PDF</span><span class="format-chip">DOCX</span><span class="format-chip">DOC</span><span class="format-chip">ODT</span><span class="format-chip">RTF</span><span class="format-chip">TXT/MD</span><span class="format-chip">HTML</span><span class="format-chip">JSON/CSV</span></div></div>
@@ -849,7 +855,7 @@
         <div class="section-kicker">Nguyên tắc sử dụng</div>
         <h3>Trước khi đưa vào hồ sơ chính thức</h3>
         <p>Đối chiếu văn bản gốc/hợp nhất, ngày hiệu lực, điều khoản chuyển tiếp, phụ lục và cơ chế phân quyền đang áp dụng.</p>
-        <p>Chỉ mục Khoản/Điểm của LegalOS là lớp tra cứu có cấu trúc; không thay thế bản toàn văn chính thức.</p>
+        <p>Chỉ mục Khoản/Điểm của hệ thống là lớp tra cứu có cấu trúc; không thay thế bản toàn văn chính thức.</p>
       </section>
     </aside>
   </div>
@@ -982,7 +988,7 @@
 <div class="modal-bg" id="compareModal" role="dialog" aria-modal="true" aria-label="So sánh văn bản">
   <div class="modal">
     <div class="modal-head">
-      <div><div class="k">LegalOS</div><b>So sánh văn bản</b></div>
+      <div><div class="k">Căn cứ pháp lý</div><b>So sánh văn bản</b></div>
       <button class="mini" id="compareClose" type="button" aria-label="Đóng">×</button>
     </div>
     <div class="modal-body" id="compareBody"></div>
@@ -998,7 +1004,7 @@
 <div class="drawer-scrim" id="drawerScrim"></div>
 
 <div class="right-drawer settings-drawer" id="settingsDrawer" aria-hidden="true">
-  <div class="drawer-head"><div><div class="k">LegalOS</div><b>Tùy chỉnh giao diện</b></div><button class="mini" id="settingsClose" type="button">×</button></div>
+  <div class="drawer-head"><div><div class="k">Căn cứ pháp lý</div><b>Tùy chỉnh giao diện</b></div><button class="mini" id="settingsClose" type="button">×</button></div>
   <div class="drawer-body">
     <div class="setting-group"><b>Kích thước chữ</b><div class="segmented" id="fontScale"><button data-scale="small" type="button">Nhỏ</button><button class="on" data-scale="normal" type="button">Vừa</button><button data-scale="large" type="button">Lớn</button></div></div>
     <div class="setting-group"><b>Mật độ giao diện</b><div class="segmented" id="densityMode"><button data-density="compact" type="button">Gọn</button><button class="on" data-density="comfortable" type="button">Thoáng</button></div></div>
@@ -1021,7 +1027,7 @@
 </div>
 
 <div class="modal-bg" id="shortcutsModal" role="dialog" aria-modal="true" aria-label="Phím tắt">
-  <div class="modal shortcut-modal"><div class="modal-head"><div><div class="k">LegalOS</div><b>Phím tắt</b></div><button class="mini" id="shortcutsClose" type="button">×</button></div><div class="modal-body"><div class="shortcut-grid"><div><span class="shortcut">Ctrl K</span><b>Tra cứu toàn hệ thống</b></div><div><span class="shortcut">Alt N</span><b>Ghi chú nhanh</b></div><div><span class="shortcut">Alt L</span><b>Kho văn bản</b></div><div><span class="shortcut">Alt P</span><b>Lộ trình thủ tục</b></div><div><span class="shortcut">Alt W</span><b>Hồ sơ</b></div><div><span class="shortcut">Alt I</span><b>Nhập PDF / Word</b></div><div><span class="shortcut">Esc</span><b>Đóng bảng đang mở</b></div></div></div></div>
+  <div class="modal shortcut-modal"><div class="modal-head"><div><div class="k">Căn cứ pháp lý</div><b>Phím tắt</b></div><button class="mini" id="shortcutsClose" type="button">×</button></div><div class="modal-body"><div class="shortcut-grid"><div><span class="shortcut">Ctrl K</span><b>Tra cứu toàn hệ thống</b></div><div><span class="shortcut">Alt N</span><b>Ghi chú nhanh</b></div><div><span class="shortcut">Alt L</span><b>Kho văn bản</b></div><div><span class="shortcut">Alt P</span><b>Lộ trình thủ tục</b></div><div><span class="shortcut">Alt W</span><b>Hồ sơ</b></div><div><span class="shortcut">Alt I</span><b>Nhập PDF / Word</b></div><div><span class="shortcut">Esc</span><b>Đóng bảng đang mở</b></div></div></div></div>
 </div>
 <div class="reading-progress" id="readingProgress"><span></span></div>
 
