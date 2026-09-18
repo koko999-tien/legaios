@@ -210,6 +210,7 @@ function saveComplianceEditor(){
   const p=readComplianceEditor(),i=complianceProfiles.findIndex(function(x){return x.id===p.id});
   if(i>=0)complianceProfiles[i]=p;else complianceProfiles.unshift(p);
   currentComplianceId=p.id;saveComplianceProfiles();
+  if(typeof logActivity==="function")logActivity("compliance",p.id,"Hồ sơ tuân thủ: "+p.name);
   if($("complianceEditor"))$("complianceEditor").open=false;
   toast("Đã lưu hồ sơ tuân thủ");
 }
