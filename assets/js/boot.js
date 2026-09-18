@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     const st=e.target.closest("[data-step]");if(st){const [pid,si]=st.dataset.step.split(":");const i=+si;const arr=procDone[pid]||[];procDone[pid]=arr.includes(i)?arr.filter(x=>x!==i):[...arr,i].sort((a,b)=>a-b);STORE.set("w3_proc",procDone);openProc(pid);renderProcList();return}
     const pr=e.target.closest("[data-proc-reset]");if(pr){procDone[pr.dataset.procReset]=[];STORE.set("w3_proc",procDone);openProc(pr.dataset.procReset);renderProcList();toast("Đã đặt lại quy trình");return}
     const c=e.target.closest("[data-case]");if(c){showCase(c.dataset.case);return}
+    const ctc=e.target.closest("[data-case-to-compliance]");if(ctc){const row=cases.find(x=>x.id===ctc.dataset.caseToCompliance);if(row)createComplianceFromCase(row);return}
     const del=e.target.closest("[data-delcase]");if(del){cases=cases.filter(x=>x.id!==del.dataset.delcase);STORE.set("w3_cases",cases);currentCaseId=null;renderWorkspace();$("caseDetail").className="empty";$("caseDetail").textContent="Đã xóa hồ sơ.";toast("Đã xóa hồ sơ");return}
     const os=e.target.closest("[data-open-proc]");if(os){openProc(os.dataset.openProc);return}
     const oc=e.target.closest("[data-open-case]");if(oc){go("work");setTimeout(()=>showCase(oc.dataset.openCase),0);return}
