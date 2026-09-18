@@ -65,8 +65,23 @@ function toggleCompare(id,on){
   return true;
 }
 function updateCompareBar(){
-  $("compareText").textContent=`Đã chọn ${compareSelected.length}/2 văn bản`;
-  $("compareBar").classList.toggle("on",compareSelected.length>0);
+  const count=compareSelected.length;
+  const bar=$("compareBar");
+  const open=$("compareOpen");
+  const clear=$("compareClear");
+  $("compareText").textContent=count===1
+    ?"Đã chọn 1/2 · Chọn thêm 1 văn bản"
+    :count===2
+      ?"Đã chọn 2/2 văn bản"
+      :"Đã chọn 0/2 văn bản";
+  bar.classList.toggle("on",count>0);
+  bar.dataset.count=String(count);
+  bar.dataset.ready=count===2?"1":"0";
+  if(open){
+    open.disabled=count!==2;
+    open.setAttribute("aria-disabled",count===2?"false":"true");
+  }
+  if(clear)clear.hidden=count===0;
   document.querySelectorAll("[data-compare]").forEach(c=>c.checked=compareSelected.includes(c.dataset.compare));
 }
 function clearCompare(){
