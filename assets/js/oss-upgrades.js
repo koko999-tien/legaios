@@ -1,8 +1,8 @@
-/* LegalOS V14 — progressive enhancements inspired by accessible government design systems. */
+/* Căn cứ Pháp lý Môi trường — progressive enhancements. */
 (function(){
   'use strict';
 
-  const DIAG_KEY='legalos_diag_errors_v1';
+  const DIAG_KEY='ccplmt_diag_errors_v1';
   function diagText(value,max=500){return String(value??'').replace(/\s+/g,' ').trim().slice(0,max)}
   function diagSource(value){
     if(!value)return '';
@@ -55,11 +55,11 @@
     try{
       if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistration();sw={...sw,scope:r?.scope||'',active:r?.active?.state||'',waiting:r?.waiting?.state||'',installing:r?.installing?.state||''}}
     }catch{sw={...sw,error:'registration-read-failed'}}
-    let localStorageOk=true;try{const k='__legalos_diag_probe';localStorage.setItem(k,'1');localStorage.removeItem(k)}catch{localStorageOk=false}
+    let localStorageOk=true;try{const k='__ccplmt_diag_probe';localStorage.setItem(k,'1');localStorage.removeItem(k)}catch{localStorageOk=false}
     const nav=performance.getEntriesByType?.('navigation')?.[0];
     return {
-      schema:'legalos-diagnostics-v1',
-      app:{name:'LegalOS',version:'V14',collectedAt:new Date().toISOString()},
+      schema:'ccplmt-diagnostics-v1',
+      app:{name:'Căn cứ Pháp lý Môi trường',version:'V14',collectedAt:new Date().toISOString()},
       privacy:'Không chứa nội dung hồ sơ, ghi chú, tên tài liệu nhập hoặc lịch sử tìm kiếm.',
       page:{origin:location.origin,path:location.pathname,route:document.querySelector('.page.on')?.id||'unknown'},
       display:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio||1,theme:document.body?.getAttribute('data-theme')||'',reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches},
@@ -72,11 +72,11 @@
   async function downloadDiagnostics(){
     const payload=await diagnosticSnapshot();
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`LegalOS-diagnostics-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800);
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Can-cu-phap-ly-moi-truong-diagnostics-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800);
     if(typeof window.toast==='function')window.toast('Đã xuất chẩn đoán kỹ thuật');
     return payload;
   }
-  window.LEGALOS_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
+  window.CCPLMT_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
   function installDiagnosticsCommand(){
     document.addEventListener('click',e=>{
       const item=e.target.closest?.('[data-cmd^="diag:"]');
@@ -210,7 +210,7 @@
     box.setAttribute('role','status');
     box.setAttribute('aria-live','polite');
     const text=document.createElement('span');
-    text.textContent='LegalOS có bản mới';
+    text.textContent='Căn cứ Pháp lý Môi trường có bản mới';
     const reload=document.createElement('button');
     reload.type='button';
     reload.textContent='Tải lại';
@@ -238,7 +238,7 @@
       });
     }
     window.addEventListener('load',()=>{
-      navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(reg=>reg.update().catch(()=>{})).catch(err=>console.warn('LegalOS service worker registration failed:',err));
+      navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(reg=>reg.update().catch(()=>{})).catch(err=>console.warn('Service worker registration failed:',err));
     },{once:true});
   }
 
