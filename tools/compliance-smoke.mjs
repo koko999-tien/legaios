@@ -118,7 +118,7 @@ try{
   await go('upd');
   await page.locator('[data-lawtab="impact"]').click();
   assert((await page.locator('#complianceRadarHub').innerText()).includes('Nhà máy QA'),'Legal update hub is not profile-aware');
-  assert((await page.locator('#complianceRadarHub').innerText()).includes('không phải kết luận'),'Profile-aware radar overstates legal applicability');
+  assert((await page.locator('#complianceRadarHub').innerText()).includes('không phải kết luận'),'Profile-aware legal updates overstate legal applicability');
 
   await page.evaluate(()=>openDoc('l72'));
   await page.waitForFunction(()=>document.getElementById('art')?.classList.contains('on'));
@@ -155,7 +155,7 @@ try{
   console.log('  obligation source + owner + due basis + evidence checked');
   console.log('  recurring cadence + projected calendar + period completion checked');
   console.log('  article -> obligation register action checked');
-  console.log('  home pulse + profile-aware legal radar checked');
+  console.log('  home pulse + profile-aware legal updates checked');
   console.log('  workspace v4 export includes recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
