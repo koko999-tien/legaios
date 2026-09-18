@@ -117,7 +117,7 @@ function renderExpertResult(d,a){
     <div class="expert-scorebar"><span style="width:${a.score}%"></span></div>
     <section class="expert-situation">
       <div class="expert-situation-main">
-        <div class="section-kicker">Hệ thống đang hiểu tình huống</div>
+        <div class="section-kicker">Tóm tắt tình huống</div>
         <h3>${esc(situation.headline)}</h3>
         <p>${situation.context.length?esc(situation.context.join(" · ")):"Chưa đủ thông tin nền để mô tả dự án/cơ sở."}</p>
       </div>
