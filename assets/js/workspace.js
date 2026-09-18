@@ -92,7 +92,7 @@ function cmdResults(q=""){
     {kind:"diag",id:"export",title:"Xuất chẩn đoán hệ thống",sub:"JSON kỹ thuật · không gồm nội dung hồ sơ, ghi chú hoặc tên file"}
   ].filter(x=>!s||(x.title+" "+x.sub+" chẩn đoán lỗi diagnostic system").toLowerCase().includes(s));
   const pages=[
-    ["lib","Kho văn bản"],["corekb","Văn bản trọng tâm"],["expert","Rà soát hồ sơ"],["proc","Lộ trình thủ tục"],["cls","Sàng lọc dự án"],["fee","Phí & nghĩa vụ"],["term","Thuật ngữ"],["import","Nhập tài liệu"],["work","Hồ sơ công việc"],["memo","Căn cứ hồ sơ"],["upd","Cập nhật pháp luật"]
+    ["lib","Kho văn bản"],["corekb","Văn bản trọng tâm"],["expert","Rà soát hồ sơ"],["proc","Lộ trình thủ tục"],["cls","Sàng lọc dự án"],["fee","Phí & nghĩa vụ"],["term","Thuật ngữ"],["import","Nhập tài liệu"],["work","Hồ sơ công việc"],["memo","Căn cứ đã lưu"],["upd","Cập nhật pháp luật"]
   ].filter(x=>!s||x[1].toLowerCase().includes(s)).slice(0,3).map(x=>({kind:"page",id:x[0],title:x[1],sub:"Chuyển trang"}));
   return [...actions,...docsR,...filesR,...procR,...pages].slice(0,10);
 }
