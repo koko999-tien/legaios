@@ -1,4 +1,4 @@
-/* LegalOS V14 — document library filters, saved/recent documents and article reader. */
+/* Căn cứ Pháp lý Môi trường — document library filters, saved/recent documents and article reader. */
 const LIB_FILTER_GROUPS=[
  {id:"env",label:"Môi trường",topics:["bvmt","khi","thai","knk","hc","phi"]},
  {id:"resource",label:"Tài nguyên",topics:["nuoc","dat","ks","kttv"]},
@@ -47,7 +47,7 @@ function openDoc(id,focusQuery=""){
   $("abody").innerHTML=`<div class="art-layout"><div class="art-content">
     <div class="legal-badge-row"><span class="legal-badge"><strong>${x.k}</strong></span><span class="legal-badge">${topicName(x.t)}</span>${m.issued?`<span class="legal-badge"><strong>Ban hành:</strong> ${m.issued}</span>`:''}${m.eff?`<span class="legal-badge"><strong>Hiệu lực:</strong> ${m.eff}</span>`:''}${m.temp?'<span class="legal-badge" style="background:var(--wb);color:var(--w)"><strong>Cơ chế có thời hạn</strong></span>':''}${professorVerified(id)?`<span class="legal-badge prof-verified"><strong>✓ Đã kiểm chứng ${professorVerified(id).checked}</strong></span>`:''}<span class="role-badge ${lawRole(x)}">${roleLabel(lawRole(x))}</span></div>
     <h1>${x.ttl}</h1>
-    <div class="data-coverage"><span class="coverage-pill">Nội dung đang xem: tóm tắt LegalOS${deepGuideFor(id)?` + chuyên đề sâu`:""}${coreArticlesForDoc(id).length?` + ${coreArticlesForDoc(id).length} Điều lập chỉ mục`:""}</span>${m.src?'<span class="coverage-pill ok">✓ Đã gắn nguồn chính thức</span>':'<span class="coverage-pill">⚠ Chưa gắn nguồn chính thức</span>'}${refs.length?`<span class="coverage-pill ok">${refs.length} tham chiếu được lập chỉ mục</span>`:''}</div>
+    <div class="data-coverage"><span class="coverage-pill">Nội dung đang xem: tóm tắt của hệ thống${deepGuideFor(id)?` + chuyên đề sâu`:""}${coreArticlesForDoc(id).length?` + ${coreArticlesForDoc(id).length} Điều lập chỉ mục`:""}</span>${m.src?'<span class="coverage-pill ok">✓ Đã gắn nguồn chính thức</span>':'<span class="coverage-pill">⚠ Chưa gắn nguồn chính thức</span>'}${refs.length?`<span class="coverage-pill ok">${refs.length} tham chiếu được lập chỉ mục</span>`:''}</div>
     <div class="artbar"><button class="btn bs" data-save="${x.id}" type="button">${saved.includes(x.id)?"★ Đã lưu":"☆ Lưu"}</button><button class="btn bs" id="copyArt" type="button">Sao chép</button><button class="btn bs" id="printArt" type="button">In / PDF</button><button class="btn bs" id="addCompareArt" type="button">So sánh</button><button class="btn bs" id="addCitationArt" type="button">+ Căn cứ hồ sơ</button><button class="btn bs" id="copyCite" type="button">Sao chép trích dẫn</button><div class="read-tools"><button id="readMinus" type="button" title="Giảm chữ">A−</button><button id="readPlus" type="button" title="Tăng chữ">A+</button><button id="readFocus" type="button" title="Tập trung đọc">Focus</button></div>${m.src?`<a class="official" href="${m.src}" target="_blank" rel="noopener">Mở văn bản gốc · nguồn Chính phủ ↗</a>`:''}</div>
     ${m.rel?`<div class="legal-tip"><span>§</span><div><b>Quan hệ pháp lý:</b> ${m.rel}</div></div>`:''}
     ${professorVerified(id)?`<div class="sourcebox"><b>Kiểm chứng chuyên gia:</b> ${professorVerified(id).note}<br><a class="official" href="${professorVerified(id).source}" target="_blank" rel="noopener">Mở nguồn đã đối chiếu ↗</a></div>`:''}
@@ -61,7 +61,7 @@ function openDoc(id,focusQuery=""){
     </div>
 
     <div id="legalText">${prepareLegalHtml(legalBody)}</div>
-    <div class="sourcebox"><b>Quy tắc dùng dữ liệu:</b> LegalOS chỉ tóm lược và gắn quan hệ văn bản. Nếu bạn cần một Khoản/Điểm cụ thể mà phần trên không chứa, hãy mở nguồn chính thức để tra toàn văn trước khi kết luận.</div>
+    <div class="sourcebox"><b>Quy tắc dùng dữ liệu:</b> Hệ thống chỉ tóm lược và gắn quan hệ văn bản. Nếu bạn cần một Khoản/Điểm cụ thể mà phần trên không chứa, hãy mở nguồn chính thức để tra toàn văn trước khi kết luận.</div>
     <h2 id="noteSec">Ghi chú của tôi</h2><textarea class="in" id="artNote" placeholder="Ghi chú cho văn bản này…">${esc(notes[x.id]||"")}</textarea>
     <h2 id="relatedSec">Văn bản liên quan cùng lĩnh vực</h2><div class="related">${rel.length?rel.map(r=>`<button class="doc" data-open="${r.id}" type="button"><b>${r.ttl}</b><div class="meta"><span class="tag">${r.k}</span></div></button>`).join(""):'<div class="empty">Chưa có mục liên quan khác.</div>'}</div>
   </div><aside class="art-side"><div class="art-toc"><div class="k">Đi nhanh</div><button data-scroll="legalText" type="button">Nội dung tóm lược</button><button data-scroll="noteSec" type="button">Ghi chú</button><button data-scroll="relatedSec" type="button">Liên quan</button></div></aside></div>`;
