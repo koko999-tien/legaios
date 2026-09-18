@@ -225,7 +225,7 @@ function saveObligationEditor(){
   if(!row.title){toast("Nhập tên nghĩa vụ hoặc việc cần xác minh");return}
   const i=p.obligations.findIndex(function(x){return x.id===row.id});
   if(i>=0)p.obligations[i]=Object.assign({},p.obligations[i],row);else p.obligations.unshift(Object.assign({createdAt:new Date().toISOString()},row));
-  p.updatedAt=new Date().toISOString();saveComplianceProfiles();toast("Đã lưu vào Sổ nghĩa vụ");
+  p.updatedAt=new Date().toISOString();saveComplianceProfiles();if(typeof logActivity==="function")logActivity("obligation",row.id,"Nghĩa vụ: "+row.title);toast("Đã lưu vào Sổ nghĩa vụ");
 }
 function addTrackAsObligation(trackId){
   const p=complianceProfile(),t=COMPLIANCE_TRACKS.find(function(x){return x.id===trackId});if(!p||!t)return;
