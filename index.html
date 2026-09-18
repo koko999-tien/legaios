@@ -34,13 +34,13 @@
       <div class="nav-label">Tra cứu</div>
       <button data-go="lib" type="button"><span class="nav-ico">§</span><span>Kho văn bản</span></button>
       <button data-go="corekb" type="button"><span class="nav-ico">◫</span><span>Văn bản trọng tâm 2026</span></button>
-      <button data-go="memo" type="button"><span class="nav-ico">¶</span><span>Căn cứ hồ sơ</span></button>
+      <button data-go="memo" type="button"><span class="nav-ico">¶</span><span>Căn cứ đã lưu</span></button>
       <button data-go="term" type="button"><span class="nav-ico">Aa</span><span>Thuật ngữ</span></button>
       <button data-go="upd" type="button"><span class="nav-ico">↻</span><span>Cập nhật pháp luật</span></button>
     </div>
     <div class="nav-group">
       <div class="nav-label">Thủ tục & công cụ</div>
-      <button data-go="expert" type="button"><span class="nav-ico">◎</span><span>Bàn chuyên gia</span></button>
+      <button data-go="expert" type="button"><span class="nav-ico">◎</span><span>Rà soát hồ sơ</span></button>
       <button data-go="proc" type="button"><span class="nav-ico">≣</span><span>Lộ trình thủ tục</span></button>
       <button data-go="cls" type="button"><span class="nav-ico">✓</span><span>Sàng lọc dự án</span></button>
       <button data-go="fee" type="button"><span class="nav-ico">₫</span><span>Phí & nghĩa vụ</span></button>
@@ -74,17 +74,9 @@
 
   <header class="home113-hero compact-home-hero">
     <div class="home113-intro">
-      <div class="eyebrow">Pháp luật môi trường</div>
-      <h1>Tra cứu pháp luật và xử lý hồ sơ môi trường</h1>
-      <p class="lead">Tra cứu văn bản, rà soát hồ sơ và theo dõi thủ tục trên cùng một giao diện.</p>
-      <div class="home113-tools quick-actions-line">
-        <span>Đi nhanh</span>
-        <button data-go="lib" type="button">Kho văn bản</button>
-        <button data-go="corekb" type="button">Văn bản trọng tâm 2026</button>
-        <button data-go="upd" type="button">Cập nhật pháp luật</button>
-        <button data-go="import" type="button">Nhập PDF / Word</button>
-        <button id="openShortcuts" type="button">⌨ Phím tắt</button>
-      </div>
+      <div class="eyebrow">LegalOS · Pháp luật môi trường</div>
+      <h1>Bạn cần làm gì hôm nay?</h1>
+      <p class="lead">Chọn công việc bạn đang cần. LegalOS sẽ đưa bạn vào đúng công cụ — không cần nhớ tên chức năng hay thuật ngữ trước.</p>
     </div>
 
     <div class="home113-search compact-home-search">
@@ -103,14 +95,31 @@
           <span class="shortcut">▣</span>
         </button>
       </div>
+      <div class="legal-trust-strip" role="note" aria-label="Lưu ý về nguồn pháp lý">
+        <span class="legal-trust-mark" aria-hidden="true">✓</span>
+        <div>
+          <b>Kiểm tra nguồn trước khi áp dụng</b>
+          <small>LegalOS dùng tóm tắt để tra nhanh và ưu tiên liên kết nguồn chính thức. Khi trích dẫn hoặc ra quyết định, hãy mở văn bản gốc và kiểm tra hiệu lực, sửa đổi và điều khoản chuyển tiếp.</small>
+        </div>
+        <button data-home-action="sources" type="button">Xem nguồn</button>
+      </div>
+      <details class="legal-abbrev-help">
+        <summary>Chưa quen các chữ viết tắt như ĐTM, GPMT, CTNH?</summary>
+        <div>
+          <span><b>ĐTM</b> · Đánh giá tác động môi trường</span>
+          <span><b>GPMT</b> · Giấy phép môi trường</span>
+          <span><b>CTNH</b> · Chất thải nguy hại</span>
+          <button data-go="term" type="button">Mở bảng thuật ngữ →</button>
+        </div>
+      </details>
     </div>
   </header>
 
   <section class="home113-section home113-main-choice">
     <div class="home113-section-head">
       <div>
-        <div class="section-kicker">Công việc chính</div>
-        <h2>Bắt đầu từ công việc bạn cần</h2>
+        <div class="section-kicker">Bắt đầu nhanh</div>
+        <h2>Chọn tình huống gần với bạn nhất</h2>
       </div>
       <small></small>
     </div>
@@ -122,9 +131,9 @@
           <span class="home113-card-label">TRA CỨU</span>
         </div>
         <div class="home113-card-body compact-card-body">
-          <h3>Tra cứu pháp luật</h3>
-          <p>Tìm văn bản, Điều, Khoản, Điểm, số hiệu, phạm vi sửa đổi và liên hệ giữa các văn bản.</p>
-          <div class="card-mini-list"><span>Điều / Khoản / Điểm</span><span>Kho VB</span><span>Mở toàn văn</span></div>
+          <h3>Tôi cần tìm một quy định hoặc văn bản</h3>
+          <p>Tìm theo số hiệu, nội dung, Điều/Khoản/Điểm hoặc câu hỏi ngắn rồi mở nguồn để kiểm tra.</p>
+          <div class="card-mini-list"><span>Tìm theo số hiệu</span><span>Tìm theo nội dung</span><span>Mở nguồn</span></div>
         </div>
         <div class="home113-card-foot"><span>Mở kho văn bản</span><b>→</b></div>
       </button>
@@ -135,28 +144,31 @@
           <span class="home113-card-label">HỒ SƠ</span>
         </div>
         <div class="home113-card-body compact-card-body">
-          <h3>Rà soát hồ sơ môi trường</h3>
-          <p>Kiểm tra thông tin dự án, nguồn tác động, tài liệu hiện có và các nội dung pháp lý cần đối chiếu.</p>
-          <div class="card-mini-list"><span>Thông tin đầu vào</span><span>Nội dung cần rà</span><span>Tài liệu cần bổ sung</span></div>
+          <h3>Tôi có một dự án hoặc hồ sơ cần kiểm tra</h3>
+          <p>Trả lời từng bước về dự án và tài liệu đang có để biết những nội dung pháp lý nào cần rà tiếp.</p>
+          <div class="card-mini-list"><span>Trả lời từng bước</span><span>Nhận nội dung cần rà</span><span>Lưu phiếu</span></div>
         </div>
         <div class="home113-card-foot"><span>Rà soát hồ sơ</span><b>→</b></div>
       </button>
 
-      <button class="home113-primary-card procedure-card compact-primary-card" data-go="proc" type="button" aria-label="Mở Lộ trình thủ tục">
+      <button class="home113-primary-card procedure-card compact-primary-card" data-go="work" type="button" aria-label="Mở Hồ sơ công việc">
         <div class="home113-card-top">
           <span class="home113-icon">≣</span>
-          <span class="home113-card-label">THỦ TỤC</span>
+          <span class="home113-card-label">TIẾP TỤC</span>
         </div>
         <div class="home113-card-body compact-card-body">
-          <h3>Lộ trình thủ tục</h3>
-          <p>Đi từng bước với ĐTM, GPMT, EPR, tài nguyên nước, KNK, khoáng sản và các nghĩa vụ liên quan.</p>
-          <div class="card-mini-list"><span>Quy trình</span><span>Checklist</span><span>Tiến độ bước</span></div>
+          <h3>Tôi muốn tiếp tục công việc đang làm</h3>
+          <p>Mở lại hồ sơ, ghi chú, văn bản đã lưu và những việc đang theo dõi trên thiết bị này.</p>
+          <div class="card-mini-list"><span>Hồ sơ</span><span>Ghi chú</span><span>Văn bản đã lưu</span></div>
         </div>
-        <div class="home113-card-foot"><span>Chọn lộ trình</span><b>→</b></div>
+        <div class="home113-card-foot"><span>Mở công việc của tôi</span><b>→</b></div>
       </button>
     </div>
   </section>
 
+  <details class="home114-details home-tools-disclosure">
+    <summary><span><b>Cần thêm công cụ?</b><small>Thủ tục, cập nhật pháp luật, nhập PDF/Word, phí, sàng lọc dự án và các tiện ích khác.</small></span><span>⌄</span></summary>
+    <div class="home114-details-body">
   <section class="home113-section home113-support-section">
     <div class="home113-section-head">
       <div>
@@ -204,6 +216,8 @@
       </button>
     </div>
   </section>
+    </div>
+  </details>
 
   <section class="home113-section home113-hint-strip">
     <div class="hint-strip">
@@ -213,6 +227,9 @@
     </div>
   </section>
 
+  <details class="home114-details home-continue-details" id="homeContinue">
+    <summary><span><b>Tiếp tục công việc gần đây</b><small>Văn bản vừa xem, mục đã lưu và hồ sơ trên trình duyệt này.</small></span><span>⌄</span></summary>
+    <div class="home114-details-body">
   <section class="home114-status" aria-label="Trạng thái hệ thống">
     <div class="home114-status-item"><span>§</span><div><b id="sDocs">0</b><small>Văn bản</small></div></div>
     <div class="home114-status-item"><span>≣</span><div><b id="sProc">0</b><small>Lộ trình</small></div></div>
@@ -231,6 +248,8 @@
       <div id="homeSavedDocs" class="home-mini-list"></div>
     </div>
   </section>
+    </div>
+  </details>
 
   <details class="home114-details">
     <summary><span><b>Khám phá theo lĩnh vực pháp luật</b><small>Nước, chất thải, đất, rừng, khoáng sản, khí hậu, hóa chất…</small></span><span>⌄</span></summary>
@@ -1028,7 +1047,7 @@
 <nav class="mobile-quick" id="mobileQuick" aria-label="Điều hướng nhanh">
   <button data-go="home" type="button">⌂<br>Trang chủ</button>
   <button data-go="lib" type="button">§<br>Văn bản</button>
-  <button data-go="expert" type="button">◎<br>Chuyên gia</button>
+  <button data-go="expert" type="button">◎<br>Rà soát</button>
   <button data-go="import" type="button">⇩<br>Nhập file</button>
   <button data-go="work" type="button">▣<br>Hồ sơ</button>
 </nav>
