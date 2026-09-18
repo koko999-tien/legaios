@@ -225,7 +225,7 @@ function renderSearchCoach(list,q){
   if(!$("searchCoach"))return;
   const p=parseLegalQuery(q);
   if(!q.trim()){
-    $("searchCoach").innerHTML='<span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Hệ thống sẽ phân tích ý định tìm kiếm và xếp kết quả theo mức phù hợp.</p></div>';
+    $("searchCoach").innerHTML='<span class="coach-icon">i</span><div><b>Nhập điều luật, số hiệu hoặc vấn đề cần tra.</b><p>Tra cứu theo số hiệu, điều khoản hoặc chủ đề và xếp kết quả theo mức phù hợp.</p></div>';
     if($("querySummary"))$("querySummary").innerHTML="";
     return;
   }
@@ -239,9 +239,9 @@ function renderSearchCoach(list,q){
   const exactRef=p.article||p.clause||p.point;
   const conversational=!!p.intent?.question||!!p.intent?.labels?.length;
   const guidance=conversational
-    ?"Hệ thống đang tìm căn cứ và nhánh cần kiểm tra, không tự trả lời có/không về nghĩa vụ pháp lý. Hãy mở văn bản gốc của kết quả phù hợp trước khi kết luận."
+    ?"Kết quả dưới đây dùng để xác định căn cứ và nhánh cần kiểm tra, không phải câu trả lời có/không về nghĩa vụ pháp lý. Hãy mở văn bản gốc của kết quả phù hợp trước khi kết luận."
     :(exactRef?"Nếu cần nội dung Khoản/Điểm đầy đủ, hãy mở nguồn chính thức của văn bản phù hợp.":"");
-  $("searchCoach").innerHTML=`<span class="coach-icon">${exactRef?"§":conversational?"?":"⌕"}</span><div><b>Hệ thống hiểu truy vấn là: ${intent.join(" · ")}</b><p>${list.length?`Tìm thấy ${list.length} văn bản phù hợp trong kho tóm tắt/metadata.`:`Chưa thấy căn cứ khớp trong dữ liệu hiện có.`} ${guidance}</p></div>`;
+  $("searchCoach").innerHTML=`<span class="coach-icon">${exactRef?"§":conversational?"?":"⌕"}</span><div><b>Phạm vi tra cứu: ${intent.join(" · ")}</b><p>${list.length?`Tìm thấy ${list.length} văn bản phù hợp trong kho tóm tắt/metadata.`:`Chưa thấy căn cứ khớp trong dữ liệu hiện có.`} ${guidance}</p></div>`;
   if($("querySummary"))$("querySummary").innerHTML=`Chế độ: <b>${legalSearchMode==="ref"?"Điều/Khoản/Điểm":legalSearchMode==="number"?"Số hiệu":"Thông minh"}</b>`;
 }
 function prepareLegalHtml(raw){
