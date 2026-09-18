@@ -43,7 +43,7 @@ try{
   assert(result.deleted,'IndexedDB delete failed');
   assert(result.after===null,'Deleted record is still readable');
 
-  console.log('LegalOS IndexedDB resilience test passed.');
+  console.log('Căn cứ Pháp lý Môi trường IndexedDB resilience test passed.');
   console.log('  open / put / get / getAll / delete checked');
 }finally{
   await browser.close();
