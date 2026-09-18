@@ -15,7 +15,7 @@ try{
   assert(await boxes.count()>=2,'Need at least two legal documents for compare smoke test');
 
   await boxes.nth(0).check();
-  await page.waitForTimeout(80);
+  await page.waitForTimeout(260);
   const bar=page.locator('#compareBar');
   assert(await bar.isVisible(),'Compare selection bar should be visible after selecting one document');
   assert((await bar.getAttribute('data-ready'))==='0','Compare bar should not be ready after one document');
@@ -24,7 +24,7 @@ try{
   assert(oneBox && oneBox.x>=-2 && oneBox.x+oneBox.width<=392 && oneBox.y+oneBox.height<=844,'One-document compare bar is clipped on mobile');
 
   await boxes.nth(1).check();
-  await page.waitForTimeout(80);
+  await page.waitForTimeout(260);
   assert((await bar.getAttribute('data-ready'))==='1','Compare bar should be ready after two documents');
   assert(!(await page.locator('#compareOpen').isDisabled()),'Compare action should be enabled after two documents');
   const twoBox=await bar.boundingBox();
