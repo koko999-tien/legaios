@@ -55,6 +55,22 @@ document.addEventListener("DOMContentLoaded",()=>{
   if($("asOfF"))$("asOfF").onchange=()=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value)};
   $("procWizardStart").onclick=()=>openWizard($("procWizardSelect").value,0);$("wizardClose").onclick=closeWizard;$("wizardModal").onclick=e=>{if(e.target===$("wizardModal"))closeWizard()};
   if($("openShortcuts"))$("openShortcuts").onclick=()=>$("shortcutsModal")?.classList.add('on');if($("shortcutsClose"))$("shortcutsClose").onclick=()=>$("shortcutsModal")?.classList.remove('on');if($("shortcutsModal"))$("shortcutsModal").onclick=e=>{if(e.target===$("shortcutsModal"))$("shortcutsModal").classList.remove('on')};
+  if($("openGeneralFeedback"))$("openGeneralFeedback").onclick=()=>openFeedback("");
+  if($("feedbackClose"))$("feedbackClose").onclick=closeFeedback;
+  if($("feedbackCopy"))$("feedbackCopy").onclick=copyFeedbackReport;
+  if($("feedbackGitHub"))$("feedbackGitHub").onclick=openFeedbackGitHub;
+  if($("feedbackModal"))$("feedbackModal").onclick=e=>{if(e.target===$("feedbackModal"))closeFeedback()};
+  document.body.addEventListener("click",e=>{
+    const info=e.target.closest("[data-info-scroll]");
+    if(info){
+      e.preventDefault();
+      go("info");
+      setTimeout(()=>$((info.dataset.infoScroll||""))?.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"}),60);
+      return;
+    }
+    const feedback=e.target.closest("[data-feedback-doc]");
+    if(feedback){e.preventDefault();openFeedback(feedback.dataset.feedbackDoc||"");return}
+  });
   $("workspaceQuickNote").value=quickNote;$("quickNoteArea").value=quickNote;
   $("goNotes").onclick=()=>{closeDrawers();go('work');setTimeout(()=>$("workNotes")?.scrollIntoView({behavior:'smooth'}),50)};
   document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>$(b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}));
