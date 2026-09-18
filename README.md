@@ -1,6 +1,6 @@
-# LegalOS
+# Căn cứ Pháp lý Môi trường
 
-LegalOS is a browser-based environmental-law workspace and research interface. The current production site remains on the stable `main` branch while the V14 modular refactor is developed on `dev`.
+Căn cứ Pháp lý Môi trường is a browser-based environmental-law workspace and research interface. The current production site remains on the stable `main` branch while the V14 modular refactor is developed on `dev`.
 
 ## Live environments
 
