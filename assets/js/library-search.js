@@ -1,4 +1,4 @@
-/* LegalOS V14 — document-library search result rendering. */
+/* Căn cứ Pháp lý Môi trường — document-library search result rendering. */
 function docs(topic="all",q=""){
   const qq=q.trim(),type=$("typeF")?.value||"all",sort=$("sortF")?.value||"default",scope=$("scopeF")?.value||"all",year=$("yearF")?.value||"all",source=$("sourceF")?.value||"all",asOf=$("asOfF")?.value||"";
   let list=D.filter(d=>{
@@ -50,7 +50,7 @@ function docs(topic="all",q=""){
         </div>
       </div>
     </div>`;
-  }).join(""):`<div class="empty"><b>Chưa tìm thấy căn cứ phù hợp trong dữ liệu LegalOS.</b><br><br>Thử bỏ bớt Khoản/Điểm, tìm bằng số hiệu văn bản, hoặc mở nguồn chính thức. Kho LegalOS hiện chủ yếu là metadata + tóm tắt, chưa phải cơ sở toàn văn Điều/Khoản/Điểm.</div>`;
+  }).join(""):`<div class="empty"><b>Chưa tìm thấy căn cứ phù hợp trong dữ liệu hiện có.</b><br><br>Thử bỏ bớt Khoản/Điểm, tìm bằng số hiệu văn bản, hoặc mở nguồn chính thức. Kho dữ liệu pháp luật hiện chủ yếu là metadata + tóm tắt, chưa phải cơ sở toàn văn Điều/Khoản/Điểm.</div>`;
 
   updateCompareBar();applyLibraryView();
 }
