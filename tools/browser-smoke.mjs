@@ -189,6 +189,15 @@ try {
   const routes = ['lib', 'corekb', 'memo', 'term', 'upd', 'expert', 'proc', 'cls', 'fee', 'work', 'import', 'info', 'home'];
   for (const id of routes) await go(id);
 
+  await go('term');
+  await page.locator('#tq').fill('ĐMC');
+  await page.waitForTimeout(180);
+  const dmcGlossary=(await page.locator('#tlist').innerText()).toLowerCase();
+  assert(dmcGlossary.includes('đmc'),'Glossary search cannot find ĐMC');
+  assert(dmcGlossary.includes('đánh giá môi trường chiến lược'),'ĐMC glossary expansion is missing the full term');
+  await page.locator('#tq').fill('');
+  await page.waitForTimeout(100);
+
   await go('info');
   assert(await page.locator('#info .info-card').count() === 4, 'Trust center should expose four policy/information cards');
   assert(await page.locator('footer [data-info-scroll]').count() === 4, 'Footer trust links are incomplete');
