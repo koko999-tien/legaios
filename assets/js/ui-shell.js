@@ -246,3 +246,66 @@ function readingProgressUpdate(){
 
   if(pct>=2)readingProgressSave(docId,pct,section);
 }
+
+
+/* Trust and feedback helpers — 2026-09-18 */
+let currentFeedbackDocId="";
+function feedbackDocMeta(id=currentFeedbackDocId){
+  const doc=D.find(x=>x.id===id);
+  if(!doc)return null;
+  const meta=metaOf(id)||{};
+  return {id:doc.id,title:doc.ttl,type:doc.k,source:meta.src||"",effect:meta.eff||""};
+}
+function openFeedback(docId=""){
+  currentFeedbackDocId=docId||"";
+  const meta=feedbackDocMeta();
+  const modal=$("feedbackModal");
+  if(!modal)return;
+  $("feedbackContext").textContent=meta
+    ? `${meta.type} · ${meta.title}`
+    :"Phản hồi chung về website";
+  $("feedbackType").value=meta?"Nguồn / liên kết":"Giao diện / kỹ thuật";
+  $("feedbackNote").value="";
+  modal.classList.add("on");
+  setTimeout(()=>$("feedbackNote")?.focus(),0);
+}
+function closeFeedback(){
+  $("feedbackModal")?.classList.remove("on");
+  currentFeedbackDocId="";
+}
+function feedbackReportText(){
+  const meta=feedbackDocMeta();
+  const kind=$("feedbackType")?.value||"Khác";
+  const note=($("feedbackNote")?.value||"").trim()||"(Chưa nhập mô tả)";
+  const lines=[
+    "# Phản hồi Căn cứ Pháp lý Môi trường",
+    "",
+    `- Loại vấn đề: ${kind}`,
+    `- Thời điểm: ${new Date().toISOString()}`
+  ];
+  if(meta){
+    lines.push(`- Văn bản: ${meta.title}`,`- ID dữ liệu: ${meta.id}`,`- Loại văn bản: ${meta.type}`);
+    if(meta.effect)lines.push(`- Hiệu lực đang hiển thị: ${meta.effect}`);
+    if(meta.source)lines.push(`- Nguồn đang gắn: ${meta.source}`);
+  }else{
+    lines.push(`- Trang đang xem: ${currentPage()}`);
+  }
+  lines.push("","## Mô tả",note,"","## Ghi chú","Vui lòng đối chiếu lại với nguồn chính thức trước khi cập nhật dữ liệu.");
+  return lines.join("\n");
+}
+async function copyFeedbackReport(){
+  try{
+    await navigator.clipboard.writeText(feedbackReportText());
+    toast("Đã sao chép báo cáo");
+  }catch{
+    toast("Trình duyệt không cho phép sao chép");
+  }
+}
+function openFeedbackGitHub(){
+  const meta=feedbackDocMeta();
+  const kind=$("feedbackType")?.value||"Phản hồi";
+  const title=meta?`[Dữ liệu] ${meta.title} — ${kind}`:`[Phản hồi] ${kind}`;
+  const url=`https://github.com/koko999-tien/legaios/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(feedbackReportText())}`;
+  const win=window.open(url,"_blank","noopener,noreferrer");
+  if(!win)toast("Trình duyệt đã chặn cửa sổ GitHub");
+}
