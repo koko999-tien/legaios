@@ -134,6 +134,20 @@ try {
 
   // New users should see three plain-language starting points before advanced tools.
   assert((await page.locator('#home h1').textContent() || '').trim() === 'Bạn đang cần tra cứu hay xử lý việc gì?', 'Home does not lead with the user task question');
+  const academicIdentity = await page.evaluate(() => {
+    const root = getComputedStyle(document.documentElement);
+    const h1 = getComputedStyle(document.querySelector('#home .academic-hero-copy h1'));
+    const accent = getComputedStyle(document.querySelector('#home .academic-hero-copy h1 span')).color;
+    return {
+      primary: root.getPropertyValue('--a').trim().toLowerCase(),
+      fontFamily: h1.fontFamily.toLowerCase(),
+      letterSpacing: h1.letterSpacing,
+      accent
+    };
+  });
+  assert(academicIdentity.primary === '#1f6b4c', `Academic primary color regressed: ${academicIdentity.primary}`);
+  assert(!academicIdentity.fontFamily.includes('georgia'), `Vietnamese academic heading regressed to Georgia: ${academicIdentity.fontFamily}`);
+  assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.accent), `Hero accent is not academic green: ${academicIdentity.accent}`);
   assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
   const primaryRoutes = await page.locator('#home .home113-primary-card').evaluateAll(nodes => nodes.map(node => node.dataset.go));
   assert(JSON.stringify(primaryRoutes) === JSON.stringify(['lib','expert','work']), `Unexpected primary home routes: ${primaryRoutes.join(', ')}`);
