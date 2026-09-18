@@ -107,6 +107,8 @@ function readingProgressJumpTo(pct,behavior="smooth"){
 }
 function ensureSmartReadingProgress(){
   const bar=$('readingProgress');if(!bar)return null;
+  const siteHeader=document.querySelector('header.site');
+  if(siteHeader&&bar.parentElement!==siteHeader)siteHeader.append(bar);
   if(bar.dataset.smartReady==="1")return bar;
   bar.dataset.smartReady="1";
   bar.classList.add("smart-reading-progress");
