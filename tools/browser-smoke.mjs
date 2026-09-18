@@ -278,6 +278,7 @@ try {
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
   assert(await page.locator('#advancedSearch').count() === 1, 'Advanced legal search panel is missing');
   assert(await page.locator('#effectF option[value="partial"]').count() === 1, 'Effect-metadata filter is missing the partial-effect option');
+  if (!(await page.locator('#advancedSearch').evaluate(el => el.open))) await page.locator('#advancedSearch > summary').click();
   assert((await page.locator('#advancedSearch').innerText()).includes('không tự xác nhận tình trạng pháp lý'), 'Advanced search does not explain the legal-status metadata boundary');
 
   const firstDoc = page.locator('#docs [data-open]').first();
