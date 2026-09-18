@@ -2273,7 +2273,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 .final-quality-card{background:var(--bg)!important}
 
 
-/* ===== LegalOS V13.2 Professional ===== */
+/* ===== Căn cứ Pháp lý Môi trường V13.2 Professional ===== */
 .date-filter-v13{
   min-height:36px;border:1px solid var(--bd);background:var(--c);border-radius:9px;
   padding:4px 7px;display:grid;grid-template-columns:auto minmax(100px,1fr);align-items:center;gap:6px;
