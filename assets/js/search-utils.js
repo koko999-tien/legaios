@@ -63,6 +63,7 @@ function foldVN(s=""){
 }
 function cleanLegalQuery(s=""){return foldVN(s).replace(/[“”"']/g," ").replace(/\s+/g," ").trim()}
 const SEARCH_SYNONYMS={
+  dmc:["danh gia moi truong chien luoc","chien luoc quy hoach moi truong"],
   dtm:["danh gia tac dong moi truong"],
   gpmt:["giay phep moi truong"],
   dkmt:["dang ky moi truong"],
@@ -70,7 +71,18 @@ const SEARCH_SYNONYMS={
   knk:["khi nha kinh"],
   epr:["trach nhiem mo rong nha san xuat","trach nhiem tai che"],
   xlnt:["xu ly nuoc thai"],
-  qcvn:["quy chuan ky thuat quoc gia"]
+  qcvn:["quy chuan ky thuat quoc gia"],
+  bvmt:["bao ve moi truong"],
+  tnn:["tai nguyen nuoc"],
+  ctr:["chat thai ran"],
+  ctrcntt:["chat thai ran cong nghiep thong thuong"],
+  htxlnt:["he thong xu ly nuoc thai"],
+  bdkh:["bien doi khi hau"],
+  kttv:["khi tuong thuy van"],
+  ntts:["nuoi trong thuy san"],
+  tcvn:["tieu chuan quoc gia"],
+  aqi:["chi so chat luong khong khi"],
+  ods:["chat lam suy giam tang o don"]
 };
 const SEARCH_STOPWORDS=new Set(["cua","toi","minh","phai","khong","thi","nao","gi","nhung","mot","cac","cho","ve","la","va","voi","trong","theo","duoc","hay","neu","muon","hoi"]);
 const SEARCH_CONTEXT_EXPANSIONS=[
@@ -82,6 +94,7 @@ const SEARCH_CONTEXT_EXPANSIONS=[
 ];
 const SEARCH_INTENT_RULES=[
   {id:"gpmt",label:"Câu hỏi về giấy phép môi trường",re:/\b(gpmt|giay phep moi truong)\b/,tokens:["giay","phep","moi","truong","doi","tuong","cap","phep"]},
+  {id:"dmc",label:"Câu hỏi về ĐMC",re:/\b(dmc|danh gia moi truong chien luoc)\b/,tokens:["danh","gia","moi","truong","chien","luoc","quy","hoach"]},
   {id:"dtm",label:"Câu hỏi về ĐTM",re:/\b(dtm|danh gia tac dong moi truong)\b/,tokens:["danh","gia","tac","dong","moi","truong","doi","tuong","du","an"]},
   {id:"dkmt",label:"Câu hỏi về đăng ký môi trường",re:/\b(dkmt|dang ky moi truong)\b/,tokens:["dang","ky","moi","truong","doi","tuong"]},
   {id:"water",label:"Câu hỏi về nước thải / tài nguyên nước",re:/\b(nuoc thai|xa thai|thoat nuoc|khai thac nuoc|su dung nuoc)\b/,tokens:["nuoc","thai","tai","nguyen","nuoc","xa","thai"]},
