@@ -151,7 +151,7 @@ try {
   });
   assert(academicIdentity.primary === '#2563eb', `Application primary color should stay blue: ${academicIdentity.primary}`);
   assert(!academicIdentity.fontFamily.includes('georgia'), `Vietnamese academic heading regressed to Georgia: ${academicIdentity.fontFamily}`);
-  assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.accent), `Hero highlighted word is not green: ${academicIdentity.accent}`);
+  assert(['rgb(23, 32, 51)','color(srgb 0.0901961 0.12549 0.2)'].includes(academicIdentity.accent), `Hero search word should use the normal heading color: ${academicIdentity.accent}`);
   assert(['rgb(31, 107, 76)','color(srgb 0.121569 0.419608 0.298039)'].includes(academicIdentity.brandAccent), `Brand highlighted word is not green: ${academicIdentity.brandAccent}`);
   assert(['rgb(37, 99, 235)','color(srgb 0.145098 0.388235 0.921569)'].includes(academicIdentity.searchButton), `Search button should remain blue: ${academicIdentity.searchButton}`);
   assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
