@@ -3680,7 +3680,9 @@ header.site{
   word-spacing:0!important;
 }
 /* Only brand-highlighted words are green. The application UI keeps its original blue palette. */
-#home .academic-hero-copy h1 span,
+#home .academic-hero-copy h1 span{
+  color:var(--text)!important;
+}
 .brand-copy b em{
   color:#1F6B4C!important;
 }
