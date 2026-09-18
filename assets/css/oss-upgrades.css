@@ -391,6 +391,18 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 }
 
 
+/* ===== Global sticky application header ===== */
+html,body{
+  max-width:100%;
+  overflow-x:clip!important;
+}
+header.site{
+  position:sticky!important;
+  top:0!important;
+  z-index:40!important;
+  isolation:isolate;
+}
+
 /* ===== Smart article reading progress ===== */
 body.article-view{
   overflow-x:clip!important;
@@ -427,13 +439,14 @@ body.article-view header.site{
 .smart-reading-progress.on{display:flex!important}
 
 .reading-progress-shell{
-  width:min(760px,calc(100% - 48px));
+  width:100%;
+  max-width:none;
   min-height:34px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  padding:5px 10px 4px;
+  padding:5px 24px 4px;
   background:transparent;
   border:0;
   border-radius:0;
@@ -482,7 +495,8 @@ body.article-view header.site{
 
 .reading-progress-track{
   position:relative;
-  width:min(760px,calc(100% - 48px));
+  width:100%;
+  max-width:none;
   height:4px;
   background:color-mix(in srgb,var(--bd) 76%,transparent);
   border-radius:999px;
