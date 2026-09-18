@@ -1,11 +1,13 @@
 /* Căn cứ Pháp lý Môi trường — native service worker. */
-const CACHE_NAME='ccplmt-v14-shell-20260918-56';
+const CACHE_NAME='ccplmt-v14-shell-20260919-57';
 const APP_SHELL=[
   '/',
   '/index.html',
   '/manifest.webmanifest',
   '/assets/icons/can-cu-phap-ly-moi-truong.svg',
   '/assets/css/app.css',
+  '/assets/css/v14-product.css',
+  '/assets/css/compliance.css',
   '/assets/css/oss-upgrades.css',
   '/assets/js/oss-upgrades.js',
   '/assets/js/legal-data.js',
@@ -23,6 +25,7 @@ const APP_SHELL=[
   '/assets/js/project-tools.js',
   '/assets/js/library.js',
   '/assets/js/procedures.js',
+  '/assets/js/compliance-core.js',
   '/assets/js/compliance.js',
   '/assets/js/workspace.js',
   '/assets/js/legal-hub.js',
