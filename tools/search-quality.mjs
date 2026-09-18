@@ -59,7 +59,7 @@ try{
   assert(coach.includes('câu hỏi về giấy phép môi trường'),'Search coach did not explain the detected conversational intent');
   assert(coach.includes('không phải câu trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
 
-  console.log('LegalOS search quality test passed.');
+  console.log('Căn cứ Pháp lý Môi trường search quality test passed.');
   console.log(`  fuzzy engine document: ${engineProbe.title}`);
   console.log(`  fuzzy engine hits: ${engineProbe.fuzzyHits}`);
   console.log(`  typo query results: ${typoCount}`);
