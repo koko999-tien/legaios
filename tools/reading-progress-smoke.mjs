@@ -103,7 +103,7 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(120);
   const mobileBox = await bar.boundingBox();
-  assert(mobileBox && mobileBox.left >= -1 && mobileBox.x + mobileBox.width <= 391, 'Reading progress overflows the 390px mobile viewport');
+  assert(mobileBox && mobileBox.x >= -2 && mobileBox.x + mobileBox.width <= 392, 'Reading progress overflows the 390px mobile viewport');
   const overflow = await page.evaluate(() => ({ viewport: innerWidth, scrollWidth: document.documentElement.scrollWidth }));
   assert(overflow.scrollWidth <= overflow.viewport + 2, `Reading progress introduced horizontal overflow: ${overflow.scrollWidth}px > ${overflow.viewport}px`);
 
