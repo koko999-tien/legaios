@@ -145,17 +145,17 @@
         <div class="home113-card-foot"><span>Rà soát hồ sơ</span><b>→</b></div>
       </button>
 
-      <button class="home113-primary-card procedure-card compact-primary-card" data-go="work" type="button" aria-label="Mở Hồ sơ công việc">
+      <button class="home113-primary-card procedure-card compact-primary-card" id="homeResumeCard" data-go="work" type="button" aria-label="Mở Hồ sơ công việc">
         <div class="home113-card-top">
           <span class="home113-icon">≣</span>
           <span class="home113-card-label">TIẾP TỤC</span>
         </div>
         <div class="home113-card-body compact-card-body">
-          <h3>Tôi muốn tiếp tục công việc đang làm</h3>
-          <p>Mở lại hồ sơ, ghi chú, văn bản đã lưu và những việc đang theo dõi trên thiết bị này.</p>
+          <h3 id="homeResumeTitle">Tôi muốn tiếp tục công việc đang làm</h3>
+          <p id="homeResumeCopy">Mở lại hồ sơ, ghi chú, văn bản đã lưu và những việc đang theo dõi trên thiết bị này.</p>
           <div class="card-mini-list"><span>Hồ sơ</span><span>Ghi chú</span><span>Văn bản đã lưu</span></div>
         </div>
-        <div class="home113-card-foot"><span>Mở công việc của tôi</span><b>→</b></div>
+        <div class="home113-card-foot"><span id="homeResumeFoot">Mở công việc của tôi</span><b>→</b></div>
       </button>
     </div>
   </section>
@@ -861,7 +861,7 @@
     <button data-jump="workActivity" type="button">Nhịp làm việc</button>
     <button data-jump="workExpert" type="button">Phiếu chuyên gia</button>
     <button data-jump="workCases" type="button">Hồ sơ</button>
-    <button data-jump="workSaved" type="button">Văn bản đã lưu</button><button data-go="memo" type="button">Căn cứ hồ sơ</button>
+    <button data-jump="workSaved" type="button">Văn bản đã lưu</button><button data-go="memo" type="button">Căn cứ đã lưu</button>
     <button data-jump="workNotes" type="button">Ghi chú</button>
     <button data-jump="workBackup" type="button">Sao lưu</button><button data-go="import" type="button">Nhập tài liệu</button>
   </div>
