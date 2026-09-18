@@ -6,23 +6,34 @@ const expectedScripts = [
   'assets/js/knowledge-base.js',
   'assets/js/state.js',
   'assets/js/import.js',
+  'assets/js/idb-resilience.js',
   'assets/js/search-utils.js',
   'assets/js/search-data.js',
   'assets/js/search-runtime.js',
+  'assets/js/search-fuzzy.js',
   'assets/js/ui-shell.js',
   'assets/js/ui-utils.js',
   'assets/js/activity-workspace.js',
   'assets/js/project-tools.js',
   'assets/js/library.js',
   'assets/js/procedures.js',
+  'assets/js/compliance-core.js',
   'assets/js/compliance.js',
   'assets/js/workspace.js',
   'assets/js/legal-hub.js',
   'assets/js/expert.js',
   'assets/js/navigation.js',
+  'assets/js/oss-upgrades.js',
   'assets/js/library-search.js',
   'assets/js/classifier.js',
   'assets/js/boot.js'
+];
+
+const expectedStyles = [
+  'assets/css/app.css',
+  'assets/css/v14-product.css',
+  'assets/css/compliance.css',
+  'assets/css/oss-upgrades.css'
 ];
 
 const html = fs.readFileSync('index.html', 'utf8');
@@ -39,7 +50,7 @@ if (JSON.stringify(actualScripts) !== JSON.stringify(expectedScripts)) {
   fail(`JavaScript load order changed.\nExpected: ${expectedScripts.join(' -> ')}\nActual:   ${actualScripts.join(' -> ')}`);
 }
 
-for (const file of ['assets/css/app.css', ...expectedScripts]) {
+for (const file of [...expectedStyles, ...expectedScripts]) {
   if (!fs.existsSync(file)) {
     fail(`Missing required asset: ${file}`);
     continue;
@@ -57,7 +68,11 @@ const requiredMarkers = [
   ['assets/js/expert.js', 'function analyzeExpert('],
   ['assets/js/legal-hub.js', 'function renderLawHubTab('],
   ['assets/js/workspace.js', 'function renderWorkspace('],
-  ['assets/js/compliance.js', 'function renderComplianceWorkspace(']
+  ['assets/js/compliance-core.js', 'function normalizeComplianceProfile('],
+  ['assets/js/compliance.js', 'function renderComplianceWorkspace('],
+  ['assets/js/idb-resilience.js', 'window.LEGALOS_IDB_RESILIENCE'],
+  ['assets/js/search-fuzzy.js', 'window.LEGALOS_FUZZY_SEARCH'],
+  ['assets/js/oss-upgrades.js', 'window.CCPLMT_DIAGNOSTICS']
 ];
 for (const [file, marker] of requiredMarkers) {
   const text = fs.readFileSync(file, 'utf8');
@@ -70,13 +85,16 @@ if (fs.existsSync(workflowDir)) {
   if (temporary.length) fail(`Temporary write-enabled extraction workflow(s) still present: ${temporary.join(', ')}`);
 }
 
-const cssLink = [...html.matchAll(/<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["'][^>]*>/gi)].map(m => m[1]);
-if (!cssLink.includes('assets/css/app.css')) fail('index.html must load assets/css/app.css.');
+const actualStyles = [...html.matchAll(/<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["'][^>]*>/gi)].map(m => m[1]);
+if (JSON.stringify(actualStyles) !== JSON.stringify(expectedStyles)) {
+  fail(`Stylesheet load order changed.\nExpected: ${expectedStyles.join(' -> ')}\nActual:   ${actualStyles.join(' -> ')}`);
+}
 
 if (!process.exitCode) {
   const totalBytes = expectedScripts.reduce((sum, file) => sum + fs.statSync(file).size, 0);
   console.log('V14 structure check passed.');
   console.log(`  ${expectedScripts.length} ordered JavaScript modules`);
+  console.log(`  ${expectedStyles.length} ordered stylesheets`);
   console.log(`  ${totalBytes.toLocaleString('en-US')} JavaScript bytes`);
   console.log('  no legacy app.js');
   console.log('  no temporary apply-stage workflows');
