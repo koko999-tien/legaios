@@ -392,6 +392,9 @@ body:not([data-theme="dark"]) .library-filters .chip small{
 
 
 /* ===== Smart article reading progress ===== */
+body.article-view{
+  overflow-x:clip!important;
+}
 body.article-view header.site{
   position:sticky!important;
   top:0!important;
