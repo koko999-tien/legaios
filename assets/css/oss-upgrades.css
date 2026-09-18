@@ -263,3 +263,129 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   :focus-visible{outline:3px solid Highlight!important}
   .mobile-quick,.right-drawer,nav.links.side-nav{background:Canvas!important;color:CanvasText!important}
 }
+
+
+/* ===== V14 product polish: clearer hierarchy, readable metadata, calmer mobile ===== */
+:root{
+  --legalos-card-radius:14px;
+  --legalos-meta-size:11px;
+  --legalos-small-size:12px;
+}
+
+/* Home: keep the three primary jobs dominant; supporting copy must remain readable. */
+.home113-card-label{font-size:10px!important}
+.compact-card-body p{font-size:12px!important;line-height:1.6!important}
+.card-mini-list span{font-size:10px!important;padding:5px 9px!important}
+.home113-card-foot{font-size:11px!important}
+.compact-tile b{font-size:12px!important}
+.compact-tile small{font-size:10.5px!important;line-height:1.5!important}
+.home113-tools>span,
+.home113-tools button{font-size:10.5px!important}
+.hint-item b{font-size:11px!important}
+.hint-item small{font-size:10.5px!important;line-height:1.5!important}
+.home114-status-item small{font-size:10px!important}
+.home114-panel-head h3{font-size:13px!important}
+.home114-details>summary b{font-size:11px!important}
+.home114-details>summary small{font-size:10px!important;line-height:1.45!important}
+
+/* Library: controls and helper text should not look like footnotes. */
+.search-help-v11,
+.search-suggest-row>span,
+.search-suggest-row button,
+.recent-searches button,
+.popular-refs button,
+.data-level-pill,
+.citation-fields label span,
+.citation-note,
+.query-summary{
+  font-size:10.5px!important;
+}
+.citation-fields input{font-size:12px!important}
+.library-filters .chip{min-height:38px!important}
+.library-filters .chip small{font-size:10px!important}
+.library-filters .chip span{font-size:11px!important}
+
+/* Core knowledge: remove the legacy 6–8px typography without changing legal data. */
+.guide-card-v131 p,
+.guide-card-v131 li,
+.guide-card-v131 small,
+.corekb-chain-content>p,
+.corekb-doc-main small,
+.corekb-source-list small,
+.corekb-scope-bar p,
+.core-stat-detail-head p,
+.core-stat-doc-main span,
+.core-stat-doc-meta span,
+.core-stat-article-groups button span,
+.core-stat-coverage span{
+  font-size:10.5px!important;
+  line-height:1.5!important;
+}
+.corekb-doc-main b,
+.corekb-source-list b,
+.core-stat-doc-main b,
+.core-stat-article-groups h4,
+.core-stat-article-groups button b,
+.corekb-scope-bar b{
+  font-size:11px!important;
+}
+.corekb-status-row span,
+.corekb-stats-clickable>button span,
+.corekb-stats-clickable>button small,
+.core-stat-doc-main small,
+.core-stat-numberline button,
+#corekb .corekb-coverage-grid>button em{
+  font-size:10px!important;
+}
+.corekb-stats-clickable>button{min-height:96px!important}
+.corekb-docs article{min-height:142px!important}
+
+/* Memo/case tools: these are working surfaces, not dense dashboards. */
+.memo-stats-v13 span,
+.memo-panel-v13>p,
+.memo-panel-head small,
+.memo-item-v13>p,
+.memo-item-v13>small,
+.memo-trail-doc small,
+.trail-node-v13 small,
+.clause-row-v13>p,
+.point-row-v13>p,
+.clause-overlay-v13,
+.clause-note-v13{
+  font-size:10.5px!important;
+  line-height:1.5!important;
+}
+.memo-panel-v13 h3,
+.memo-item-top h3,
+.memo-trail-doc b,
+.trail-node-v13 b,
+.clause-row-head>b,
+.point-row-v13>span{
+  font-size:11px!important;
+}
+.memo-item-v13 textarea{font-size:12px!important;line-height:1.5!important}
+
+/* Calm visual rhythm across the main working cards. */
+.home113-primary-card,
+.home113-tile,
+.home114-panel,
+.home114-details,
+.legal-search-hub,
+.library-filters,
+.memo-panel-v13,
+.memo-item-v13,
+.guide-card-v131,
+.corekb-block,
+.core-final-details{
+  border-radius:var(--legalos-card-radius)!important;
+}
+
+/* On phones the hero already has search + the three main jobs directly below.
+   Hide the duplicate shortcut strip to reduce first-screen clutter. */
+@media(max-width:900px){
+  #home .quick-actions-line{display:none!important}
+  .compact-home-hero{padding-top:0!important}
+  .compact-primary-card{min-height:0!important;padding:16px!important}
+  .compact-tile{min-height:132px!important}
+  .home113-main-choice{margin-top:14px!important}
+}
