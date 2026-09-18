@@ -11,7 +11,7 @@ function assert(condition, message) {
 
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
-  assert((await page.title()).includes('LegalOS'), 'LegalOS did not load before PWA test');
+  assert((await page.title()).includes('Căn cứ Pháp lý Môi trường'), 'Site did not load before PWA test');
 
   const registration = await page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) return { supported: false };
@@ -27,18 +27,18 @@ try {
   // Reload once so the page is controlled by the newly activated worker.
   await page.reload({ waitUntil: 'networkidle' });
   const controlled = await page.evaluate(() => Boolean(navigator.serviceWorker.controller));
-  assert(controlled, 'LegalOS page is not controlled by its service worker after reload');
+  assert(controlled, 'Page is not controlled by its service worker after reload');
 
   const manifestHref = await page.locator('link[rel="manifest"]').getAttribute('href');
   assert(manifestHref?.includes('manifest.webmanifest'), 'Web manifest link is missing');
 
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  assert((await page.title()).includes('LegalOS'), 'Offline reload did not restore LegalOS shell');
+  assert((await page.title()).includes('Căn cứ Pháp lý Môi trường'), 'Offline reload did not restore the application shell');
   assert(await page.locator('#home.page.on').count(), 'Offline reload did not restore the home page');
   await context.setOffline(false);
 
-  console.log('LegalOS PWA/offline smoke test passed.');
+  console.log('Căn cứ Pháp lý Môi trường PWA/offline smoke test passed.');
 } finally {
   await context.setOffline(false).catch(() => {});
   await browser.close();
