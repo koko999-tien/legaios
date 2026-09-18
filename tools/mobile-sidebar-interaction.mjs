@@ -21,6 +21,37 @@ async function waitForSidebarOpen() {
 
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+
+  const menuGeometry = await page.evaluate(() => {
+    const btn = document.getElementById('menuBtn');
+    const line = btn?.querySelector(':scope > span');
+    if (!btn || !line) return null;
+    const b = btn.getBoundingClientRect();
+    const r = line.getBoundingClientRect();
+    const base = getComputedStyle(line);
+    const before = getComputedStyle(line, '::before');
+    const after = getComputedStyle(line, '::after');
+    return {
+      buttonCenterX: b.left + b.width / 2,
+      buttonCenterY: b.top + b.height / 2,
+      lineCenterX: r.left + r.width / 2,
+      lineCenterY: r.top + r.height / 2,
+      widths: [base.width, before.width, after.width].map(parseFloat),
+      heights: [base.height, before.height, after.height].map(parseFloat),
+      beforeTop: parseFloat(before.top),
+      afterTop: parseFloat(after.top),
+      beforeLeft: parseFloat(before.left),
+      afterLeft: parseFloat(after.left)
+    };
+  });
+  assert(menuGeometry, 'Could not inspect mobile hamburger geometry');
+  assert(menuGeometry.widths.every(w => Math.abs(w - menuGeometry.widths[0]) <= 0.1), `Hamburger lines are not equal width: ${menuGeometry.widths.join(', ')}`);
+  assert(menuGeometry.heights.every(h => Math.abs(h - menuGeometry.heights[0]) <= 0.1), `Hamburger lines are not equal height: ${menuGeometry.heights.join(', ')}`);
+  assert(Math.abs(menuGeometry.lineCenterX - menuGeometry.buttonCenterX) <= 0.75, `Hamburger is not horizontally centered: line=${menuGeometry.lineCenterX}, button=${menuGeometry.buttonCenterX}`);
+  assert(Math.abs(menuGeometry.lineCenterY - menuGeometry.buttonCenterY) <= 0.75, `Hamburger is not vertically centered: line=${menuGeometry.lineCenterY}, button=${menuGeometry.buttonCenterY}`);
+  assert(Math.abs(menuGeometry.beforeTop + menuGeometry.afterTop) <= 0.1, `Hamburger vertical spacing is not symmetric: ${menuGeometry.beforeTop}, ${menuGeometry.afterTop}`);
+  assert(Math.abs(menuGeometry.beforeLeft) <= 0.1 && Math.abs(menuGeometry.afterLeft) <= 0.1, `Hamburger outer lines are horizontally offset: ${menuGeometry.beforeLeft}, ${menuGeometry.afterLeft}`);
+
   await page.locator('#menuBtn').click();
   await waitForSidebarOpen();
 
