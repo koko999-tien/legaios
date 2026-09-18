@@ -36,7 +36,7 @@ try{
   assert(/target="_blank"/.test(good),'Safe external link did not receive target=_blank');
   assert(/rel="noopener noreferrer"/.test(good),'Safe external link did not receive noopener/noreferrer');
 
-  console.log('LegalOS sanitizer security test passed.');
+  console.log('Căn cứ Pháp lý Môi trường sanitizer security test passed.');
   console.log(`  attack payloads checked: ${results.length-1}`);
   console.log('  safe HTTPS link preservation checked');
 }finally{
