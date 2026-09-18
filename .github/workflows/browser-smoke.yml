@@ -90,6 +90,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/mobile-article-layout.mjs
 
+      - name: Verify smart reading progress
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/reading-progress-smoke.mjs
+
       - name: Verify offline PWA shell
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
