@@ -129,11 +129,11 @@ async function assertCompactMobileText(width) {
 
 try {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
-  assert((await page.title()).includes('LegalOS'), 'Document title does not contain LegalOS');
+  assert((await page.title()).includes('Căn cứ Pháp lý Môi trường'), 'Document title does not contain the current brand');
   assert(await activePage('home'), 'Home page is not active after startup');
 
   // New users should see three plain-language starting points before advanced tools.
-  assert((await page.locator('#home h1').textContent() || '').trim() === 'Bạn cần làm gì hôm nay?', 'Home does not lead with the user task question');
+  assert((await page.locator('#home h1').textContent() || '').trim() === 'Bạn đang cần tra cứu hay xử lý việc gì?', 'Home does not lead with the user task question');
   assert(await page.locator('#home .home113-primary-card').count() === 3, 'Home must expose exactly three primary starting points');
   const primaryRoutes = await page.locator('#home .home113-primary-card').evaluateAll(nodes => nodes.map(node => node.dataset.go));
   assert(JSON.stringify(primaryRoutes) === JSON.stringify(['lib','expert','work']), `Unexpected primary home routes: ${primaryRoutes.join(', ')}`);
@@ -244,7 +244,7 @@ try {
     throw new Error(`Browser runtime errors detected:\n${runtimeErrors.join('\n')}`);
   }
 
-  console.log('LegalOS browser smoke test passed.');
+  console.log('Căn cứ Pháp lý Môi trường browser smoke test passed.');
   console.log(`  routes checked: ${routes.length}`);
   console.log('  library search and article open checked');
   console.log('  theme persistence checked');
