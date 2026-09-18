@@ -6,7 +6,18 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'self' blob: https://app.netlify.com; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="Căn cứ Pháp lý Môi trường — tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường.">
+  <meta name="theme-color" content="#2563EB">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Căn cứ Pháp lý Môi trường">
+  <meta property="og:description" content="Tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Căn cứ Pháp lý Môi trường">
+  <meta name="twitter:description" content="Tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường.">
+  <link rel="icon" href="assets/icons/can-cu-phap-ly-moi-truong.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
   <title>Căn cứ Pháp lý Môi trường</title>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Căn cứ Pháp lý Môi trường","inLanguage":"vi","description":"Tra cứu căn cứ pháp luật, rà soát hồ sơ và theo dõi thủ tục môi trường."}</script>
   <script>
     // Keep public Deploy Preview links clean by default; users can still force the Netlify Drawer with ?ntl-drawer-state=visible.
     (()=>{try{
@@ -46,6 +57,7 @@
         <button data-go="cls" type="button"><span class="nav-ico">✓</span><span>Sàng lọc dự án</span></button>
         <button data-go="fee" type="button"><span class="nav-ico">₫</span><span>Phí & nghĩa vụ</span></button>
         <button data-go="import" type="button"><span class="nav-ico">⇩</span><span>Nhập tài liệu</span></button>
+        <button data-go="info" type="button"><span class="nav-ico">i</span><span>Thông tin &amp; chính sách</span></button>
       </div>
     </details>
     <div class="nav-side-foot"><b>Nguồn pháp lý</b><span>Rà soát 10/09/2026</span><small>Mở văn bản gốc trước khi áp dụng.</small></div>
@@ -844,7 +856,47 @@
         </div>
         <div id="memoList" class="memo-list-v13"></div>
       </section>
-    </main>
+    
+<section id="info" class="page"><div class="wrap info-page">
+  <div class="section-head">
+    <div><div class="section-kicker">Minh bạch sử dụng</div><h1>Thông tin &amp; chính sách</h1><p class="lead">Những điều người dùng cần biết trước khi dựa vào dữ liệu, lưu hồ sơ hoặc gửi phản hồi.</p></div>
+    <div class="data-fresh">Dữ liệu pháp luật rà soát 10/09/2026</div>
+  </div>
+  <div class="info-nav" aria-label="Đi nhanh trong trang thông tin">
+    <button data-info-scroll="infoAbout" type="button">Giới thiệu</button>
+    <button data-info-scroll="infoPrivacy" type="button">Quyền riêng tư</button>
+    <button data-info-scroll="infoTerms" type="button">Điều khoản sử dụng</button>
+    <button data-info-scroll="infoFeedback" type="button">Báo lỗi dữ liệu</button>
+  </div>
+  <div class="info-grid">
+    <section class="info-card" id="infoAbout">
+      <div class="section-kicker">Giới thiệu</div>
+      <h2>Một công cụ tra cứu và tổ chức công việc pháp lý môi trường</h2>
+      <p>Căn cứ Pháp lý Môi trường hỗ trợ tìm văn bản, rà soát tình huống, lưu căn cứ, theo dõi hồ sơ và thủ tục. Website này là một dự án tra cứu độc lập, không phải cổng thông tin của cơ quan nhà nước và không đại diện cho cơ quan có thẩm quyền.</p>
+      <div class="info-note"><b>Nguyên tắc sử dụng:</b> đi từ tình huống → căn cứ liên quan → mở văn bản gốc → kiểm tra hiệu lực, sửa đổi và điều khoản chuyển tiếp.</div>
+    </section>
+    <section class="info-card" id="infoPrivacy">
+      <div class="section-kicker">Quyền riêng tư &amp; dữ liệu cục bộ</div>
+      <h2>Dữ liệu công việc chủ yếu nằm trong trình duyệt của bạn</h2>
+      <p>Ở phiên bản hiện tại, hồ sơ, ghi chú, tiến độ đọc, văn bản đã lưu và tài liệu bạn nhập được lưu cục bộ bằng bộ nhớ trình duyệt/IndexedDB. Xóa dữ liệu trình duyệt có thể làm mất các nội dung này nếu bạn chưa xuất bản sao lưu.</p>
+      <ul><li>File PDF/Word nhập vào không tự trở thành dữ liệu pháp luật đã xác minh.</li><li>Khi mở nguồn chính thức hoặc GitHub để phản hồi, bạn rời khỏi website này và chịu chính sách của dịch vụ bên ngoài.</li><li>Gói diagnostics được thiết kế không chứa nội dung hồ sơ, ghi chú, tên file nhập hoặc lịch sử tìm kiếm.</li></ul>
+    </section>
+    <section class="info-card" id="infoTerms">
+      <div class="section-kicker">Điều khoản sử dụng</div>
+      <h2>Tóm tắt giúp tra cứu nhanh, không thay thế văn bản gốc</h2>
+      <p>Nội dung trên website không phải tư vấn pháp lý, kết luận thẩm định hay quyết định của cơ quan có thẩm quyền. Dữ liệu có thể chưa phản ánh đầy đủ mọi sửa đổi, văn bản hợp nhất, phụ lục hoặc điều khoản chuyển tiếp tại thời điểm bạn sử dụng.</p>
+      <ul><li>Luôn kiểm tra văn bản gốc và tình trạng hiệu lực trước khi trích dẫn hoặc ra quyết định.</li><li>Không suy ra nghĩa vụ pháp lý chỉ từ nhãn, tóm tắt hoặc kết quả sàng lọc tự động.</li><li>Nếu phát hiện sai nguồn, hiệu lực hoặc nội dung, hãy gửi phản hồi để dữ liệu được rà lại.</li></ul>
+    </section>
+    <section class="info-card" id="infoFeedback">
+      <div class="section-kicker">Phản hồi dữ liệu</div>
+      <h2>Phát hiện sai thì báo ngay tại văn bản</h2>
+      <p>Mỗi trang văn bản có nút <b>Báo lỗi dữ liệu</b>. Biểu mẫu sẽ điền sẵn số hiệu/tên văn bản để bạn mô tả lỗi về nguồn, hiệu lực, tóm tắt hoặc liên kết. Bạn có thể chỉ sao chép báo cáo hoặc mở GitHub Issue để gửi công khai.</p>
+      <button class="btn bp" id="openGeneralFeedback" type="button">Gửi phản hồi chung</button>
+    </section>
+  </div>
+</div></section>
+
+</main>
     <aside>
       <section class="memo-panel-v13">
         <div class="section-kicker">Chuỗi pháp lý</div>
@@ -1029,9 +1081,30 @@
 <div class="modal-bg" id="shortcutsModal" role="dialog" aria-modal="true" aria-label="Phím tắt">
   <div class="modal shortcut-modal"><div class="modal-head"><div><div class="k">Căn cứ pháp lý</div><b>Phím tắt</b></div><button class="mini" id="shortcutsClose" type="button">×</button></div><div class="modal-body"><div class="shortcut-grid"><div><span class="shortcut">Ctrl K</span><b>Tra cứu toàn hệ thống</b></div><div><span class="shortcut">Alt N</span><b>Ghi chú nhanh</b></div><div><span class="shortcut">Alt L</span><b>Kho văn bản</b></div><div><span class="shortcut">Alt P</span><b>Lộ trình thủ tục</b></div><div><span class="shortcut">Alt W</span><b>Hồ sơ</b></div><div><span class="shortcut">Alt I</span><b>Nhập PDF / Word</b></div><div><span class="shortcut">Esc</span><b>Đóng bảng đang mở</b></div></div></div></div>
 </div>
+
+<div class="modal-bg" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+  <div class="modal feedback-modal">
+    <div class="modal-head">
+      <div><div class="k">Phản hồi dữ liệu</div><b id="feedbackTitle">Báo lỗi hoặc đề xuất chỉnh sửa</b></div>
+      <button class="mini" id="feedbackClose" type="button" aria-label="Đóng">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="feedback-context" id="feedbackContext">Phản hồi chung</div>
+      <label class="feedback-field"><span>Loại vấn đề</span><select id="feedbackType"><option value="Nguồn / liên kết">Nguồn / liên kết</option><option value="Hiệu lực / sửa đổi">Hiệu lực / sửa đổi</option><option value="Tóm tắt nội dung">Tóm tắt nội dung</option><option value="Thiếu văn bản / quan hệ">Thiếu văn bản / quan hệ</option><option value="Giao diện / kỹ thuật">Giao diện / kỹ thuật</option><option value="Khác">Khác</option></select></label>
+      <label class="feedback-field"><span>Mô tả</span><textarea id="feedbackNote" rows="6" placeholder="Nêu chỗ sai hoặc thông tin cần kiểm tra lại. Nếu có thể, ghi kèm nguồn chính thức bạn đã đối chiếu."></textarea></label>
+      <p class="feedback-privacy">Nội dung chưa được gửi đi khi bạn đang gõ. Chỉ khi bấm “Mở GitHub để gửi”, trình duyệt mới mở trang GitHub với nội dung đã điền sẵn.</p>
+      <div class="feedback-actions"><button class="btn bs" id="feedbackCopy" type="button">Sao chép báo cáo</button><button class="btn bp" id="feedbackGitHub" type="button">Mở GitHub để gửi ↗</button></div>
+    </div>
+  </div>
+</div>
+
 <div class="reading-progress" id="readingProgress"><span></span></div>
 
-<footer class="site"><div class="wrap foot-inner"><span>Tóm lược để tra cứu; không thay thế văn bản gốc, tư vấn pháp lý hay kết luận thẩm định.</span><span class="data-fresh">Dữ liệu rà soát 10/09/2026</span></div></footer>
+<footer class="site"><div class="wrap foot-inner trust-footer">
+  <div><b>Căn cứ Pháp lý Môi trường</b><span>Tóm lược để tra cứu; không thay thế văn bản gốc, tư vấn pháp lý hay kết luận thẩm định.</span></div>
+  <div class="footer-links" aria-label="Thông tin website"><button data-info-scroll="infoAbout" type="button">Giới thiệu</button><button data-info-scroll="infoPrivacy" type="button">Quyền riêng tư</button><button data-info-scroll="infoTerms" type="button">Điều khoản</button><button data-info-scroll="infoFeedback" type="button">Báo lỗi dữ liệu</button></div>
+  <span class="data-fresh">Dữ liệu rà soát 10/09/2026</span>
+</div></footer>
 
 <script src="assets/js/legal-data.js"></script>
 <script src="assets/js/knowledge-base.js"></script>
