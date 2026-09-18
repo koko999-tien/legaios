@@ -74,7 +74,7 @@ function applyLibraryView(){
   if($('savedOnly')){$('savedOnly').classList.toggle('bp',savedOnlyMode);$('savedOnly').classList.toggle('bs',!savedOnlyMode);$('savedOnly').textContent=savedOnlyMode?'★ Đang lọc đã lưu':'☆ Đã lưu'}
 }
 function resetLibraryFilters(){
-  if($('q'))$('q').value='';['scopeF','yearF','sourceF','typeF','sortF'].forEach(id=>{if($(id))$(id).value=id==='sortF'?'default':'all'});
+  if($('q'))$('q').value='';['scopeF','yearF','effectF','sourceF','typeF','sortF'].forEach(id=>{if($(id))$(id).value=id==='sortF'?'default':'all'});
   document.querySelectorAll('#chips .chip').forEach(c=>c.classList.toggle('on',c.dataset.t==='all'));savedOnlyMode=false;STORE.set('v8_saved_only',false);setLegalSearchMode("smart");docs('all','');toast('Đã đặt lại bộ lọc');
   if($("asOfF"))$("asOfF").value="";
 }
