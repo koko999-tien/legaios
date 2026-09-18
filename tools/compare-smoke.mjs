@@ -41,7 +41,7 @@ try{
   const overflow=await page.evaluate(()=>({viewport:innerWidth,scroll:document.documentElement.scrollWidth}));
   assert(overflow.scroll<=overflow.viewport+2,`Compare modal overflows mobile viewport: ${overflow.scroll}px > ${overflow.viewport}px`);
 
-  console.log('LegalOS structured compare smoke test passed.');
+  console.log('Căn cứ Pháp lý Môi trường structured compare smoke test passed.');
   console.log('  metadata comparison rendered');
   console.log('  common/unique legal-reference groups rendered');
   console.log('  mobile compare-selection bar stays visible without clipping');
