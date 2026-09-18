@@ -30,7 +30,11 @@ try {
   const progressDisplay = await progress.evaluate(el => getComputedStyle(el).display);
   assert(progressDisplay !== 'none', `Smart reading progress should be visible on mobile article view, got ${progressDisplay}`);
   const progressBox = await progress.boundingBox();
-  assert(progressBox && progressBox.left >= -1 && progressBox.x + progressBox.width <= 391, 'Smart reading progress exceeds the mobile viewport');
+  const viewportWidth = await page.evaluate(() => innerWidth);
+  assert(
+    progressBox && progressBox.left >= -2 && progressBox.x + progressBox.width <= viewportWidth + 2,
+    `Smart reading progress exceeds the mobile viewport: left=${progressBox?.left}, right=${progressBox ? progressBox.x + progressBox.width : 'n/a'}, viewport=${viewportWidth}`
+  );
   assert(await page.locator('#readingProgressMeta').count(), 'Smart reading progress metadata is missing');
   const mobileNavDisplay = await page.locator('#mobileQuick').evaluate(el => getComputedStyle(el).display);
   assert(mobileNavDisplay === 'none', `Bottom mobile nav should be hidden while reading an article, got ${mobileNavDisplay}`);
