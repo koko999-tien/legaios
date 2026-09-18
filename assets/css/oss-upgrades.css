@@ -397,28 +397,39 @@ body:not([data-theme="dark"]) .library-filters .chip small{
   position:fixed!important;
   left:var(--sidew)!important;
   right:0!important;
-  top:var(--head)!important;
+  top:calc(var(--head) + 8px)!important;
   height:auto!important;
-  min-height:48px;
+  min-height:0;
   z-index:38!important;
   flex-direction:column;
-  background:color-mix(in srgb,var(--c) 96%,transparent)!important;
-  border-bottom:1px solid var(--bd);
-  box-shadow:0 6px 18px rgba(16,24,40,.05);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  align-items:center;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  pointer-events:none;
 }
 .smart-reading-progress.on{display:flex!important}
 body.sidebar-mini .smart-reading-progress{left:var(--side-mini)!important}
-body.article-view main{padding-top:78px!important}
+body.article-view main{padding-top:58px!important}
 
 .reading-progress-shell{
-  min-height:40px;
+  width:min(720px,calc(100% - 48px));
+  min-height:36px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  padding:6px 18px 5px;
+  gap:10px;
+  padding:5px 12px 4px;
+  background:color-mix(in srgb,var(--c) 96%,transparent);
+  border:1px solid color-mix(in srgb,var(--bd) 88%,transparent);
+  border-bottom:0;
+  border-radius:12px 12px 8px 8px;
+  box-shadow:0 8px 22px rgba(16,24,40,.08);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  pointer-events:auto;
 }
 .reading-progress-copy{
   min-width:0;
@@ -463,12 +474,15 @@ body.article-view main{padding-top:78px!important}
 
 .reading-progress-track{
   position:relative;
-  width:100%;
-  height:8px;
-  background:color-mix(in srgb,var(--bd) 72%,transparent);
+  width:min(720px,calc(100% - 48px));
+  height:4px;
+  margin-top:-1px;
+  background:color-mix(in srgb,var(--bd) 76%,transparent);
+  border-radius:0 0 999px 999px;
   cursor:pointer;
   touch-action:manipulation;
-  outline-offset:-2px;
+  outline-offset:3px;
+  pointer-events:auto;
 }
 .smart-reading-progress .reading-progress-fill{
   display:block!important;
@@ -482,8 +496,8 @@ body.article-view main{padding-top:78px!important}
   position:absolute;
   left:0;
   top:50%;
-  width:12px;
-  height:12px;
+  width:10px;
+  height:10px;
   margin-left:-6px;
   transform:translateY(-50%);
   border-radius:50%;
@@ -502,11 +516,32 @@ body.article-view main{padding-top:78px!important}
   body.sidebar-mini.article-view .smart-reading-progress{
     left:0!important;
     right:0!important;
+    top:var(--head)!important;
     width:100vw!important;
     max-width:100vw!important;
     margin:0!important;
     min-height:48px;
     box-sizing:border-box!important;
+    background:color-mix(in srgb,var(--c) 96%,transparent)!important;
+    border-bottom:1px solid var(--bd)!important;
+    box-shadow:0 6px 18px rgba(16,24,40,.05)!important;
+    backdrop-filter:blur(12px)!important;
+    -webkit-backdrop-filter:blur(12px)!important;
+  }
+  .smart-reading-progress .reading-progress-shell{
+    width:100%;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+  .smart-reading-progress .reading-progress-track{
+    width:100%;
+    height:7px;
+    margin-top:0;
+    border-radius:0;
   }
   body.article-view main{
     padding-top:70px!important;
