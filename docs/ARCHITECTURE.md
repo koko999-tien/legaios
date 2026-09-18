@@ -1,6 +1,6 @@
-# LegalOS V14 architecture
+# Căn cứ Pháp lý Môi trường V14 architecture
 
-LegalOS is being migrated from one large HTML file into ordered, testable static modules while production behavior remains isolated on `main`.
+Căn cứ Pháp lý Môi trường is being migrated from one large HTML file into ordered, testable static modules while production behavior remains isolated on `main`.
 
 ## Deployment model
 
