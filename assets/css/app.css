@@ -2157,7 +2157,7 @@ input,select,textarea{max-width:100%}
 .home113-v123{padding-bottom:6px}
 .compact-home-hero{grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:18px;padding:6px 0 18px}
 .compact-home-search{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
-.home-search-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.home-search-subgrid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:4px}
 .home113-search-all{min-height:42px;border:1px solid var(--bd);background:var(--bg);border-radius:10px;padding:10px 11px;cursor:pointer}
 .home113-search-all:hover{background:var(--as);border-color:color-mix(in srgb,var(--a) 35%,var(--bd))}
 .quick-actions-line{margin-top:12px;padding-top:12px}
