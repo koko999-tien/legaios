@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Căn cứ Pháp lý Môi trường</title>
+  <desc id="desc">Biểu tượng văn bản pháp luật kết hợp chiếc lá</desc>
+  <path d="M14 7.5h24l12 12V48a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8V15.5a8 8 0 0 1 8-8Z" fill="#fff" stroke="#102A43" stroke-width="3"/>
+  <path d="M38 7.5v12h12" fill="none" stroke="#102A43" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M15 25h17M15 32h13M15 39h10" fill="none" stroke="#102A43" stroke-width="3" stroke-linecap="round"/>
+  <path d="M48.5 32.5c-12.2.3-20.7 7-21.2 18.6 8.4 3.3 18.1-.7 21.3-9.3 1.2-3.1 1.1-6.2-.1-9.3Z" fill="#2E8B62"/>
+  <path d="M29.2 50.4c5.3-5.7 10.6-9.4 16.8-12.3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+</svg>
