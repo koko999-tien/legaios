@@ -73,19 +73,67 @@ function expertAnalyzeData(d){
 
   return {score:expertCompleteness(d),branches,missing,docsNeeded,refs:[...refs]};
 }
+function expertSituation(d,a){
+  const positives=[
+    ["nước thải",d.water],["khí thải / bụi",d.air],["chất thải / CTNH",d.waste],
+    ["khai thác / sử dụng nước",d.waterUse],["đất / rừng",d.land],
+    ["đa dạng sinh học",d.bio],["KNK / năng lượng",d.climate],["ồn / rung / cộng đồng",d.community]
+  ].filter(([,v])=>v==="yes").map(([label])=>label);
+  const unknown=[
+    ["yếu tố nhạy cảm",d.sensitive],["nước thải",d.water],["khí thải / bụi",d.air],["chất thải / CTNH",d.waste],
+    ["khai thác / sử dụng nước",d.waterUse],["đất / rừng",d.land],["đa dạng sinh học",d.bio],
+    ["KNK / năng lượng",d.climate],["ồn / rung / cộng đồng",d.community]
+  ].filter(([,v])=>v==="unknown").map(([label])=>label);
+  const questions=[];
+  if(!d.phase)questions.push("Dự án/cơ sở đang ở giai đoạn chuẩn bị, thi công, vận hành, thay đổi hay đóng cửa?");
+  if(!d.sector)questions.push("Hoạt động chính thuộc lĩnh vực nào?");
+  if(!d.location)questions.push("Địa điểm cụ thể ở đâu và có nằm trong KCN/lưu vực/khu vực nhạy cảm nào không?");
+  if(!d.scale)questions.push("Quy mô chính là bao nhiêu: công suất, diện tích, chiều dài tuyến hoặc thông số tương đương?");
+  if(d.sensitive==="unknown")questions.push("Khu vực có yếu tố nhạy cảm về môi trường, dân cư, đất/rừng hoặc bảo tồn không?");
+  if(d.water==="unknown")questions.push("Có phát sinh nước thải hoặc nhu cầu thoát/xả nước không?");
+  if(d.air==="unknown")questions.push("Có nguồn khí thải, bụi hoặc công đoạn phát sinh khí cần kiểm soát không?");
+  if(d.waste==="unknown")questions.push("Có chất thải nguy hại hoặc dòng chất thải cần quản lý riêng không?");
+  if(d.waterUse==="unknown")questions.push("Có khai thác, sử dụng nước hoặc hồ sơ đấu nối/nguồn cấp riêng không?");
+  const next=[];
+  if(questions.length)next.push(`Trả lời trước ${Math.min(3,questions.length)} câu hỏi còn thiếu để thu hẹp nhánh pháp lý.`);
+  if(a.docsNeeded.length)next.push(`Ưu tiên bổ sung: ${a.docsNeeded[0]}.`);
+  if(a.refs.length)next.push("Mở các văn bản được gợi ý và kiểm tra nguồn chính thức, hiệu lực, sửa đổi và phụ lục liên quan.");
+  if(a.branches.length)next.push("Sau khi đủ dữ liệu nền, mở Lộ trình thủ tục để chuyển các nhánh cần rà thành checklist thực hiện.");
+  if(!next.length)next.push("Đối chiếu lại văn bản gốc và tài liệu chứng minh trước khi dùng kết quả cho hồ sơ thực tế.");
+  const headline=a.score<45
+    ?"Chưa đủ dữ liệu để thu hẹp tình huống"
+    :questions.length
+      ?"Đã nhận diện được bối cảnh chính, nhưng vẫn còn dữ liệu cần xác minh"
+      :"Dữ liệu nền tương đối đầy đủ để chuyển sang đối chiếu căn cứ";
+  const context=[phaseLabel(d.phase),sectorLabel(d.sector),d.location||"",d.scale||""].filter(x=>x&&x!=="Chưa xác định");
+  return {headline,context,positives,unknown,questions:questions.slice(0,5),next:next.slice(0,4)};
+}
 function renderExpertResult(d,a){
   if(!$("expOut"))return;
   const scoreClass=a.score>=75?"ok":a.score>=45?"warn":"bad";
   const refs=a.refs.map(id=>D.find(x=>x.id===id)).filter(Boolean).slice(0,10);
+  const situation=expertSituation(d,a);
   $("expOut").innerHTML=`<div class="expert-result-head"><div><div class="section-kicker">Phiếu rà soát</div><h2>${esc(d.name||"Hồ sơ chưa đặt tên")}</h2><p>${phaseLabel(d.phase)} · ${sectorLabel(d.sector)}${d.location?` · ${esc(d.location)}`:""}</p></div><div class="expert-score ${scoreClass}"><b>${a.score}%</b><span>độ đầy đủ thông tin</span></div></div>
     <div class="expert-scorebar"><span style="width:${a.score}%"></span></div>
+    <section class="expert-situation">
+      <div class="expert-situation-main">
+        <div class="section-kicker">LegalOS đang hiểu tình huống</div>
+        <h3>${esc(situation.headline)}</h3>
+        <p>${situation.context.length?esc(situation.context.join(" · ")):"Chưa đủ thông tin nền để mô tả dự án/cơ sở."}</p>
+      </div>
+      <div class="expert-situation-signals">
+        ${situation.positives.length?`<div><b>Đã khai báo có</b><span>${situation.positives.map(esc).join(" · ")}</span></div>`:""}
+        ${situation.unknown.length?`<div><b>Còn chưa rõ</b><span>${situation.unknown.slice(0,5).map(esc).join(" · ")}${situation.unknown.length>5?"…":""}</span></div>`:""}
+      </div>
+    </section>
     <div class="expert-result-grid">
       <section class="expert-result-card"><h3>Nội dung cần kiểm tra</h3>${a.branches.length?a.branches.map(x=>`<div class="expert-branch"><b>${x[0]}</b><p>${x[1]}</p></div>`).join(""):`<p class="muted">Chưa đủ dữ liệu để nhận diện nhánh cụ thể.</p>`}</section>
-      <section class="expert-result-card"><h3>Thông tin còn thiếu</h3>${a.missing.length?`<ul>${a.missing.map(x=>`<li>${x}</li>`).join("")}</ul>`:`<p class="ok-text">Các trường nền chính đã được trả lời.</p>`}<h3>Tài liệu nên bổ sung</h3>${a.docsNeeded.length?`<ul>${a.docsNeeded.map(x=>`<li>${x}</li>`).join("")}</ul>`:`<p class="ok-text">Không thấy thiếu nhóm tài liệu ưu tiên theo biểu mẫu hiện tại.</p>`}</section>
+      <section class="expert-result-card"><h3>Câu hỏi cần trả lời tiếp</h3>${situation.questions.length?`<ol class="expert-question-list">${situation.questions.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`:`<p class="ok-text">Các câu hỏi nền chính đã được trả lời.</p>`}<h3>Tài liệu nên bổ sung</h3>${a.docsNeeded.length?`<ul>${a.docsNeeded.map(x=>`<li>${x}</li>`).join("")}</ul>`:`<p class="ok-text">Không thấy thiếu nhóm tài liệu ưu tiên theo biểu mẫu hiện tại.</p>`}</section>
     </div>
-    <section class="expert-result-card"><h3>Văn bản nên xem tiếp</h3><div class="expert-ref-list">${refs.map(x=>`<button data-open="${x.id}" type="button"><b>${x.ttl}</b><small>${x.k} · ${topicName(x.t)}</small></button>`).join("")}</div></section>
-    <div class="expert-next"><button class="btn bp" id="expSaveBrief" type="button">Lưu phiếu</button><button class="btn bs" data-go="proc" type="button">Mở Lộ trình thủ tục</button><button class="btn bs" data-go="lib" type="button">Tra Kho văn bản</button><button class="btn bs" data-go="import" type="button">Bổ sung PDF/Word</button></div>
-    <p class="note" style="margin-top:12px"><b>Giới hạn:</b> “độ đầy đủ thông tin” là thước tổ chức dữ liệu, không phải điểm tuân thủ pháp luật và không thay kết luận của cơ quan có thẩm quyền.</p>`;
+    <section class="expert-result-card expert-next-plan"><div class="section-kicker">Ưu tiên tiếp theo</div><h3>Việc nên làm tiếp</h3><ol>${situation.next.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></section>
+    <section class="expert-result-card"><h3>Văn bản nên xem tiếp</h3><div class="expert-ref-list">${refs.length?refs.map(x=>`<button data-open="${x.id}" type="button"><b>${x.ttl}</b><small>${x.k} · ${topicName(x.t)}</small></button>`).join(""):`<p class="muted">Chưa có gợi ý văn bản cụ thể từ dữ liệu hiện tại.</p>`}</div></section>
+    <div class="expert-next"><button class="btn bp" id="expSaveBrief" type="button">Lưu phiếu</button><button class="btn bs" data-go="proc" type="button">Mở Lộ trình thủ tục</button><button class="btn bs" data-go="work" type="button">Mở Hồ sơ công việc</button><button class="btn bs" data-go="lib" type="button">Tra Kho văn bản</button><button class="btn bs" data-go="import" type="button">Bổ sung PDF/Word</button></div>
+    <p class="note" style="margin-top:12px"><b>Giới hạn:</b> “độ đầy đủ thông tin” chỉ đo mức hoàn thiện dữ liệu đầu vào. Các nhánh trên là danh sách cần kiểm tra, không phải kết luận rằng dự án chắc chắn có hoặc không có một nghĩa vụ pháp lý.</p>`;
   lastExpertAnalysis={data:d,analysis:a};
   $("expSaveBrief").onclick=()=>saveExpertBrief();
 }
