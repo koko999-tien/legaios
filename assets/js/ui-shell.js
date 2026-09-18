@@ -86,7 +86,7 @@ function readingProgressMetrics(target){
   const top=window.scrollY+rect.top;
   const height=Math.max(1,target.scrollHeight||target.offsetHeight||rect.height);
   const readingLine=window.scrollY+Math.min(window.innerHeight*.42,360);
-  const end=Math.max(top+1,top+height-Math.min(window.innerHeight*.28,240));
+  const end=Math.max(top+1,top+height);
   const pct=Math.max(0,Math.min(100,(readingLine-top)/(end-top)*100));
   return {top,end,pct,height};
 }
