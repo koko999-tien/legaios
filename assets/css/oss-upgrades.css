@@ -98,7 +98,7 @@ body:not([data-theme="dark"]) .role-badge{
 body:not([data-theme="dark"]) button[data-searchmode="smart"],
 body:not([data-theme="dark"]) #art .legal-tip b,
 body:not([data-theme="dark"]) #art .tag{
-  color:#1e58c7!important;
+  color:#1F6B4C!important;
 }
 body:not([data-theme="dark"]) .update-chip-v1323,
 body:not([data-theme="dark"]) .doc-state,
@@ -114,7 +114,7 @@ body:not([data-theme="dark"]) .topic-all>span,
 body:not([data-theme="dark"]) button[data-view="list"],
 body:not([data-theme="dark"]) .legal-tip b,
 body:not([data-theme="dark"]) .doc .meta .tag{
-  color:#1e58c7!important;
+  color:#1F6B4C!important;
 }
 body:not([data-theme="dark"]) .library-filters .chip small{
   color:#586174!important;
@@ -694,7 +694,7 @@ body.article-view main{padding-top:28px!important}
 /* V14 mobile article contrast hardening — 2026-09-18 */
 body:not([data-theme="dark"]) .crumb>button,
 body:not([data-theme="dark"]) #art .back{
-  color:#1e58c7!important;
+  color:#1F6B4C!important;
 }
 body:not([data-theme="dark"]) #articleRefIndex>span{
   color:#586174!important;
