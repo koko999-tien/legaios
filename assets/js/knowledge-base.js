@@ -286,7 +286,7 @@ Object.assign(LAW_META,{
 
 const PROFESSOR_VERIFIED={
   nd48:{
-    checked:"09/09/2026",
+    checked:"18/09/2026",
     source:"https://vanban.chinhphu.vn/?classid=1&docid=216867&pageid=27160",
     note:"Cổng văn bản Chính phủ xác nhận NĐ 48/2026/NĐ-CP ban hành và có hiệu lực 29/01/2026; sửa NĐ 08/2022 đã được NĐ 05/2025 sửa đổi."
   },
@@ -301,7 +301,7 @@ const PROFESSOR_VERIFIED={
     note:"Cổng văn bản Chính phủ xác nhận TT 32/2026/TT-BNNMT ban hành 17/07/2026 và có hiệu lực 18/09/2026; bãi bỏ toàn bộ hoặc một phần một số VBQPPL thuộc thẩm quyền Bộ trưởng."
   },
   nd110:{
-    checked:"09/09/2026",
+    checked:"18/09/2026",
     source:"https://vanban.chinhphu.vn/?docid=217544&pageid=27160&typegroupid=4",
     note:"Cổng văn bản Chính phủ xác nhận NĐ 110/2026/NĐ-CP ban hành 01/04/2026, hiệu lực 25/05/2026; quy định chi tiết EPR về tái chế sản phẩm, bao bì và trách nhiệm xử lý chất thải."
   },
