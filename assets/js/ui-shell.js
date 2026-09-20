@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — shell UI, drawers, library view and procedure wizard. */
 function renderHomePortal(){
   if($('homeDocMetric'))$('homeDocMetric').textContent=String(D.length);
   if($('homeTopicMetric'))$('homeTopicMetric').textContent=String(T.length);
@@ -257,7 +256,6 @@ function readingProgressUpdate(){
 }
 
 
-/* Trust and feedback helpers — 2026-09-18 */
 let currentFeedbackDocId="";
 function feedbackDocMeta(id=currentFeedbackDocId){
   const doc=D.find(x=>x.id===id);
