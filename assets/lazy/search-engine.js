@@ -132,6 +132,20 @@ function actionBoost(m,p,reasons){
  if(hits>=2)total+=24;
  return {total,hits,labels};
 }
+const KIND_RULES=[
+ {re:/\b(qcvn|quy chuan)\b/,label:'QCVN',match:p=>p.type.text.includes('qcvn')||p.title.text.includes('qcvn'),boost:170},
+ {re:/\b(van ban hop nhat|hop nhat)\b/,label:'Văn bản hợp nhất',match:p=>p.type.text.includes('van ban hop nhat')||p.title.text.includes('hop nhat'),boost:170},
+ {re:/\bnghi dinh\b/,label:'Nghị định',match:p=>p.type.text.includes('nghi dinh'),boost:72},
+ {re:/\bthong tu\b/,label:'Thông tư',match:p=>p.type.text.includes('thong tu'),boost:72},
+ {re:/\bluat\b/,label:'Luật',match:p=>p.type.text.includes('luat'),boost:68},
+ {re:/\b(quyet dinh|qd)\b/,label:'Quyết định',match:p=>p.type.text.includes('quyet dinh'),boost:68},
+ {re:/\b(nghi quyet|nq)\b/,label:'Nghị quyết',match:p=>p.type.text.includes('nghi quyet'),boost:68}
+];
+function kindBoost(m,p,reasons){
+ let total=0,hits=0;
+ for(const k of KIND_RULES)if(k.re.test(m.fold)&&k.match(p)){total+=k.boost;hits++;if(reasons.length<6)reasons.push('Đúng loại văn bản: '+k.label)}
+ return {total,hits};
+}
 function proximity(primary,p){
  if(primary.length<2)return 0;const pos=primary.map(t=>p.all.indexOf(t));if(pos.some(x=>x<0))return 0;
  const span=Math.max(...pos)-Math.min(...pos)+1;
@@ -169,10 +183,11 @@ function scoreV2(d,q){
  const prox=proximity(m.primary,p);if(prox){boost+=prox;reasons.push('Các từ khóa nằm gần nhau')}
  const alias=aliasBoost(m,p,reasons);boost+=alias.total;
  const action=actionBoost(m,p,reasons);boost+=action.total;
+ const kind=kindBoost(m,p,reasons);boost+=kind.total;
  const expandedOnly=m.expanded.filter(t=>!m.primary.includes(t));for(const t of expandedOnly){const [w]=fieldWeighted(p,t);if(w)boost+=Math.min(14,Math.round(w*.16))}
  const baseStrong=(base.reasons||[]).some(x=>/Tên văn bản khớp|Đúng số hiệu|Có nhắc (Điều|Khoản|Điểm)|Đúng (Khoản|Điểm)|Điều .*đã bóc|Khớp cụm|Thỏa điều kiện/i.test(x));
  const needed=m.primary.length<=1?1:m.primary.length===2?2:Math.ceil(m.primary.length*(alias.strong?.35:.48));
- const semantic=alias.hits+action.hits;
+ const semantic=alias.hits+action.hits+kind.hits;
  const matched=number||baseStrong||semantic>0||(hits>=needed&&(coverage>=.45||strongField>0))||lexical>=58;
  let score=Math.round(base.score*(baseStrong?.72:.22))+boost;
  if(professorVerified(d.id))score+=5;else if(metaOf(d.id).src)score+=2;
