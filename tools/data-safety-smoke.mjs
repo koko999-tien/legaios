@@ -38,6 +38,7 @@ try{
     citationBasketV13=[{doc:id,article:'39',clause:'',point:'',label:'Căn cứ QA',text:'Nội dung QA',note:'Ghi chú căn cứ QA',source:'',addedAt:new Date().toISOString()}];
     STORE.set('v13_citation_basket',citationBasketV13);
     await workspaceDataCall('lawWatchAddV16',[id]);
+    await workspaceDataCall('officialCandidateAddV15',[{title:'Nguồn web QA',url:'https://vbpl.vn/Pages/vbpq-timkiem.aspx',query:'qa nguồn chính thức'}]);
   },id);
 
   // Use the app's own export to prove backward-compatible import, not a fabricated schema.
@@ -51,6 +52,7 @@ try{
   assert(backup.readingProgress?.['qa-backup-reading']?.pct===42,'Workspace backup omitted reading progress');
   assert(Array.isArray(backup.citationBasket)&&backup.citationBasket[0]?.label==='Căn cứ QA','Workspace backup omitted citation basket');
   assert(Array.isArray(backup.lawWatch)&&backup.lawWatch[0]?.docId===id,'Workspace backup omitted legal-review watchlist');
+  assert(Array.isArray(backup.officialCandidates)&&backup.officialCandidates[0]?.title==='Nguồn web QA','Workspace backup omitted Search V4 review candidates');
   backup.notes={[id]:'Restored note'};
   await upload(backup);
   await respondRestore(false);
@@ -88,13 +90,21 @@ try{
     sidebar:uiPrefs.sidebar,
     reading:readingProgressStore()['qa-backup-reading']?.pct||0,
     citation:citationBasketV13[0]?.label||'',
-    lawWatch:(JSON.parse(localStorage.getItem('v16_law_watchlist')||'[]')[0]||{}).docId||''
+    lawWatch:(JSON.parse(localStorage.getItem('v16_law_watchlist')||'[]')[0]||{}).docId||'',
+    officialCandidate:(JSON.parse(localStorage.getItem('v15_official_candidates')||'[]')[0]||{}).title||''
   }));
   assert(restoredExtras.quickNote==='Backup quick note QA','Restored quick note did not survive reload');
   assert(restoredExtras.scale==='large'&&restoredExtras.sidebar===true,'Restored UI preferences did not survive reload');
   assert(restoredExtras.reading===42,'Restored reading progress did not survive reload');
   assert(restoredExtras.citation==='Căn cứ QA','Restored citation basket did not survive reload');
   assert(restoredExtras.lawWatch===id,'Restored legal-review watchlist did not survive reload');
+  assert(restoredExtras.officialCandidate==='Nguồn web QA','Restored Search V4 review candidate did not survive reload');
+  const candidateSafety=await page.evaluate(async()=>{
+    const before=JSON.parse(localStorage.getItem('v15_official_candidates')||'[]').length;
+    const ok=await workspaceDataCall('officialCandidateAddV15',[{title:'Unsafe',url:'https://example.com/not-official'}]);
+    return {before,after:JSON.parse(localStorage.getItem('v15_official_candidates')||'[]').length,ok};
+  });
+  assert(candidateSafety.ok===false&&candidateSafety.before===candidateSafety.after,'Official candidate queue accepted a non-allowlisted domain');
   const trashProbe=await page.evaluate(async()=>{
     await workspaceTrashPush('quick-note','Recover QA','Ghi chú nhanh QA');
     const id=workspaceTrashRows()[0]?.id||'';
@@ -124,5 +134,5 @@ try{
     const rows=JSON.parse(localStorage.getItem('v14_reading_progress'));
     return rows['qa-reading-a'].pct===85&&rows['qa-reading-b'].pct===31;
   }),'Switching documents mixed or lost reading progress');
-  console.log('Data safety passed: restore preview, invalid/cancelled import, quota rollback, v8 extended backup/restore including legal watchlist, recovery trash, trailing and pagehide reading saves.');
+  console.log('Data safety passed: restore preview, invalid/cancelled import, quota rollback, extended backup/restore including watchlists and Search V4 candidates, recovery trash, trailing and pagehide reading saves.');
 }finally{await browser.close()}
