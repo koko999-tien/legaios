@@ -62,9 +62,10 @@ function normalizeComplianceProfile(row){
       createdAt:complianceText(x.createdAt||now,60)
     };
   }).filter(function(x){return !!x.title}):[];
-  let permits=Array.isArray(row.permits)?row.permits.slice(0,100).map(function(x){return normalizeCompliancePermit(x,now)}):[];
+  const hasPermitList=Array.isArray(row.permits);
+  let permits=hasPermitList?row.permits.slice(0,100).map(function(x){return normalizeCompliancePermit(x,now)}):[];
   const legacyPermit=row.permit||{};
-  if(!permits.length&&(legacyPermit.gpmtNumber||legacyPermit.expires)){
+  if(!hasPermitList&&(legacyPermit.gpmtNumber||legacyPermit.expires)){
     permits=[normalizeCompliancePermit({type:"gpmt",title:"Giấy phép môi trường",number:legacyPermit.gpmtNumber||"",expiryDate:legacyPermit.expires||"",status:"unknown",note:"Được chuyển từ trường GPMT của phiên bản workspace trước."},now)];
   }
   const primaryGpmt=permits.find(function(x){return x.type==="gpmt"})||null;
