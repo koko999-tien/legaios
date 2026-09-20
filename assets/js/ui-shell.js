@@ -18,24 +18,24 @@ function ensureHomePriorityRail(){
   rail.innerHTML=`
     <div class="home-priority-card" style="background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;justify-content:space-between"><strong style="font-size:12px;letter-spacing:.12em;color:#3756a4;text-transform:uppercase;">Tra cứu nhanh</strong><span style="font-size:20px;">⌕</span></div>
-      <button type="button" data-go="lib" style="background:#fff;border:1px solid rgba(37,99,235,.17);border-radius:12px;padding:10px 12px;text-align:left;color:inherit;cursor:pointer;">${D.length ? `Mở kho văn bản · ${D.length} mục` : 'Mở kho văn bản'}</button>
+      <button type="button" data-go="lib" style="background:#fff;border:1px solid rgba(37,99,235,.17);border-radius:12px;padding:10px 12px;text-align:left;color:inherit;cursor:pointer;">${D.length?`Mở kho văn bản · ${D.length} mục`:'Mở kho văn bản'}</button>
       <small style="color:#52607a;line-height:1.5;">Tìm theo số hiệu, điều khoản, tên văn bản hoặc chủ đề.</small>
     </div>
     <div class="home-priority-card" style="background:rgba(10,136,92,.06);border:1px solid rgba(10,136,92,.2);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;justify-content:space-between"><strong style="font-size:12px;letter-spacing:.12em;color:#0f7d59;text-transform:uppercase;">Tiếp tục</strong><span style="font-size:20px;">↩</span></div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        ${recentDocs.length ? recentDocs.map(d=>`<button type="button" data-open="${d.id}" style="background:#fff;border:1px solid rgba(10,136,92,.15);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc(d.ttl.slice(0,42))}${d.ttl.length>42?'…':''}</button>`).join('') : '<span style="color:#52607a;">Chưa có văn bản gần đây.</span>'}
+        ${recentDocs.length?recentDocs.map(d=>`<button type="button" data-open="${d.id}" style="background:#fff;border:1px solid rgba(10,136,92,.15);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc(d.ttl.slice(0,42))}${d.ttl.length>42?'…':''}</button>`).join(''):'<span style="color:#52607a;">Chưa có văn bản gần đây.</span>'}
       </div>
     </div>
     <div class="home-priority-card" style="background:rgba(127,86,20,.06);border:1px solid rgba(127,86,20,.2);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;justify-content:space-between"><strong style="font-size:12px;letter-spacing:.12em;color:#8a5d1e;text-transform:uppercase;">Cần xem lại</strong><span style="font-size:20px;">✓</span></div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        ${workCases.length ? workCases.map(c=>`<button type="button" data-case="${c.id}" style="background:#fff;border:1px solid rgba(127,86,20,.18);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc((c.name||'Hồ sơ').slice(0,42))}${(c.name||'Hồ sơ').length>42?'…':''}</button>`).join('') : savedDocs.length ? savedDocs.map(d=>`<button type="button" data-open="${d.id}" style="background:#fff;border:1px solid rgba(127,86,20,.18);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc(d.ttl.slice(0,42))}${d.ttl.length>42?'…':''}</button>`).join('') : '<span style="color:#52607a;">Chưa có hồ sơ hoặc tài liệu lưu.</span>'}
+        ${workCases.length?workCases.map(c=>`<button type="button" data-case="${c.id}" style="background:#fff;border:1px solid rgba(127,86,20,.18);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc((c.name||'Hồ sơ').slice(0,42))}${(c.name||'Hồ sơ').length>42?'…':''}</button>`).join(''):savedDocs.length?savedDocs.map(d=>`<button type="button" data-open="${d.id}" style="background:#fff;border:1px solid rgba(127,86,20,.18);border-radius:10px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer;">${esc(d.ttl.slice(0,42))}${d.ttl.length>42?'…':''}</button>`).join(''):'<span style="color:#52607a;">Chưa có hồ sơ hoặc tài liệu lưu.</span>'}
       </div>
     </div>
   `;
 
-  if (window.matchMedia('(max-width: 780px)').matches) {
+  if(window.matchMedia('(max-width: 780px)').matches){
     rail.style.gridTemplateColumns='1fr';
   }
 }
@@ -71,6 +71,7 @@ function renderHomePortal(){
   }
   renderImportStats();
 }
+
 
 function applyUIPrefs(){
   const scaleMap={small:.92,normal:1,large:1.10};
@@ -360,4 +361,3 @@ function openFeedbackGitHub(){
   const win=window.open(url,'_blank','noopener,noreferrer');
   if(!win)toast('Trình duyệt đã chặn cửa sổ GitHub');
 }
-
