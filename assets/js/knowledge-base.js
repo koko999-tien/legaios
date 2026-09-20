@@ -305,12 +305,12 @@ const PROFESSOR_VERIFIED={
   nd48:{
     checked:"20/09/2026",
     source:"https://vanban.chinhphu.vn/?docid=216867&pageid=27160&typegroupid=4",
-    note:"Đối chiếu Cổng văn bản Chính phủ, Công báo và CSDL quốc gia về VBPL: NĐ 48/2026/NĐ-CP ban hành, hiệu lực 29/01/2026; sửa NĐ 08/2022 đã được NĐ 05/2025 sửa đổi."
+    note:"Nguồn chính thức xác nhận NĐ 48/2026: ban hành/hiệu lực 29/01/2026; tiếp tục sửa NĐ 08/2022 sau NĐ 05/2025."
   },
   nq6619:{
     checked:"20/09/2026",
     source:"https://congbao.chinhphu.vn/van-ban/nghi-quyet-so-6619-2026-nq-cp-469586.htm",
-    note:"Đối chiếu Công báo Chính phủ: NQ 66.19/2026/NQ-CP ban hành, hiệu lực 18/05/2026; cắt giảm, phân quyền, đơn giản hóa TTHC và điều kiện kinh doanh thuộc phạm vi Bộ Nông nghiệp và Môi trường."
+    note:"Công báo xác nhận NQ 66.19/2026/NQ-CP: ban hành/hiệu lực 18/05/2026; cắt giảm, phân quyền, đơn giản hóa TTHC."
   },
   tt32_2026_bnnmt:{
     checked:"09/09/2026",
@@ -320,19 +320,19 @@ const PROFESSOR_VERIFIED={
   nd110:{
     checked:"20/09/2026",
     source:"https://congbao.chinhphu.vn/van-ban/nghi-dinh-so-110-2026-nd-cp-469301.htm",
-    note:"Đối chiếu Công báo Chính phủ: NĐ 110/2026/NĐ-CP ban hành 01/04/2026, hiệu lực 25/05/2026; quy định chi tiết EPR về tái chế sản phẩm, bao bì và trách nhiệm xử lý chất thải."
+    note:"Công báo xác nhận NĐ 110/2026/NĐ-CP: ban hành 01/04/2026, hiệu lực 25/05/2026; quy định EPR."
   },
 
-  l72:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?docid=202613&pageid=27160",note:"Đối chiếu Cổng văn bản Chính phủ và CSDL quốc gia về VBPL: Luật 72/2020/QH14 ban hành 17/11/2020, hiệu lực 01/01/2022 và hiện hết hiệu lực một phần; phải đọc cùng các luật sửa đổi."},
-  nd08:{checked:"20/09/2026",source:"https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=168754",note:"Đối chiếu CSDL quốc gia về VBPL: NĐ 08/2022/NĐ-CP ban hành và hiệu lực 10/01/2022, hiện hết hiệu lực một phần; phải đọc cùng NĐ 05/2025, NĐ 48/2026 và bản hợp nhất hiện hành."},
-  nd05:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?classid=1&docid=212284&pageid=27160",note:"Đối chiếu Cổng văn bản Chính phủ và CSDL quốc gia về VBPL: NĐ 05/2025/NĐ-CP ban hành, hiệu lực 06/01/2025 và sửa NĐ 08/2022; hiện hết hiệu lực một phần sau sửa đổi tiếp theo."},
-  l146:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?classid=1&docid=216543&pageid=27160&typegroupid=3",note:"Đối chiếu Cổng văn bản Chính phủ và CSDL quốc gia về VBPL: Luật 146/2025/QH15 ban hành 11/12/2025, hiệu lực 01/01/2026, sửa đổi 15 luật trong lĩnh vực nông nghiệp và môi trường."},
-  tt09:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?docid=216920&pageid=27160&typegroupid=6",note:"Đối chiếu Cổng văn bản Chính phủ: TT 09/2026/TT-BNNMT ban hành và hiệu lực 29/01/2026; sửa TT 02/2022 sau các sửa đổi năm 2025."},
+  l72:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?docid=202613&pageid=27160",note:"Nguồn chính thức xác nhận Luật 72/2020/QH14: ban hành 17/11/2020, hiệu lực 01/01/2022; hiện hết hiệu lực một phần."},
+  nd08:{checked:"20/09/2026",source:"https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=168754",note:"CSDL quốc gia xác nhận NĐ 08/2022: ban hành/hiệu lực 10/01/2022; hiện hết hiệu lực một phần."},
+  nd05:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?classid=1&docid=212284&pageid=27160",note:"Nguồn chính thức xác nhận NĐ 05/2025: ban hành/hiệu lực 06/01/2025, sửa NĐ 08/2022; hiện hết hiệu lực một phần."},
+  l146:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?classid=1&docid=216543&pageid=27160&typegroupid=3",note:"Nguồn chính thức xác nhận Luật 146/2025/QH15: ban hành 11/12/2025, hiệu lực 01/01/2026; sửa 15 luật NN&MT."},
+  tt09:{checked:"20/09/2026",source:"https://vanban.chinhphu.vn/?docid=216920&pageid=27160&typegroupid=6",note:"Nguồn chính thức xác nhận TT 09/2026/TT-BNNMT: ban hành/hiệu lực 29/01/2026; sửa TT 02/2022."},
   nd83:{checked:"09/09/2026",source:"https://vanban.chinhphu.vn/?classid=0&docid=217277&pageid=27160",note:"Cổng văn bản Chính phủ xác nhận NĐ 83/2026/NĐ-CP ban hành và có hiệu lực 23/03/2026."},
-  tt24epr:{checked:"20/09/2026",source:"https://chinhphu.vn/?classid=1&docid=218478&orggroupid=4&pageid=27160",note:"Đối chiếu Cổng thông tin Chính phủ và Công báo: TT 24/2026/TT-BNNMT ban hành, hiệu lực 25/05/2026 và hướng dẫn NĐ 110/2026/NĐ-CP về EPR."},
+  tt24epr:{checked:"20/09/2026",source:"https://chinhphu.vn/?classid=1&docid=218478&orggroupid=4&pageid=27160",note:"Nguồn chính thức xác nhận TT 24/2026/TT-BNNMT: ban hành/hiệu lực 25/05/2026; hướng dẫn NĐ 110/2026 về EPR."},
   tt22_2026_admin:{checked:"10/09/2026",source:"https://vanban.chinhphu.vn/?classid=1&docid=218174&pageid=27160&typegroupid=6",note:"Cổng văn bản Chính phủ xác nhận TT 22/2026/TT-BNNMT ban hành và có hiệu lực 19/05/2026; sửa đổi các thông tư liên quan phân cấp, cắt giảm và đơn giản hóa TTHC thuộc phạm vi Bộ Nông nghiệp và Môi trường."},
   nd119:{checked:"10/09/2026",source:"https://vanban.chinhphu.vn/?docid=213875&pageid=27160",note:"Cổng văn bản Chính phủ xác nhận NĐ 119/2025/NĐ-CP ban hành 09/06/2025, hiệu lực 01/08/2025; sửa NĐ 06/2022 về giảm nhẹ phát thải khí nhà kính và bảo vệ tầng ô-dôn."},
-  tt02:{checked:"20/09/2026",source:"https://congbao.chinhphu.vn/van-ban/thong-tu-so-02-2022-tt-btnmt-36691.htm",note:"Đối chiếu Công báo Chính phủ: TT 02/2022/TT-BTNMT ban hành và hiệu lực 10/01/2022. Khi áp dụng hiện hành phải đọc cùng chuỗi sửa đổi 2025–2026 hoặc 55/VBHN-BNNMT."},
+  tt02:{checked:"20/09/2026",source:"https://congbao.chinhphu.vn/van-ban/thong-tu-so-02-2022-tt-btnmt-36691.htm",note:"Công báo xác nhận TT 02/2022/TT-BTNMT: ban hành/hiệu lực 10/01/2022; áp dụng cùng chuỗi sửa đổi hiện hành."},
   vbhn98:{checked:"09/09/2026",source:"https://congbao.chinhphu.vn/van-ban/van-ban-hop-nhat-so-98-vbhn-vpqh-469382.htm",note:"Công báo Chính phủ xác nhận 98/VBHN-VPQH ban hành 10/04/2026, hợp nhất Luật Bảo vệ môi trường."},
   vbhn49:{checked:"09/09/2026",source:"https://vanban.chinhphu.vn/?docid=217892&pageid=27160",note:"Cổng văn bản Chính phủ xác nhận 49/VBHN-BNNMT ban hành 17/04/2026; PDF chính thức thể hiện NĐ 08/2022 cùng các sửa đổi 2025–2026."},
   vbhn55:{checked:"09/09/2026",source:"https://vanban.chinhphu.vn/?classid=2629&docid=218358&pageid=27160",note:"Cổng văn bản Chính phủ xác nhận 55/VBHN-BNNMT ban hành 01/06/2026; PDF chính thức thể hiện TT 02/2022 cùng các sửa đổi 2025–2026."}
