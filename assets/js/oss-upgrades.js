@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — progressive enhancements. */
 (function(){
   'use strict';
 
@@ -8,8 +7,7 @@
     if(!value)return '';
     try{
       const u=new URL(String(value),location.href);
-      // Only report shipped same-origin script paths, never imported filenames or URLs.
-      const known=[...document.scripts].some(script=>{
+          const known=[...document.scripts].some(script=>{
         if(!script.src)return false;
         const src=new URL(script.src,location.href);
         return src.origin===location.origin&&src.pathname===u.pathname&&/^\/assets\/js\/[a-z-]+\.js$/.test(src.pathname);
@@ -32,8 +30,7 @@
   function readDiagErrors(){
     try{
       const x=JSON.parse(sessionStorage.getItem(DIAG_KEY)||'[]');
-      // Sanitize older session records too; they may contain raw error text.
-      return Array.isArray(x)?x.slice(-12).map(safeDiagError).filter(Boolean):[];
+          return Array.isArray(x)?x.slice(-12).map(safeDiagError).filter(Boolean):[];
     }catch{return []}
   }
   function writeDiagErrors(rows){try{sessionStorage.setItem(DIAG_KEY,JSON.stringify(rows.slice(-12)))}catch{}}
