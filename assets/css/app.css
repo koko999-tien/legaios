@@ -2796,7 +2796,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #lib #docs.compact-view .doc-state,
 #lib #docs.compact-view .prof-verified-dot,
 #lib #docs.compact-view .verified-dot{
-  font-size:7px !important;
+  font-size:10px !important;
   padding:3px 7px !important;
 }
 #lib #docs.compact-view .doc-tools-v11{
@@ -2808,7 +2808,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #lib #docs.compact-view .doc-tools-v11 button{
   min-height:34px !important;
   padding:5px 8px !important;
-  font-size:8px !important;
+  font-size:10px !important;
 }
 #lib #docs.compact-view.grid-view{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 
@@ -2816,7 +2816,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #lib .count-wrap-v1323 .count{margin:0}
 #lib .update-chip-v1323{
   display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border-radius:999px;
-  background:var(--okb);color:var(--ok);font-size:7px;font-weight:800
+  background:var(--okb);color:var(--ok);font-size:10px;font-weight:800
 }
 
 .classifier-side,.term-side,.expert-side{
@@ -2873,12 +2873,12 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
 #lib .grouped-topic-filters{display:grid;gap:8px}
 #lib .topic-filter-group{display:grid;gap:4px}
 #lib .topic-filter-group-head{display:flex;justify-content:space-between;align-items:center;padding:0 3px}
-#lib .topic-filter-group-head b{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--m)}
-#lib .topic-filter-group-head span{font-size:7px;color:var(--m)}
+#lib .topic-filter-group-head b{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--m)}
+#lib .topic-filter-group-head span{font-size:10px;color:var(--m)}
 #lib .topic-filter-group>div:last-child{display:grid;gap:4px}
 #lib .grouped-topic-filters .chip{display:flex;align-items:center;justify-content:space-between;gap:7px}
 #lib .grouped-topic-filters .chip small{
-  min-width:24px;text-align:center;border-radius:999px;padding:2px 5px;background:var(--bg);color:var(--m);font-size:7px
+  min-width:24px;text-align:center;border-radius:999px;padding:2px 5px;background:var(--bg);color:var(--m);font-size:10px
 }
 #lib .grouped-topic-filters .chip.on small{background:var(--c);color:var(--a)}
 
