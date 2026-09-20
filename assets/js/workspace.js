@@ -57,10 +57,46 @@ function showCase(id){
     <p class="note" style="margin-top:12px">Phiếu này giúp tổ chức dữ liệu và ưu tiên việc cần rà. Các nhãn ĐTM/GPMT ở đây không thay thế việc xác định đối tượng theo văn bản, phụ lục và hồ sơ thực tế.</p>`;
   logActivity("case",id,c.name);
 }
+function workspaceBackupExtras(){
+  const imported=typeof importedDocs!=="undefined"?importedDocs:[];
+  return {
+    quickNote:String(typeof quickNote==="undefined"?"":quickNote||"").slice(0,20000),
+    uiPrefs:typeof uiPrefs==="object"&&uiPrefs?uiPrefs:{scale:"normal",density:"comfortable",sidebar:false},
+    readingProgress:typeof readingProgressStore==="function"?readingProgressStore():STORE.get("v14_reading_progress",{}),
+    citationBasket:typeof citationBasketV13!=="undefined"?citationBasketV13:STORE.get("v13_citation_basket",[]),
+    citationMemoMeta:typeof citationMemoMetaV13!=="undefined"?citationMemoMetaV13:STORE.get("v13_citation_meta",{title:"",note:""}),
+    libraryPrefs:{view:typeof libraryView==="undefined"?"list":libraryView,density:typeof libraryDensity==="undefined"?"compact":libraryDensity,assist:!!(typeof libraryAssistOpen!=="undefined"&&libraryAssistOpen),savedOnly:!!(typeof savedOnlyMode!=="undefined"&&savedOnlyMode)},
+    searchPrefs:{mode:typeof legalSearchMode==="undefined"?"smart":legalSearchMode,history:typeof legalSearchHistory==="undefined"?[]:legalSearchHistory},
+    activity:STORE.get("w4_activity",[]),
+    importedFileRefs:imported.slice(0,500).map(function(x){return {id:String(x.id||"").slice(0,180),name:String(x.name||"").slice(0,300),ext:String(x.ext||"").slice(0,20),size:Number(x.size)||0,category:String(x.category||"other").slice(0,40),importedAt:String(x.importedAt||"").slice(0,40)}})
+  };
+}
 function exportWorkspace(){
-  const data={app:"Căn cứ Pháp lý Môi trường",schema:"ccplmt-workspace-v7",exportedAt:new Date().toISOString(),saved,recent,notes,procDone,cases,expertBriefs,complianceProfiles:complianceBackupRows(),complianceAudit:complianceAuditBackup()};
+  const extras=workspaceBackupExtras();
+  const data={app:"Căn cứ Pháp lý Môi trường",schema:"ccplmt-workspace-v8",exportedAt:new Date().toISOString(),saved,recent,notes,procDone,cases,expertBriefs,complianceProfiles:complianceBackupRows(),complianceAudit:complianceAuditBackup(),...extras};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Can-cu-phap-ly-moi-truong-sao-luu.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+function workspaceNormalizeReading(v){
+  const out=Object.create(null);if(!v||typeof v!=="object"||Array.isArray(v))return out;
+  Object.entries(v).slice(0,1000).forEach(function([k,row]){
+    if(!row||typeof row!=="object"||Array.isArray(row))return;
+    const key=String(k||"").slice(0,180);if(!key)return;
+    const pct=Math.max(0,Math.min(100,Number(row.pct)||0)),maxPct=Math.max(pct,Math.max(0,Math.min(100,Number(row.maxPct)||0)));
+    out[key]={pct:Math.round(pct*10)/10,maxPct:Math.round(maxPct*10)/10,section:safeImportedText(row.section||"",140),updatedAt:Number(row.updatedAt)||0};
+  });return out;
+}
+function workspaceNormalizeCitations(v){
+  if(!Array.isArray(v))return [];
+  return v.slice(0,500).map(function(x){
+    if(!x||typeof x!=="object"||!x.doc)return null;
+    const src=String(x.source||"");
+    return {doc:safeId(x.doc,"doc"),article:safeImportedText(x.article||"",24),clause:safeImportedText(x.clause||"",24),point:safeImportedText(x.point||"",24),label:safeImportedText(x.label||"",500),text:safeImportedText(x.text||"",5000),note:safeImportedText(x.note||"",5000),source:/^https:\/\//i.test(src)?src.slice(0,2000):"",addedAt:safeImportedText(x.addedAt||"",40)};
+  }).filter(Boolean);
+}
+function workspaceNormalizeImportedRefs(v){
+  if(!Array.isArray(v))return [];
+  return v.slice(0,500).map(function(x){return x&&typeof x==="object"?{id:safeImportedText(x.id||"",180),name:safeImportedText(x.name||"",300),ext:safeImportedText(x.ext||"",20),size:Math.max(0,Number(x.size)||0),category:safeImportedText(x.category||"other",40),importedAt:safeImportedText(x.importedAt||"",40)}:null}).filter(function(x){return x&&x.id});
 }
 function importWorkspace(file){
   if(!file||file.size>10*1024*1024){toast('File sao lưu vượt giới hạn 10 MB');return}
@@ -70,17 +106,46 @@ function importWorkspace(file){
     const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
     const legacyApp=['Legal','OS'].join('');
     if(!object(d)||!["Căn cứ Pháp lý Môi trường",legacyApp].includes(d.app)||!Array.isArray(d.saved)||!Array.isArray(d.recent)||!object(d.notes)||!object(d.procDone)||!Array.isArray(d.cases)||(d.expertBriefs!==undefined&&!Array.isArray(d.expertBriefs))||(d.complianceProfiles!==undefined&&!Array.isArray(d.complianceProfiles))||(d.complianceAudit!==undefined&&!Array.isArray(d.complianceAudit))){toast('Đây không phải bản sao lưu hợp lệ. Dữ liệu hiện tại được giữ nguyên.');return}
-    const next={saved:d.saved.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),recent:d.recent.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),notes:Object.create(null),procDone:Object.create(null),cases:d.cases.slice(0,500).map(normalizeImportedCase),expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief),complianceProfiles:(d.complianceProfiles||[]).slice(0,300).map(normalizeComplianceProfile),complianceAudit:(d.complianceAudit||[]).slice(0,500).map(normalizeComplianceAuditEvent)};
+    const prefs=object(d.uiPrefs)?d.uiPrefs:{},library=object(d.libraryPrefs)?d.libraryPrefs:{},search=object(d.searchPrefs)?d.searchPrefs:{};
+    const next={
+      saved:d.saved.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),
+      recent:d.recent.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),
+      notes:Object.create(null),procDone:Object.create(null),
+      cases:d.cases.slice(0,500).map(normalizeImportedCase),
+      expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief),
+      complianceProfiles:(d.complianceProfiles||[]).slice(0,300).map(normalizeComplianceProfile),
+      complianceAudit:(d.complianceAudit||[]).slice(0,500).map(normalizeComplianceAuditEvent),
+      quickNote:safeImportedText(d.quickNote||"",20000),
+      uiPrefs:{scale:["small","normal","large"].includes(prefs.scale)?prefs.scale:"normal",density:["compact","comfortable"].includes(prefs.density)?prefs.density:"comfortable",sidebar:!!prefs.sidebar},
+      readingProgress:workspaceNormalizeReading(d.readingProgress),
+      citationBasket:workspaceNormalizeCitations(d.citationBasket),
+      citationMemoMeta:{title:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.title||"",500),note:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.note||"",10000)},
+      libraryPrefs:{view:["list","grid"].includes(library.view)?library.view:"list",density:["compact","detail"].includes(library.density)?library.density:"compact",assist:!!library.assist,savedOnly:!!library.savedOnly},
+      searchPrefs:{mode:["smart","ref","number"].includes(search.mode)?search.mode:"smart",history:Array.isArray(search.history)?search.history.slice(0,8).map(x=>safeImportedText(x,300)).filter(Boolean):[]},
+      activity:Array.isArray(d.activity)?d.activity.slice(0,10).filter(x=>x&&typeof x==="object").map(x=>({type:safeImportedText(x.type||"",30),id:safeImportedText(x.id||"",180),label:safeImportedText(x.label||"",500),at:safeImportedText(x.at||"",40)})):[],
+      importedFileRefs:workspaceNormalizeImportedRefs(d.importedFileRefs)
+    };
     Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{next.notes[safeId(k,'doc')]=safeImportedText(v,50000)});
     Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{next.procDone[safeId(k,'proc')]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]});
-    if(!confirm(`Thay thế dữ liệu hiện tại bằng bản sao lưu (${next.complianceProfiles.length} hồ sơ tuân thủ, ${next.cases.length} hồ sơ sàng lọc, ${next.saved.length} mục đã lưu)? Hãy xuất JSON hiện tại trước nếu cần giữ lại.`)){toast('Đã hủy khôi phục dữ liệu');return}
-    const entries=[['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs],[COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit]];
+    const extraCount=next.citationBasket.length+Object.keys(next.readingProgress).length+(next.quickNote?1:0);
+    const fileWarning=next.importedFileRefs.length?\` Bản sao lưu có tham chiếu \${next.importedFileRefs.length} tài liệu; nội dung file PDF/Word phải nhập lại trên thiết bị mới.\`:"";
+    if(!confirm(\`Khôi phục bản sao lưu: \${next.complianceProfiles.length} hồ sơ tuân thủ, \${next.cases.length} hồ sơ sàng lọc, \${next.saved.length} mục đã lưu, \${extraCount} mục ghi chú/căn cứ/tiến độ. Dữ liệu hiện tại sẽ được thay thế.\${fileWarning}\`)){toast('Đã hủy khôi phục dữ liệu');return}
+    const entries=[
+      ['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs],
+      [COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit],['v8_quick_note',next.quickNote],['v8_ui_prefs',next.uiPrefs],
+      ['v14_reading_progress',next.readingProgress],['v13_citation_basket',next.citationBasket],['v13_citation_meta',next.citationMemoMeta],
+      ['v8_library_view',next.libraryPrefs.view],['v13_library_density',next.libraryPrefs.density],['v13_library_assist',next.libraryPrefs.assist],['v8_saved_only',next.libraryPrefs.savedOnly],
+      ['v11_search_mode',next.searchPrefs.mode],['v11_search_history',next.searchPrefs.history],['w4_activity',next.activity],['v15_import_manifest',next.importedFileRefs]
+    ];
     if(!STORE.setBatch(entries)){toast('Không thể lưu bản nhập. Dữ liệu hiện tại chưa bị thay thế.');return}
-    ({saved,recent,notes,procDone,cases,expertBriefs}=next);complianceProfiles=next.complianceProfiles;complianceAudit=next.complianceAudit;currentComplianceId=complianceProfiles[0]?.id||null;
-    currentCaseId=null;
+    ({saved,recent,notes,procDone,cases,expertBriefs}=next);complianceProfiles=next.complianceProfiles;complianceAudit=next.complianceAudit;
+    quickNote=next.quickNote;uiPrefs=next.uiPrefs;libraryView=next.libraryPrefs.view;libraryDensity=next.libraryPrefs.density;libraryAssistOpen=next.libraryPrefs.assist;savedOnlyMode=next.libraryPrefs.savedOnly;legalSearchMode=next.searchPrefs.mode;legalSearchHistory=next.searchPrefs.history;
+    if(typeof citationBasketV13!=="undefined")citationBasketV13=next.citationBasket;if(typeof citationMemoMetaV13!=="undefined")citationMemoMetaV13=next.citationMemoMeta;
+    currentComplianceId=complianceProfiles[0]?.id||null;currentCaseId=null;
     if($('caseDetail')){$('caseDetail').className='empty';$('caseDetail').textContent='Chọn hồ sơ để xem chi tiết.'}
-    renderWorkspace();renderComplianceWorkspace();renderComplianceHome();renderProcList();docs(curTopic(),$("q").value);toast("Đã khôi phục dữ liệu");
-  }catch{toast("File JSON không hợp lệ")}};
+    applyUIPrefs();syncQuickNote(quickNote);setLegalSearchMode(legalSearchMode);renderLegalSearchHistory();renderMemoV13();renderWorkspace();renderComplianceWorkspace();renderComplianceHome();renderProcList();docs(curTopic(),$("q").value);
+    toast(next.importedFileRefs.length?"Đã khôi phục dữ liệu · cần nhập lại file gốc":"Đã khôi phục dữ liệu");
+  }catch(e){console.error(e);toast("File JSON không hợp lệ")}};
   r.onerror=()=>toast('Không đọc được file sao lưu. Dữ liệu hiện tại được giữ nguyên.');
   r.readAsText(file);
 }
