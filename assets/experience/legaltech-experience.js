@@ -101,7 +101,8 @@ function commandLayout(){
   const head=document.createElement('div');head.className='cmd-v17-head';
   const icon=document.createElement('span');icon.textContent='⌕';input.parentNode.insertBefore(head,input);head.append(icon,input);
   const key=document.createElement('span');key.className='cmd-v17-key';key.textContent=navigator.platform?.toLowerCase().includes('mac')?'⌘ K':'Ctrl K';head.append(key);
-  const foot=document.createElement('div');foot.className='cmd-v17-foot';foot.innerHTML='<span><kbd>↑↓</kbd> di chuyển</span><span><kbd>Enter</kbd> mở</span><span><kbd>Esc</kbd> đóng</span>';
+  const foot=document.createElement('div');foot.className='cmd-v17-foot';
+  [['↑↓','di chuyển'],['Enter','mở'],['Esc','đóng']].forEach(([key,label])=>{const span=document.createElement('span'),kbd=document.createElement('kbd');kbd.textContent=key;span.append(kbd,document.createTextNode(' '+label));foot.append(span)});
   cmd.append(foot);
  }
  input.placeholder='Tìm văn bản, biểu mẫu, phân loại dự án…';
@@ -191,7 +192,7 @@ function mountGraph(){
  const page=document.getElementById('corekb');if(!page||document.getElementById('interactiveLegalGraphV17'))return;
  const anchor=page.querySelector('.corekb-main-v131')||page.querySelector('.corekb-coverage');if(!anchor)return;const data=graphData();if(!data.nodes.length)return;
  const root=document.createElement('section');root.id='interactiveLegalGraphV17';root.className='legal-graph-v17';
- const head=document.createElement('header');head.className='legal-graph-head';const copy=document.createElement('div');copy.innerHTML='<div class="section-kicker">INTERACTIVE LEGAL GRAPH</div><h2>Bản đồ quan hệ pháp lý</h2><p>Đi từ văn bản nền tảng đến lớp quy định chi tiết và hướng dẫn. Chọn node để làm nổi nhánh liên quan; mở văn bản gốc trước khi áp dụng.</p>';
+ const head=document.createElement('header');head.className='legal-graph-head';const copy=document.createElement('div'),kicker=document.createElement('div'),heading=document.createElement('h2'),desc=document.createElement('p');kicker.className='section-kicker';kicker.textContent='INTERACTIVE LEGAL GRAPH';heading.textContent='Bản đồ quan hệ pháp lý';desc.textContent='Đi từ văn bản nền tảng đến lớp quy định chi tiết và hướng dẫn. Chọn node để làm nổi nhánh liên quan; mở văn bản gốc trước khi áp dụng.';copy.append(kicker,heading,desc);
  const legend=document.createElement('div');legend.className='legal-graph-legend';['Luật / VBHN luật','Nghị định','Thông tư'].forEach(x=>{const s=document.createElement('span');s.textContent=x;legend.append(s)});head.append(copy,legend);
  const shell=document.createElement('div');shell.className='legal-graph-shell';const stage=document.createElement('div');stage.className='legal-graph-stage';const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('legal-graph-svg');stage.append(svg);
  const cols=document.createElement('div');cols.className='legal-graph-columns';const tiers=[['law','Luật / văn bản hợp nhất'],['decree','Nghị định / quy định chi tiết'],['circular','Thông tư / hướng dẫn']];
