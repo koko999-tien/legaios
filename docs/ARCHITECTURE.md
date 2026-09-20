@@ -16,7 +16,7 @@ index.html
 assets/
   css/
     app.css               # legacy/base visual system
-    v14-product.css       # V14 task-first/product refinements
+    v14-product.css       # V14 task-first/product refinements + product-page overrides migrated out of app.css
     compliance.css        # compliance workspace/calendar/register styles
     oss-upgrades.css      # accessibility/PWA progressive enhancement layer
   js/
