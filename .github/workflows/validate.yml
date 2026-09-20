@@ -30,6 +30,13 @@ jobs:
       - name: Gate core legal-data release metadata
         run: node tools/legal-data-release-gate.mjs
 
+      - name: Check V15 lazy and serverless modules
+        shell: bash
+        run: |
+          node --check assets/lazy/official-search.js
+          node --check assets/lazy/workspace-data.js
+          node --check netlify/functions/official-search.mjs
+
       - name: Generate self-contained static preview copy
         run: node tools/extract-single-file.mjs index.html .tmp/refactor-preview
 
