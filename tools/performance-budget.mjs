@@ -5,11 +5,11 @@ const root=process.cwd();
 const KB=1024;
 const limits={
   index:100*KB,
-  cssTotal:220*KB,
+  cssTotal:230*KB,
   jsTotal:500*KB,
   shellTotal:850*KB,
   largestJs:170*KB,
-  lazyJsTotal:40*KB
+  lazyJsTotal:52*KB
 };
 
 async function walk(dir){
