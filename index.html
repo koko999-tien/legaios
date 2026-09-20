@@ -530,6 +530,10 @@
           <p class="advanced-search-note">“Dữ liệu hiệu lực” phản ánh metadata đang có trong kho, không tự xác nhận tình trạng pháp lý hiện hành. Khi áp dụng, cần mở nguồn chính thức và kiểm tra văn bản sửa đổi, thay thế, chuyển tiếp.</p>
         </div>
       </details>
+      <section class="active-filter-panel" id="activeFilters" aria-live="polite">
+        <div class="active-filter-head"><span>Tiêu chí đang áp dụng</span><button id="clearActiveFilters" type="button">Xóa tất cả</button></div>
+        <div class="active-filter-list" id="activeFilterList"></div>
+      </section>
       <div class="library-actions">
         <div class="segmented" id="viewMode"><button class="on" data-view="list" type="button">Danh sách</button><button data-view="grid" type="button">Lưới</button></div>
         <div class="segmented library-density-toggle" id="libraryDensity"><button class="on" data-libdensity="compact" type="button">Gọn</button><button data-libdensity="detail" type="button">Chi tiết</button></div>
