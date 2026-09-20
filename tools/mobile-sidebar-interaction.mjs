@@ -104,7 +104,34 @@ try {
   await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
   await page.waitForFunction(() => !document.getElementById('navScrim')?.classList.contains('on'));
 
-  console.log('Mobile sidebar opens cleanly, accepts real taps, and closes without a stale scrim.');
+  const cdp=await page.context().newCDPSession(page);
+  await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+  async function assertTouchSwipeScrollsPage(selector,label){
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.waitForTimeout(80);
+    const box=await page.locator(selector).boundingBox();
+    assert(box,`Missing mobile scroll surface: ${label}`);
+    const x=Math.max(12,Math.min(378,box.x+Math.min(box.width*.5,180)));
+    const startY=Math.max(300,Math.min(760,box.y+Math.min(box.height*.65,470)));
+    const endY=Math.max(150,startY-330);
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y:startY,radiusX:2,radiusY:2,force:1}]});
+    for(let i=1;i<=7;i++){
+      const y=startY+(endY-startY)*(i/7);
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y,radiusX:2,radiusY:2,force:1}]});
+      await page.waitForTimeout(18);
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.waitForTimeout(280);
+    const y=await page.evaluate(()=>window.scrollY);
+    assert(y>20,`${label} trapped vertical touch scrolling; page scrollY=${y}`);
+  }
+
+  await assertTouchSwipeScrollsPage('#lib .library-filters','Library filter panel');
+  await page.evaluate(()=>window.go?.('expert'));
+  await page.waitForFunction(()=>document.getElementById('expert')?.classList.contains('on'));
+  await assertTouchSwipeScrollsPage('#expert .expert-side','Review side panel');
+
+  console.log('Mobile sidebar opens cleanly, accepts real taps, closes without a stale scrim, and touch swipes scroll the page through Library/Review panels.');
 } finally {
   await browser.close();
 }
