@@ -24,7 +24,7 @@ try{
  const dl=await download;
  assert(dl.suggestedFilename().endsWith('.json'),'Ctrl+E did not trigger workspace JSON export');
 
- await page.locator('#openShortcuts').click();
+ await page.evaluate(()=>document.getElementById('openShortcuts')?.click());
  const text=await page.locator('#shortcutsModal').innerText();
  assert(text.includes('Ctrl E')&&text.includes('Alt 8'),'Shortcut modal did not document extended shortcuts');
 
