@@ -67,6 +67,34 @@ try{
   const monitoringReasons=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
   assert(monitoringReasons.includes('quan trắc')||monitoringReasons.includes('nước thải')||monitoringReasons.includes('nuoc thai'),'Monitoring query returned an unrelated top result');
 
+  const searchVersion=await page.evaluate(()=>window.LEGALOS_SEARCH_V2?.version);
+  assert(searchVersion>=3,`Expected Search V3 semantic engine, got version ${searchVersion}`);
+
+  await q.fill('quy chuẩn nước thải công nghiệp hiện hành');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const wastewaterTop=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
+  assert(wastewaterTop.includes('qcvn 40:2025')||wastewaterTop.includes('nước thải cn')||wastewaterTop.includes('nước thải công nghiệp'),`Current industrial-wastewater standard was not ranked first: ${wastewaterTop.slice(0,220)}`);
+
+  await q.fill('văn bản hợp nhất nghị định 08 mới nhất');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const consolidatedTop=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
+  assert(consolidatedTop.includes('49/vbhn')||consolidatedTop.includes('hợp nhất nđ 08'),`Current consolidated NĐ 08 result was not ranked first: ${consolidatedTop.slice(0,220)}`);
+
+  await q.fill('cơ sở của tôi xả nước thải thì phải quan trắc như thế nào');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const naturalWater=(await page.locator('#docs .doc').evaluateAll(nodes=>nodes.slice(0,5).map(x=>x.innerText).join('\n'))).toLowerCase();
+  assert((naturalWater.includes('quan trắc')||naturalWater.includes('quan trac'))&&(naturalWater.includes('nước thải')||naturalWater.includes('nuoc thai')),`Natural wastewater-monitoring question lost one of its concepts: ${naturalWater.slice(0,500)}`);
+  const semanticCoach=(await page.locator('#searchCoach').innerText()).toLowerCase();
+  assert(semanticCoach.includes('hệ thống hiểu'),'Semantic interpretation is missing from the search coach');
+
+  await q.fill('chì trong sơn quy định ở đâu');
+  await page.locator('#qBtn').click();
+  await page.waitForTimeout(180);
+  const paintTop=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
+  assert(paintTop.includes('chì trong sơn')||paintTop.includes('tt 37/2026'),`Rare-term ranking failed for lead in paint: ${paintTop.slice(0,220)}`);
   await q.fill('zzzzzzzzzzzzzz');
   await page.locator('#qBtn').click();
   await page.waitForTimeout(150);
@@ -120,6 +148,7 @@ try{
   console.log(`  weighted coverage: ${engineProbe.coverage}`);
   console.log(`  typo suggestion: ${suggestion}`);
   console.log('  loose legal-number, chemical, EPR and monitoring queries passed');
+  console.log('  Search V3 natural-language, current-law, standard and rare-term ranking passed');
   console.log(`  typo query results: ${typoCount}`);
   console.log('  nonsense query returns zero results');
   console.log('  exact legal-number search still works');
