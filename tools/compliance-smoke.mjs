@@ -232,6 +232,7 @@ try{
   assert(Array.isArray(exported.lawWatch)&&exported.lawWatch.length===1,'Workspace export omitted the legal-review watchlist');
   assert(exported.lawWatch[0].docId==='l72'&&exported.lawWatch[0].status==='active','Workspace export lost law-watch document/status');
   assert(exported.lawWatch[0].nextReview==='2026-10-20','Workspace export lost law-watch review date');
+  assert(exported.lawWatch[0].note==='Kiểm tra lại tác động tới GPMT của hồ sơ QA','Workspace export lost law-watch note');
   assert(exported.lawWatch[0].profileId===exported.complianceProfiles[0].id,'Law watchlist did not retain the active compliance profile link');
 
   await page.reload({waitUntil:'networkidle'});
@@ -241,7 +242,7 @@ try{
   await go('upd');
   await page.locator('[data-lawtab="watch"]').click();
   await page.waitForSelector('#lawWatchList [data-law-watch-row]');
-  assert((await page.locator('#lawWatchList').innerText()).includes('Kiểm tra lại tác động tới GPMT của hồ sơ QA'),'Law watchlist did not persist across reload');
+  assert((await page.locator('#lawWatchList [data-law-watch-note]').first().inputValue())==='Kiểm tra lại tác động tới GPMT của hồ sơ QA','Law watchlist did not persist across reload');
 
   await page.setViewportSize({width:390,height:844});
   await go('work');
