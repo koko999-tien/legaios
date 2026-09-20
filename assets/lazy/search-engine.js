@@ -2,20 +2,34 @@
 'use strict';
 if(typeof legalSearchScore!=='function'||typeof searchEligible!=='function')return;
 const baseScore=legalSearchScore,baseCoach=renderSearchCoach,profiles=new Map();
-const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','la','toi','minh','phai','khong','thi','nao','gi','hay','neu','muon','hoi','nay','do','nhu','khi']);
+const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','la','toi','minh','phai','thi','nao','gi','hay','neu','muon','hoi','nay','do','nhu','can','lam','sao','the']);
 const ALIASES=[
- {id:'gpmt',label:'Giấy phép môi trường',re:/\b(gpmt|giay phep moi truong|xin phep moi truong)\b/,terms:'giay phep moi truong cap phep doi tuong',anchors:[['giay','phep','moi','truong']]},
- {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an',anchors:[['dtm'],['danh','gia','tac','dong']]},
+ {id:'gpmt',label:'Giấy phép môi trường',re:/\b(gpmt|giay phep moi truong|xin phep moi truong)\b/,terms:'giay phep moi truong cap phep doi tuong dieu chinh',anchors:[['giay','phep','moi','truong']]},
+ {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an tham dinh',anchors:[['dtm'],['danh','gia','tac','dong']]},
  {id:'dmc',label:'Đánh giá môi trường chiến lược',re:/\b(dmc|danh gia moi truong chien luoc)\b/,terms:'danh gia moi truong chien luoc quy hoach',anchors:[['dmc'],['chien','luoc']]},
- {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong',anchors:[['dkmt'],['dang','ky']]},
- {id:'waste',label:'Chất thải',re:/\b(rac|chat thai|ctnh|phe lieu|chat thai nguy hai)\b/,terms:'chat thai nguy hai phe lieu quan ly',anchors:[['chat','thai'],['phe','lieu']]},
- {id:'epr',label:'EPR · tái chế',re:/\b(epr|tai che|bao bi|trach nhiem mo rong)\b/,terms:'epr tai che bao bi trach nhiem nha san xuat',anchors:[['epr'],['tai','che']]},
- {id:'chemical',label:'Hóa chất',re:/\b(hoa chat|chemical|msds|sds|su co hoa chat)\b/,terms:'hoa chat an toan su co nguy hiem',anchors:[['hoa','chat']]},
- {id:'water',label:'Nước thải · tài nguyên nước',re:/\b(nuoc thai|xa thai|khai thac nuoc|tai nguyen nuoc|nguon nuoc)\b/,terms:'nuoc thai xa thai tai nguyen nuoc',anchors:[['nuoc','thai'],['tai','nguyen','nuoc']]},
- {id:'air',label:'Khí thải · không khí',re:/\b(khi thai|khong khi|bui|phat thai)\b/,terms:'khi thai khong khi bui phat thai',anchors:[['khi','thai'],['khong','khi']]},
- {id:'monitor',label:'Quan trắc môi trường',re:/\b(quan trac|giam sat moi truong)\b/,terms:'quan trac moi truong nuoc thai khi thai',anchors:[['quan','trac']]},
- {id:'climate',label:'Khí nhà kính · carbon',re:/\b(knk|khi nha kinh|carbon|kiem ke khi nha kinh)\b/,terms:'khi nha kinh carbon kiem ke phat thai',anchors:[['khi','nha','kinh'],['carbon']]},
- {id:'noise',label:'Tiếng ồn · độ rung',re:/\b(tieng on|do rung|o nhiem tieng on)\b/,terms:'tieng on do rung moi truong',anchors:[['tieng','on'],['do','rung']]}
+ {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong doi tuong',anchors:[['dkmt'],['dang','ky']]},
+ {id:'hazard',label:'Chất thải nguy hại',re:/\b(ctnh|chat thai nguy hai)\b/,terms:'chat thai nguy hai ctnh nguong quan ly',anchors:[['chat','thai','nguy','hai']]},
+ {id:'waste',label:'Chất thải',re:/\b(rac|chat thai|phe lieu|chat thai ran)\b/,terms:'chat thai phe lieu chat thai ran quan ly xu ly',anchors:[['chat','thai'],['phe','lieu']]},
+ {id:'epr',label:'EPR · tái chế',re:/\b(epr|tai che|bao bi|trach nhiem mo rong)\b/,terms:'epr tai che bao bi trach nhiem nha san xuat nhap khau',anchors:[['epr'],['tai','che']]},
+ {id:'chemical',label:'Hóa chất',re:/\b(hoa chat|chemical|msds|sds|su co hoa chat|chi trong son)\b/,terms:'hoa chat an toan su co nguy hiem san pham son chi',anchors:[['hoa','chat']]},
+ {id:'wastewater',label:'Nước thải',re:/\b(nuoc thai|xa thai|xu ly nuoc thai)\b/,terms:'nuoc thai xa thai xu ly nuoc thai cong nghiep sinh hoat',anchors:[['nuoc','thai']]},
+ {id:'water',label:'Tài nguyên nước',re:/\b(khai thac nuoc|tai nguyen nuoc|nguon nuoc|nuoc duoi dat|nuoc mat)\b/,terms:'tai nguyen nuoc khai thac su dung nguon nuoc nuoc duoi dat',anchors:[['tai','nguyen','nuoc']]},
+ {id:'air',label:'Khí thải · không khí',re:/\b(khi thai|khong khi|bui|phat thai)\b/,terms:'khi thai khong khi bui phat thai cong nghiep',anchors:[['khi','thai'],['khong','khi']]},
+ {id:'monitor',label:'Quan trắc môi trường',re:/\b(quan trac|giam sat moi truong|theo doi moi truong)\b/,terms:'quan trac giam sat moi truong dinh ky tu dong lien tuc du lieu',anchors:[['quan','trac']]},
+ {id:'climate',label:'Khí nhà kính · carbon',re:/\b(knk|khi nha kinh|carbon|kiem ke khi nha kinh)\b/,terms:'khi nha kinh carbon kiem ke phat thai thi truong carbon',anchors:[['khi','nha','kinh'],['carbon']]},
+ {id:'noise',label:'Tiếng ồn · độ rung',re:/\b(tieng on|do rung|o nhiem tieng on)\b/,terms:'tieng on do rung moi truong qcvn',anchors:[['tieng','on'],['do','rung']]},
+ {id:'land',label:'Đất đai',re:/\b(dat dai|su dung dat|thu hoi dat|thue dat)\b/,terms:'dat dai su dung dat thu hoi thue dat dia chinh',anchors:[['dat','dai']]},
+ {id:'mineral',label:'Địa chất · khoáng sản',re:/\b(khoang san|dia chat|khai thac mo|dong cua mo)\b/,terms:'dia chat khoang san khai thac mo phuc hoi dong cua mo',anchors:[['khoang','san'],['dia','chat']]}
+];
+const ACTIONS=[
+ {id:'apply',label:'xác định đối tượng áp dụng',re:/\b(co can|co phai|thuoc doi tuong|doi tuong nao|ap dung|truong hop nao|mien|khong phai)\b/,terms:'doi tuong ap dung truong hop phai mien loai tru'},
+ {id:'procedure',label:'thủ tục / hồ sơ',re:/\b(thu tuc|ho so|bieu mau|nop o dau|xin phep|dang ky|dieu chinh)\b/,terms:'thu tuc ho so bieu mau nop tiep nhan cap phep dang ky dieu chinh'},
+ {id:'authority',label:'thẩm quyền / cơ quan',re:/\b(tham quyen|co quan nao|ai cap|ai phe duyet|ubnd|bo nao|so nao)\b/,terms:'tham quyen co quan bo ubnd chu tich cap phep phe duyet tiep nhan'},
+ {id:'deadline',label:'thời hạn / tần suất',re:/\b(thoi han|bao lau|khi nao|han nop|tan suat|dinh ky|hang nam|hang quy|bao nhieu lan)\b/,terms:'thoi han ngay dinh ky hang nam hang quy tan suat ky bao cao'},
+ {id:'penalty',label:'xử phạt / vi phạm',re:/\b(xu phat|bi phat|muc phat|vi pham|phat tien|xu ly vi pham)\b/,terms:'xu phat vi pham phat tien muc phat hanh chinh'},
+ {id:'standard',label:'quy chuẩn / ngưỡng',re:/\b(qcvn|quy chuan|nguong|gioi han|thong so|tieu chuan)\b/,terms:'qcvn quy chuan nguong gioi han thong so ky thuat'},
+ {id:'current',label:'văn bản hiện hành / cập nhật',re:/\b(hien hanh|moi nhat|con hieu luc|hieu luc|sua doi|thay the|hop nhat)\b/,terms:'hieu luc sua doi thay the hop nhat hien hanh ap dung'},
+ {id:'report',label:'báo cáo / kế hoạch',re:/\b(bao cao|ke hoach|bao cao dinh ky|nop bao cao|ket qua)\b/,terms:'bao cao ke hoach dang ky nop hang nam ket qua'}
 ];
 function rawTokens(v){
  const a=cleanLegalQuery(v).match(/[\p{L}\p{N}_]+/gu)||[];
@@ -37,6 +51,7 @@ function topicLabel(d){
  for(const el of els)if(el.dataset.t===id){const v=el.querySelector('span')?.textContent||el.textContent||id;return v.replace(/\s+\d+\s*$/,'').trim()}
  return id;
 }
+let corpusDf=null;
 function profile(d){
  if(profiles.has(d.id))return profiles.get(d.id);
  const m=metaOf(d.id),core=typeof coreArticlesForDoc==='function'?coreArticlesForDoc(d.id):[];
@@ -48,6 +63,15 @@ function profile(d){
  p.all=uniq([...p.title.tokens,...p.topic.tokens,...p.type.tokens,...p.rel.tokens,...p.structured.tokens,...p.body.tokens]);
  p.allSet=new Set(p.all);p.important=uniq([...p.title.tokens,...p.topic.tokens,...p.type.tokens,...p.rel.tokens,...p.structured.tokens]).slice(0,320);
  profiles.set(d.id,p);return p;
+}
+function ensureCorpus(){
+ if(corpusDf)return;corpusDf=new Map();
+ for(const d of D)for(const t of profile(d).allSet)corpusDf.set(t,(corpusDf.get(t)||0)+1);
+}
+function idf(t){ensureCorpus();return 1+Math.log((D.length+1)/((corpusDf.get(t)||0)+1))}
+function fieldWeighted(p,t){
+ const [w,label]=exactWeight(p,t);if(!w)return [0,label];
+ return [Math.round(w*(.62+.32*Math.min(3.2,idf(t)))),label];
 }
 function exactWeight(p,t){
  if(p.title.set.has(t))return [48,'Tên văn bản'];
@@ -76,22 +100,36 @@ function looseNumberMatch(q,p){
 }
 function model(q){
  const primary=uniq(rawTokens(q)),expanded=uniq((typeof expandTokens==='function'?expandTokens(q):primary).filter(x=>!COMMON.has(x)));
- const fold=cleanLegalQuery(q),aliases=ALIASES.filter(a=>a.re.test(fold));
- return {primary,expanded,fold,aliases,phrase:primary.join(' '),intent:typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]}};
+ const fold=cleanLegalQuery(q),aliases=ALIASES.filter(a=>a.re.test(fold)),actions=ACTIONS.filter(a=>a.re.test(fold));
+ return {primary,expanded,fold,aliases,actions,phrase:primary.join(' '),intent:typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]}};
 }
 function aliasBoost(m,p,reasons){
- let total=0,strong=false;
+ let total=0,hits=0;const labels=[];
  for(const a of m.aliases){
   const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?hit/ts.length:0;
   const anchored=!a.anchors||a.anchors.some(g=>g.every(t=>p.allSet.has(t)));
   const directAlias=a.re.test(m.fold),directAcronym=directAlias&&m.primary.length===1&&m.primary[0]===a.id;
-  if(!anchored&&!(directAlias&&ratio>=.55))continue;
-  if(ratio>=.45){
-   total=Math.max(total,Math.round((directAcronym?58:42)+ratio*(directAcronym?46:38)));
-   strong=true;reasons.push((directAcronym?'Mở rộng viết tắt: ':'Đúng chủ đề: ')+a.label);
+  if(!anchored&&!(directAlias&&ratio>=.5))continue;
+  if(ratio>=.38){
+   total+=Math.round((directAcronym?54:34)+ratio*(directAcronym?42:34));hits++;labels.push(a.label);
+   if(reasons.length<6)reasons.push((directAcronym?'Mở rộng viết tắt: ':'Đúng chủ đề: ')+a.label);
   }
  }
- return {total,strong};
+ if(hits>=2){total+=48;reasons.push('Khớp đồng thời nhiều chủ đề')}
+ return {total,strong:hits>0,hits,labels};
+}
+function actionBoost(m,p,reasons){
+ let total=0,hits=0;const labels=[];
+ for(const a of m.actions){
+  const ts=rawTokens(a.terms),n=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?n/ts.length:0;
+  let special=0;
+  if(a.id==='current'&&(p.type.text.includes('van ban hop nhat')||p.title.text.includes('hop nhat')))special=48;
+  if(a.id==='standard'&&(p.type.text.includes('qcvn')||p.title.text.includes('qcvn')))special=62;
+  if(a.id==='penalty'&&(p.title.text.includes('xu phat')||p.body.text.includes('xu phat')))special=66;
+  if(ratio>=.24||special){total+=Math.max(special,Math.round(18+ratio*44));hits++;labels.push(a.label);if(reasons.length<6)reasons.push('Đúng mục tiêu: '+a.label)}
+ }
+ if(hits>=2)total+=24;
+ return {total,hits,labels};
 }
 function proximity(primary,p){
  if(primary.length<2)return 0;const pos=primary.map(t=>p.all.indexOf(t));if(pos.some(x=>x<0))return 0;
@@ -100,7 +138,7 @@ function proximity(primary,p){
 }
 function scoreV2(d,q){
  const base=baseScore(d,q);if(!String(q||'').trim())return {...base,matched:true,quality:'all',coverage:1,fuzzyHits:0};
- const m=model(q),p=profile(d),reasons=[],seen=new Set();let boost=0,hits=0,fuzzyHits=0,strongField=0;
+ const m=model(q),p=profile(d),reasons=[],seen=new Set();let boost=0,hits=0,fuzzyHits=0,strongField=0,lexical=0;
  const number=looseNumberMatch(q,p)||(base.reasons||[]).some(x=>x.includes('Đúng số hiệu'));
  if(number){boost+=185;reasons.push('Khớp số hiệu văn bản')}
  if(m.phrase&&m.primary.length>=2){
@@ -120,24 +158,26 @@ function scoreV2(d,q){
   if(fragment){boost+=fragment;strongField++;reasons.push('Cụm từ khớp trong '+where)}
  }
  for(const t of m.primary){
-  const [w,label]=exactWeight(p,t);
-  if(w){hits++;boost+=w;if(w>=26)strongField++;if(!seen.has(label)&&reasons.length<4){reasons.push('Khớp '+label.toLowerCase());seen.add(label)};continue}
-  const n=near(t,p);if(n){hits++;fuzzyHits++;boost+=Math.round((n.where==='Tên văn bản'?30:18)*n.score);if(reasons.length<4)reasons.push('Gần đúng “'+t+'” → “'+n.token+'”')}
+  const [w,label]=fieldWeighted(p,t);
+  if(w){hits++;boost+=w;lexical+=w;if(w>=32)strongField++;if(!seen.has(label)&&reasons.length<4){reasons.push('Khớp '+label.toLowerCase());seen.add(label)};continue}
+  const n=near(t,p);if(n){hits++;fuzzyHits++;const w=Math.round((n.where==='Tên văn bản'?28:17)*n.score*Math.min(2.2,idf(t)));boost+=w;lexical+=w;if(reasons.length<4)reasons.push('Gần đúng “'+t+'” → “'+n.token+'”')}
  }
  const coverage=m.primary.length?hits/m.primary.length:0;
  if(coverage===1&&m.primary.length>1){boost+=58;reasons.push('Khớp đầy đủ từ khóa chính')}
  else if(coverage>=.75)boost+=34;else if(coverage>=.5)boost+=16;
  const prox=proximity(m.primary,p);if(prox){boost+=prox;reasons.push('Các từ khóa nằm gần nhau')}
  const alias=aliasBoost(m,p,reasons);boost+=alias.total;
- const expandedOnly=m.expanded.filter(t=>!m.primary.includes(t));for(const t of expandedOnly){const [w]=exactWeight(p,t);if(w)boost+=Math.min(10,Math.round(w*.24))}
+ const action=actionBoost(m,p,reasons);boost+=action.total;
+ const expandedOnly=m.expanded.filter(t=>!m.primary.includes(t));for(const t of expandedOnly){const [w]=fieldWeighted(p,t);if(w)boost+=Math.min(14,Math.round(w*.16))}
  const baseStrong=(base.reasons||[]).some(x=>/Tên văn bản khớp|Đúng số hiệu|Có nhắc (Điều|Khoản|Điểm)|Đúng (Khoản|Điểm)|Điều .*đã bóc|Khớp cụm|Thỏa điều kiện/i.test(x));
- const needed=m.primary.length<=1?1:m.primary.length===2?2:Math.ceil(m.primary.length*(alias.strong?.4:.5));
- const matched=number||baseStrong||alias.strong||(hits>=needed&&(coverage>=.5||strongField>0));
- let score=Math.round(base.score*(baseStrong?.75:.3))+boost;
+ const needed=m.primary.length<=1?1:m.primary.length===2?2:Math.ceil(m.primary.length*(alias.strong?.35:.48));
+ const semantic=alias.hits+action.hits;
+ const matched=number||baseStrong||semantic>0||(hits>=needed&&(coverage>=.45||strongField>0))||lexical>=58;
+ let score=Math.round(base.score*(baseStrong?.72:.22))+boost;
  if(professorVerified(d.id))score+=5;else if(metaOf(d.id).src)score+=2;
  if(!matched)score=Math.min(score,0);
  const quality=number||boost>=210||coverage===1?'high':boost>=120||coverage>=.75?'good':'related';
- return {...base,score,matched,quality,coverage,fuzzyHits,reasons:uniq([...reasons,...(base.reasons||[])]),refs:base.refs||[]};
+ return {...base,score,matched,quality,coverage,fuzzyHits,concepts:alias.labels,actions:action.labels,reasons:uniq([...reasons,...(base.reasons||[])]),refs:base.refs||[]};
 }
 legalSearchScore=scoreV2;
 searchEligible=function(d,q){
@@ -158,10 +198,21 @@ function suggest(q){
  const out=ts.map(t=>{if(surfaces.has(t))return surfaces.get(t);let best='',bs=0;for(const c of surfaces.keys()){if(Math.abs(c.length-t.length)>2)continue;const s=sim(t,c);if(s>bs){bs=s;best=c}}if(bs>=.76){changed++;return surfaces.get(best)||best}return t});
  return changed?out.join(' '):'';
 }
+function snippet(d,q){
+ const m=model(q),core=typeof coreArticlesForDoc==='function'?coreArticlesForDoc(d.id):[];
+ const raw=[plain(d.b||''),typeof deepGuideFor==='function'?plain(deepGuideFor(d.id)):'',...core.flatMap(x=>[x.title,x.summary,x.caution]),...(typeof allClauseNodesForDoc==='function'?allClauseNodesForDoc(d.id).map(x=>x.text):[])].filter(Boolean);
+ const chunks=raw.flatMap(x=>String(x).split(/(?<=[.!?;])\s+|\n+/)).map(x=>x.replace(/\s+/g,' ').trim()).filter(x=>x.length>20&&x.length<700);
+ let best='',bs=-1;
+ for(const s of chunks){const f=cleanLegalQuery(s),set=new Set(rawTokens(s));let score=0;for(const t of m.primary)if(set.has(t)||f.includes(t))score+=8*Math.min(2.5,idf(t));for(const a of m.aliases){const ts=rawTokens(a.terms),n=ts.filter(t=>set.has(t)||f.includes(t)).length;score+=n*3}for(const a of m.actions){const ts=rawTokens(a.terms),n=ts.filter(t=>set.has(t)||f.includes(t)).length;score+=n*2}if(score>bs){bs=score;best=s}}
+ if(!best)return typeof snippetText==='function'?snippetText(d.b,q):plain(d.b||'').slice(0,180);
+ return best.length>220?best.slice(0,217).replace(/\s+\S*$/,'')+'…':best;
+}
+function interpret(q){const m=model(q);return {concepts:m.aliases.map(x=>x.label),actions:m.actions.map(x=>x.label),suggestion:suggest(q)}}
+
 renderSearchCoach=function(list,q){
- baseCoach(list,q);const s=suggest(q);if(!s||foldVN(s)===foldVN(String(q||'')))return;
- const host=document.getElementById('searchCoach'),box=host&&host.querySelector('div');if(!box)return;
- const row=document.createElement('p'),btn=document.createElement('button');row.className='search-v2-suggestion';btn.type='button';btn.className='tiny';btn.dataset.searchExample=s;btn.textContent='Tìm theo: '+s;row.append('Có thể bạn muốn tìm: ',btn);box.appendChild(row);
+ baseCoach(list,q);const info=interpret(q),host=document.getElementById('searchCoach'),box=host&&host.querySelector('div');if(!box)return;
+ if(info.concepts.length||info.actions.length){const row=document.createElement('p');row.className='search-v2-interpretation';row.textContent='Hệ thống hiểu: '+[...info.concepts,...info.actions.map(x=>'mục tiêu '+x)].join(' · ');box.appendChild(row)}
+ const s=info.suggestion;if(s&&foldVN(s)!==foldVN(String(q||''))){const row=document.createElement('p'),btn=document.createElement('button');row.className='search-v2-suggestion';btn.type='button';btn.className='tiny';btn.dataset.searchExample=s;btn.textContent='Tìm theo: '+s;row.append('Có thể bạn muốn tìm: ',btn);box.appendChild(row)}
 };
-window.LEGALOS_SEARCH_V2={ready:true,version:2,score:scoreV2,suggest,profileFor:profile,clearCache:()=>profiles.clear()};
+window.LEGALOS_SEARCH_V2={ready:true,version:3,score:scoreV2,suggest,snippet,interpret,profileFor:profile,clearCache:()=>{profiles.clear();corpusDf=null}};
 })();
