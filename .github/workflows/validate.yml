@@ -45,6 +45,7 @@ jobs:
           node --check assets/optional/calendar-export.js
           node --check assets/backup/full-backup-loader.js
           node --check assets/backup/full-backup.js
+          node --check assets/route/url-router.js
           node --check netlify/functions/official-search.mjs
           node --check netlify/functions/grounded-ai.mjs
 
