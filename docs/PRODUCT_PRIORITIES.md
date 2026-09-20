@@ -33,10 +33,10 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 | --- | --- | --- |
 | P0 trước merge | Kiểm tra điện thoại thật và phiên có dữ liệu cũ | Header, sidebar, đọc bài, xuất file, cập nhật PWA hoạt động; dữ liệu cũ còn nguyên. CI giả lập không thay thế bước này. |
 | P0 trước sử dụng pháp lý | Kiểm định dữ liệu theo Issue #2 | Đối chiếu số hiệu, ngày hiệu lực, quan hệ sửa đổi, nguồn chính thức; từng bản ghi có ngày và bằng chứng kiểm tra. |
-| P1 | Sao lưu đầy đủ có phiên bản và xem trước khôi phục | Workspace v8 đã gồm Hồ sơ tuân thủ, Sổ giấy phép, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc, tùy chọn giao diện và danh sách khôi phục cục bộ. File IndexedDB vẫn cần nhập lại; bước tiếp theo là xem trước khôi phục bằng giao diện riêng thay cho hộp xác nhận. |
+| P1 | Sao lưu đầy đủ có phiên bản và xem trước khôi phục | Đã có giao diện xem trước khôi phục, đếm hồ sơ/giấy phép/nghĩa vụ/căn cứ/nguồn web chờ rà và cho phép xuất bản hiện tại trước. File IndexedDB vẫn cần nhập lại; bước tiếp theo là đóng gói bytes file nhập trong một gói backup riêng. |
 | P1 | Khôi phục sau thao tác xóa | Hồ sơ tuân thủ/Sổ nghĩa vụ/thời hạn có audit + Undo; hồ sơ sàng lọc, căn cứ hồ sơ và ghi chú nhanh có “Đã xóa gần đây”. Bước tiếp theo là thống nhất một màn hình recovery cho toàn bộ loại dữ liệu. |
-| P1 | Phối hợp nhiều tab | Đã cảnh báo khi dữ liệu thay đổi ở tab khác và đề nghị tải lại trước khi tiếp tục. Bước tiếp theo là khóa/merge theo phiên bản để xử lý xung đột thay vì chỉ cảnh báo. |
-| P1 | Lịch công việc có nguồn | Đã có lịch 90 ngày + chu kỳ lặp do người dùng cấu hình; bước tiếp theo là liên kết sâu thời hạn tới Điều/Khoản đã lập chỉ mục, giấy phép/file gốc và hỗ trợ chế độ lịch rộng hơn. |
+| P1 | Phối hợp nhiều tab | Hồ sơ tuân thủ đã có revision metadata và merge theo hồ sơ mới hơn; audit trail hợp nhất theo ID. Bước tiếp theo là mở rộng versioned merge cho các loại workspace còn lại. |
+| P1 | Lịch công việc có nguồn | Đã có 30 ngày / 90 ngày / 12 tháng, chu kỳ lặp và mở thẳng nghĩa vụ/giấy phép. Bước tiếp theo là xuất .ics và liên kết sâu hơn tới file/căn cứ gốc. |
 | P2 | Tìm kiếm và khả năng tiếp cận thực tế | Kiểm tra tiếng Việt không dấu, bàn phím ảo, phóng to chữ, focus trong drawer, VoiceOver/TalkBack trên thiết bị thật. |
 
 ## Phạm vi dữ liệu hiện tại
@@ -62,6 +62,8 @@ Các kiểm thử header, sidebar, article layout, reading progress, IndexedDB, 
 - **Khôi phục an toàn hơn:** hiển thị bản xem trước số hồ sơ, giấy phép, nghĩa vụ, căn cứ và tiến độ trước khi thay workspace; có nút xuất bản hiện tại trước.
 - **Lịch tuân thủ rộng hơn:** chuyển giữa 30 ngày, 90 ngày và 12 tháng; mốc giấy phép mở thẳng Sổ giấy phép và nghĩa vụ mở thẳng Sổ nghĩa vụ.
 - **Phối hợp nhiều tab:** Hồ sơ tuân thủ có revision metadata; khi phát hiện tab khác đã ghi phiên mới, hệ thống hợp nhất theo từng hồ sơ dựa trên `updatedAt` và hợp nhất audit trail theo ID trước khi ghi tiếp. Đây vẫn là local multi-tab coordination, chưa phải cloud sync.
-- **CI trên nhánh tính năng:** validate + browser smoke chạy trên `feat/**`; Search V4 có regression test riêng.
+- **Search V4 review queue:** kết quả web chính thức có thể được đưa thủ công vào hàng rà soát, vẫn giữ nhãn chưa kiểm định và được backup/restore riêng khỏi corpus pháp luật.
+- **Grounded AI:** hỏi từ tối đa 12 căn cứ đã lưu; frontend chỉ gửi question + citation summaries, API key giữ server-side, thiếu key thì fail closed và các chức năng khác vẫn chạy.
+- **CI trên nhánh tính năng:** validate + browser smoke chạy trên `feat/**`; Search V4, review queue và Grounded AI có regression test riêng.
 
 Các mục này chưa phải release production. Search V4 hiện là lớp discovery; liên kết được phát hiện không được coi là xác nhận hiệu lực hay kết luận áp dụng pháp luật.
