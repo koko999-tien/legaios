@@ -203,7 +203,7 @@ try{
   const path=await download.path();
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
-  assert(exported.schema==='ccplmt-workspace-v7','Workspace export schema was not upgraded for Permit Register');
+  assert(exported.schema==='ccplmt-workspace-v8','Workspace export schema was not upgraded for extended backup');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');
@@ -236,7 +236,7 @@ try{
   console.log('  article -> obligation register action checked');
   console.log('  home pulse + profile-aware legal updates checked');
   console.log('  audit delete/undo + full obligation snapshot restoration checked');
-  console.log('  workspace v7 export includes Permit Register, audit, structured legal refs, recurrence history and evidence references');
+  console.log('  workspace v8 export includes Sổ giấy phép, audit, structured legal refs, recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
