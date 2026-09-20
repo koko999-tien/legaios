@@ -13,5 +13,6 @@ function load(){
 function warm(){load().then(x=>x.mount?.()).catch(()=>{})}
 document.addEventListener('click',e=>{if(e.target?.closest?.('[data-go="work"],[data-compliance-open]'))setTimeout(warm,60)});
 document.addEventListener('DOMContentLoaded',()=>{if(document.getElementById('work')?.classList.contains('on'))warm()},{once:true});
+new MutationObserver(()=>{if(document.getElementById('work')?.classList.contains('on'))warm()}).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
 window.CCPLMT_CALENDAR_EXPORT_LOADER={load};
 })();
