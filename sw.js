@@ -1,5 +1,5 @@
 /* Căn cứ Pháp lý Môi trường — native service worker. */
-const CACHE_NAME='ccplmt-v17-shell-20260921-01';
+const CACHE_NAME='ccplmt-v17-shell-20260921-02';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -39,6 +39,7 @@ const APP_SHELL=[
   '/assets/recovery/workspace-recovery.js',
   '/assets/shortcuts/extended-shortcuts.js',
   '/assets/route/url-router.js',
+  '/assets/experience/legaltech-experience.js',
 ];
 
 self.addEventListener('install',event=>{
