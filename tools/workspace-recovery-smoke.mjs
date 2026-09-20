@@ -31,7 +31,16 @@ try{
  const rows=await page.evaluate(()=>LEGALOS_RECOVERY.list());
  assert(rows.length>=2,'Automatic snapshot did not run after workspace storage mutation');
 
- console.log('Workspace recovery passed: manual save, restore, UI boundary, and automatic snapshots.');
+ await page.evaluate(async()=>{
+   for(let i=0;i<10;i++){
+     localStorage.setItem('w3_saved',JSON.stringify(['retention-'+i]));
+     await LEGALOS_RECOVERY.saveNow('manual',true);
+   }
+ });
+ const retained=await page.evaluate(()=>LEGALOS_RECOVERY.list());
+ assert(retained.length<=8,'Recovery retention exceeded eight snapshots');
+
+ console.log('Workspace recovery passed: manual save, restore, UI boundary, automatic snapshots, and retention.');
 }finally{
  await context.close();
  await browser.close();
