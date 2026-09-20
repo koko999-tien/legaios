@@ -2,7 +2,8 @@ import { chromium } from 'playwright';
 
 const baseURL=process.env.LEGALOS_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch({headless:true});
-const page=await browser.newPage({viewport:{width:1280,height:900}});
+const context=await browser.newContext({viewport:{width:1280,height:900},serviceWorkers:'block'});
+const page=await context.newPage();
 function assert(x,m){if(!x)throw new Error(m)}
 try{
   let officialRequests=0;
