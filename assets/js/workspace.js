@@ -57,6 +57,30 @@ function showCase(id){
     <p class="note" style="margin-top:12px">Phiếu này giúp tổ chức dữ liệu và ưu tiên việc cần rà. Các nhãn ĐTM/GPMT ở đây không thay thế việc xác định đối tượng theo văn bản, phụ lục và hồ sơ thực tế.</p>`;
   logActivity("case",id,c.name);
 }
+const WORKSPACE_TRASH_KEY="v15_workspace_trash";
+function workspaceTrashRows(){const x=STORE.get(WORKSPACE_TRASH_KEY,[]);return Array.isArray(x)?x:[]}
+function workspaceTrashPush(type,data,label){
+  if(data===undefined||data===null)return;
+  let rows=workspaceTrashRows();
+  rows=[{id:"trash-"+Date.now()+"-"+Math.random().toString(16).slice(2),type:String(type||"item"),label:String(label||"Mục đã xóa").slice(0,300),deletedAt:new Date().toISOString(),data:complianceClone?complianceClone(data):JSON.parse(JSON.stringify(data))},...rows].slice(0,30);
+  STORE.set(WORKSPACE_TRASH_KEY,rows);renderWorkspaceTrash();
+}
+function workspaceTrashRestore(id){
+  const rows=workspaceTrashRows(),row=rows.find(x=>x.id===id);if(!row)return;
+  if(row.type==="case"){
+    if(!cases.some(x=>x.id===row.data.id)){cases.unshift(normalizeImportedCase(row.data));STORE.set("w3_cases",cases)}
+  }else if(row.type==="citation"){
+    if(typeof citationBasketV13!=="undefined"&&!citationBasketV13.some(x=>citationIdV13(x)===citationIdV13(row.data))){citationBasketV13.unshift(row.data);STORE.set("v13_citation_basket",citationBasketV13);renderMemoV13()}
+  }else if(row.type==="quick-note"){
+    if(typeof syncQuickNote==="function")syncQuickNote(String(row.data||"").slice(0,20000));
+  }
+  STORE.set(WORKSPACE_TRASH_KEY,rows.filter(x=>x.id!==id));renderWorkspace();renderWorkspaceTrash();toast("Đã khôi phục mục đã xóa");
+}
+function workspaceTrashClear(){if(!workspaceTrashRows().length)return;if(confirm("Xóa vĩnh viễn toàn bộ mục trong “Đã xóa gần đây”?")){STORE.set(WORKSPACE_TRASH_KEY,[]);renderWorkspaceTrash();toast("Đã dọn mục đã xóa")}}
+function renderWorkspaceTrash(){
+  const host=$("workspaceTrash");if(!host)return;const rows=workspaceTrashRows();
+  host.innerHTML=rows.length?'<div class="row" style="justify-content:space-between;align-items:center;margin-top:12px"><b>Đã xóa gần đây</b><button class="tiny" data-trash-clear type="button">Dọn danh sách</button></div><div style="display:grid;gap:6px;margin-top:7px">'+rows.slice(0,8).map(function(x){return '<div class="row" style="justify-content:space-between;align-items:center;border:1px solid var(--bd);border-radius:7px;padding:7px 8px"><span><b style="display:block;font-size:11px">'+esc(x.label)+'</b><small style="color:var(--m)">'+new Date(x.deletedAt).toLocaleString("vi-VN")+'</small></span><button class="tiny" data-trash-restore="'+esc(x.id)+'" type="button">Khôi phục</button></div>'}).join("")+'</div>':'<p style="margin:10px 0 0;color:var(--m);font-size:11px">Chưa có mục đã xóa có thể khôi phục.</p>';
+}
 function workspaceBackupExtras(){
   const imported=typeof importedDocs!=="undefined"?importedDocs:[];
   return {
