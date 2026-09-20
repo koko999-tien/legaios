@@ -113,7 +113,8 @@ function workspaceRestoreCountsV9(next){
     saved:Array.isArray(next.saved)?next.saved.length:0,
     citations:Array.isArray(next.citationBasket)?next.citationBasket.length:0,
     lawWatch:Array.isArray(next.lawWatch)?next.lawWatch.length:0,
-    reading:next.readingProgress&&typeof next.readingProgress==="object"?Object.keys(next.readingProgress).length:0
+    reading:next.readingProgress&&typeof next.readingProgress==="object"?Object.keys(next.readingProgress).length:0,
+    officialCandidates:Array.isArray(next.officialCandidates)?next.officialCandidates.length:0
   };
 }
 function workspaceConfirmRestoreV9(next){
@@ -132,7 +133,7 @@ function workspaceConfirmRestoreV9(next){
     [
       ["Hồ sơ tuân thủ",counts.profiles],["Sổ giấy phép",counts.permits],["Sổ nghĩa vụ",counts.obligations],
       ["Deadline thủ công",counts.deadlines],["Hồ sơ sàng lọc",counts.cases],["Văn bản đã lưu",counts.saved],
-      ["Căn cứ hồ sơ",counts.citations],["Văn bản theo dõi",counts.lawWatch],["Tiến độ đọc",counts.reading]
+      ["Căn cứ hồ sơ",counts.citations],["Văn bản theo dõi",counts.lawWatch],["Nguồn web chờ rà",counts.officialCandidates],["Tiến độ đọc",counts.reading]
     ].forEach(([label,value])=>{const item=document.createElement("div"),b=document.createElement("b"),span=document.createElement("span");b.textContent=String(value);span.textContent=label;item.append(b,span);grid.append(item)});
     const warn=document.createElement("div");warn.className="workspace-restore-warning-v9";warn.textContent="Khôi phục sẽ thay thế dữ liệu workspace hiện có trên tên miền này. Nên xuất một bản sao hiện tại trước nếu còn dữ liệu cần giữ.";
     const actions=document.createElement("div");actions.className="workspace-restore-actions-v9";
