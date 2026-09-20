@@ -70,7 +70,7 @@
     const payload=await diagnosticSnapshot();
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Can-cu-phap-ly-moi-truong-diagnostics-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800);
-    if(typeof window.toast==='function')window.toast('Đã xuất chẩn đoán kỹ thuật');
+    if(typeof window.toast==='function')window.toast('Đã xuất thông tin kiểm tra hệ thống');
     return payload;
   }
   window.CCPLMT_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
@@ -89,17 +89,17 @@
     const group=document.createElement('div');
     group.className='setting-group';
     const title=document.createElement('b');
-    title.textContent='Chẩn đoán kỹ thuật';
+    title.textContent='Kiểm tra hệ thống';
     const note=document.createElement('p');
     note.textContent='Xuất trạng thái trình duyệt, PWA và lỗi kỹ thuật gần nhất. Không xuất nội dung hồ sơ, ghi chú hoặc tên tài liệu.';
     const button=document.createElement('button');
     button.className='btn bs';
     button.id='diagExportBtn';
     button.type='button';
-    button.textContent='Xuất file chẩn đoán';
+    button.textContent='Xuất thông tin kiểm tra';
     button.addEventListener('click',()=>downloadDiagnostics().catch(err=>{
       recordDiagError('diagnostics-export');
-      if(typeof window.toast==='function')window.toast('Không thể xuất chẩn đoán');
+      if(typeof window.toast==='function')window.toast('Không thể xuất thông tin kiểm tra');
     }));
     group.append(title,note,button);
     body.appendChild(group);
