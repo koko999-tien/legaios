@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — document-library search result rendering. */
 function librarySelectLabel(id){
   const el=$(id);if(!el)return "";
   return el.selectedOptions?.[0]?.textContent?.trim()||el.value||"";
