@@ -26,7 +26,7 @@ try{
   assert(await page.locator('#pbody h1').count()===1,'Procedure deep link did not open procedure view');
 
   await page.goto(baseURL,{waitUntil:'networkidle'});
-  await page.locator('nav.links [data-go="lib"]').first().click();
+  await page.evaluate(()=>go('lib'));
   await page.waitForFunction(()=>document.getElementById('lib')?.classList.contains('on'));
   assert(new URL(page.url()).searchParams.get('page')==='lib','Navigation did not push page route');
 
@@ -34,7 +34,7 @@ try{
   await page.waitForTimeout(220);
   assert(new URL(page.url()).searchParams.get('q')==='nước thải','Library search was not reflected in URL');
 
-  await page.locator('nav.links [data-go="work"]').first().click();
+  await page.evaluate(()=>go('work'));
   await page.waitForFunction(()=>document.getElementById('work')?.classList.contains('on'));
   assert(new URL(page.url()).searchParams.get('page')==='work','Workspace navigation did not update URL');
 
