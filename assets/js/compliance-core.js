@@ -160,7 +160,7 @@ if(!Array.isArray(complianceAudit))complianceAudit=[];
 complianceAudit=complianceAudit.slice(0,500).map(normalizeComplianceAuditEvent);
 
 function complianceProfile(id){id=id||currentComplianceId;return complianceProfiles.find(function(x){return x.id===id})||null}
-function saveComplianceAudit(){const m=new Map,a=STORE.get(COMPLIANCE_AUDIT_KEY,[]);(Array.isArray(a)?a:[]).map(normalizeComplianceAuditEvent).forEach(e=>m.set(e.id,e));complianceAudit.slice(0,500).map(normalizeComplianceAuditEvent).forEach(e=>m.set(e.id,e));complianceAudit=[...m.values()].sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,500);STORE.set(COMPLIANCE_AUDIT_KEY,complianceAudit)}
+function saveComplianceAudit(){const m=new Map,a=STORE.get(COMPLIANCE_AUDIT_KEY,[]);(Array.isArray(a)?a:[]).map(normalizeComplianceAuditEvent).forEach(e=>m.set(e.id,e));complianceAudit.map(normalizeComplianceAuditEvent).forEach(e=>m.set(e.id,e));complianceAudit=[...m.values()].sort((a,b)=>(b.at||"").localeCompare(a.at||"")).slice(0,500);STORE.set(COMPLIANCE_AUDIT_KEY,complianceAudit)}
 function complianceRecordAudit(action,entityType,profileId,entityId,summary,before,after,undoable){
   const ev=normalizeComplianceAuditEvent({
     id:complianceId("audit"),at:new Date().toISOString(),action:action,entityType:entityType,
