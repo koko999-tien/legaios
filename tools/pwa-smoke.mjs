@@ -40,12 +40,16 @@ try {
     router: Boolean(window.LEGALOS_URL_ROUTER?.ready),
     recovery: Boolean(window.LEGALOS_RECOVERY?.ready),
     shortcuts: Boolean(window.LEGALOS_EXTENDED_SHORTCUTS?.ready),
-    audit: Boolean(window.LEGALOS_ACTIVITY_AUDIT?.ready)
+    audit: Boolean(window.LEGALOS_ACTIVITY_AUDIT?.ready),
+    b2b: Boolean(window.LEGALOS_B2B_EXPERIENCE?.ready),
+    lifecycle: Boolean(window.LEGALOS_PROJECT_LIFECYCLE?.ready)
   }));
   assert(offlineModules.router, 'Offline reload lost URL router');
   assert(offlineModules.recovery, 'Offline reload lost workspace recovery');
   assert(offlineModules.shortcuts, 'Offline reload lost extended shortcuts');
   assert(offlineModules.audit, 'Offline reload lost activity audit');
+  assert(offlineModules.b2b, 'Offline reload lost B2B legal experience');
+  assert(offlineModules.lifecycle, 'Offline reload lost project lifecycle dashboard');
   await context.setOffline(false);
 
   console.log('Căn cứ Pháp lý Môi trường PWA/offline smoke test passed.');
