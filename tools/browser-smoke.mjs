@@ -278,6 +278,7 @@ try {
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
 
   // Advanced legal-search facets should expose and remove active criteria without resetting the whole search.
+  if (!(await page.locator('#advancedSearch').evaluate(el => el.open))) await page.locator('#advancedSearch > summary').click();
   await page.locator('#scopeF').selectOption('core');
   await page.waitForTimeout(80);
   assert((await page.locator('#activeFilterList').innerText()).includes('Chuỗi pháp lý cốt lõi'), 'Active-filter panel did not expose the selected scope');
