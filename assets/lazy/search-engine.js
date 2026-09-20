@@ -104,6 +104,16 @@ function scoreV2(d,q){
   else if(p.structured.text.includes(m.phrase)){boost+=78;reasons.push('Khớp cụm trong điều khoản');strongField++}
   else if(p.body.text.includes(m.phrase)){boost+=44;reasons.push('Khớp cụm nội dung')}
  }
+ if(m.primary.length>=2){
+  let fragment=0,where='';
+  for(let i=0;i<m.primary.length-1;i++){
+   const pair=m.primary[i]+' '+m.primary[i+1];
+   if(p.title.text.includes(pair)&&fragment<112){fragment=112;where='tên văn bản'}
+   else if(p.topic.text.includes(pair)&&fragment<76){fragment=76;where='lĩnh vực'}
+   else if(p.structured.text.includes(pair)&&fragment<52){fragment=52;where='điều khoản'}
+  }
+  if(fragment){boost+=fragment;strongField++;reasons.push('Cụm từ khớp trong '+where)}
+ }
  for(const t of m.primary){
   const [w,label]=exactWeight(p,t);
   if(w){hits++;boost+=w;if(w>=26)strongField++;if(!seen.has(label)&&reasons.length<4){reasons.push('Khớp '+label.toLowerCase());seen.add(label)};continue}
