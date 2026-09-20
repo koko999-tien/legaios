@@ -128,8 +128,8 @@ function importWorkspace(file){
     Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{next.notes[safeId(k,'doc')]=safeImportedText(v,50000)});
     Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{next.procDone[safeId(k,'proc')]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]});
     const extraCount=next.citationBasket.length+Object.keys(next.readingProgress).length+(next.quickNote?1:0);
-    const fileWarning=next.importedFileRefs.length?\` Bản sao lưu có tham chiếu \${next.importedFileRefs.length} tài liệu; nội dung file PDF/Word phải nhập lại trên thiết bị mới.\`:"";
-    if(!confirm(\`Khôi phục bản sao lưu: \${next.complianceProfiles.length} hồ sơ tuân thủ, \${next.cases.length} hồ sơ sàng lọc, \${next.saved.length} mục đã lưu, \${extraCount} mục ghi chú/căn cứ/tiến độ. Dữ liệu hiện tại sẽ được thay thế.\${fileWarning}\`)){toast('Đã hủy khôi phục dữ liệu');return}
+    const fileWarning=next.importedFileRefs.length?` Bản sao lưu có tham chiếu ${next.importedFileRefs.length} tài liệu; nội dung file PDF/Word phải nhập lại trên thiết bị mới.`:"";
+    if(!confirm(`Khôi phục bản sao lưu: ${next.complianceProfiles.length} hồ sơ tuân thủ, ${next.cases.length} hồ sơ sàng lọc, ${next.saved.length} mục đã lưu, ${extraCount} mục ghi chú/căn cứ/tiến độ. Dữ liệu hiện tại sẽ được thay thế.${fileWarning}`)){toast('Đã hủy khôi phục dữ liệu');return}
     const entries=[
       ['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs],
       [COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit],['v8_quick_note',next.quickNote],['v8_ui_prefs',next.uiPrefs],
