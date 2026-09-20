@@ -18,3 +18,8 @@ This file records source/metadata verification for the core environmental-law ch
 | TT 24/2026/TT-BNNMT | 25/05/2026; hiệu lực 25/05/2026; hướng dẫn NĐ 110/2026 | https://chinhphu.vn/?classid=1&docid=218478&orggroupid=4&pageid=27160 |
 
 The CI release gate additionally checks every record in `CORE_IDS`, including consolidated documents and the KNK/ozone branch, against its existing audited source record.
+
+
+## CI freshness behavior
+
+The release gate compares each audited `checked` date with the actual UTC calendar date of the CI run, so an audit naturally becomes stale after 90 days. For reproducible local checks only, `LEGAL_DATA_AUDIT_AS_OF=YYYY-MM-DD` can override that baseline explicitly.

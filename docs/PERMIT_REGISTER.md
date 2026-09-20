@@ -29,4 +29,4 @@ The legacy single GPMT fields remain readable for compatibility. A profile that 
 - `compliance-core.js`: normalization, legacy migration, calendar/task projection and permit snapshot undo.
 - `permits.js`: Permit Register rendering/editor/actions.
 - `compliance.js`: embeds Permit Register in the profile detail and includes it in Markdown reports.
-- `workspace.js`: exports normalized profile data under `ccplmt-workspace-v7`.
+- `workspace.js`: lazy-loads data-management actions; `assets/lazy/workspace-data.js` exports normalized profile data (including nested permits) under `ccplmt-workspace-v8`.

@@ -22,7 +22,7 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 - Đã bổ sung **Lịch tuân thủ 90 ngày** và chu kỳ theo dõi tháng/quý/năm. Hoàn thành một kỳ ghi lịch sử và đẩy sang kỳ tiếp theo; các kỳ dự kiến được gắn nhãn rõ để không bị hiểu là thời hạn pháp lý tự động.
 - Đã liên kết sâu **Điều/Khoản/Điểm/Phụ lục** trong Sổ nghĩa vụ khi kho dữ liệu có chỉ mục cấu trúc; Cập nhật pháp luật theo hồ sơ giải thích vì sao một văn bản được ưu tiên (đang làm căn cứ, cùng chuỗi pháp lý hoặc khớp nhánh hồ sơ).
 - Đã bổ sung **Audit trail + Undo** cho Hồ sơ tuân thủ, Sổ giấy phép, nghĩa vụ và thời hạn thủ công; xóa/sửa gần nhất có thể hoàn tác từ snapshot và lịch sử được mang theo Workspace v8.
-- Đã mở rộng **Kho Thuật ngữ** với ĐMC và nhóm viết tắt môi trường/quan trắc phổ biến; ĐMC cũng được nối vào global search synonym.
+- Đã mở rộng **Kho Thuật ngữ** với ĐMC và nhóm viết tắt môi trường/quan trắc phổ biến; ĐMC cũng được nối vào global search synonym. Search V2 coi acronym đã nhận diện và cụm mở rộng tương ứng là bằng chứng xếp hạng, có regression test riêng cho truy vấn “ĐMC”.
 - Đã bổ sung **Sổ giấy phép đa giấy phép**: GPMT/giấy phép liên quan, số giấy phép, cơ quan cấp, ngày cấp/hết hạn, mốc rà soát nội bộ, file gốc, điều kiện cần theo dõi và liên kết Sổ nghĩa vụ. Trường GPMT cũ tự migrate một lần vào registry.
 - Đã bổ sung **Hàng rà soát văn bản**: theo dõi văn bản cần đọc lại với trạng thái, ngày xem lại nội bộ, ghi chú và liên kết Hồ sơ tuân thủ; có thể chuyển trực tiếp sang Sổ nghĩa vụ và được mang theo Workspace v8.
 - Mốc rà soát/hết hạn trong Sổ giấy phép được đưa vào Lịch tuân thủ nhưng vẫn gắn nhãn là dữ liệu người dùng khai báo, không phải thời hạn pháp lý do hệ thống tự suy ra.
@@ -41,16 +41,16 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 
 ## Phạm vi dữ liệu hiện tại
 
-- Workspace JSON v8: Hồ sơ tuân thủ + Sổ giấy phép + thời hạn thủ công, hàng rà soát văn bản, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục, hồ sơ sàng lọc và phiếu rà soát.
-- Chưa gồm: file tài liệu nhập, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc, cài đặt giao diện.
+- Workspace JSON v8: Hồ sơ tuân thủ (gồm Sổ giấy phép, Sổ nghĩa vụ, thời hạn và audit trail), hàng rà soát văn bản, mục đã lưu/lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục, hồ sơ sàng lọc/phiếu rà soát, ghi chú nhanh, giỏ căn cứ + metadata memo, tiến độ đọc, tùy chọn giao diện và danh sách “Đã xóa gần đây”.
+- Chưa gồm: kho tài liệu nhập trong IndexedDB (metadata và bytes của PDF/Word/tệp nhập). Các tệp này phải được nhập lại sau khi khôi phục workspace.
 - Kiểm tra hệ thống JSON chỉ là thông tin kỹ thuật; không dùng để khôi phục workspace.
 - Preview và production có origin khác nhau nên dữ liệu trình duyệt độc lập.
-- Chưa có xác nhận kiểm thử điện thoại thật; PR #1 giữ draft và chờ phê duyệt merge riêng.
+- Chưa có xác nhận kiểm thử điện thoại thật; PR #3 giữ draft và chờ phê duyệt merge riêng.
 
 ## Kiểm thử đợt này
 
 `tools/data-safety-smoke.mjs`: từ chối JSON sai; hủy nhập; lỗi quota giữa chừng và khôi phục dữ liệu; cảnh báo và thử lại; xuất/nhập qua reload; lưu cuối kỳ throttle, pagehide và chuyển tài liệu.
 
-`tools/compliance-smoke.mjs`: tạo Hồ sơ tuân thủ qua UI; ánh xạ tín hiệu thành nhánh cần rà; tạo Sổ nghĩa vụ với người phụ trách, căn cứ, nguồn thời hạn và file bằng chứng; kiểm tra chu kỳ lặp + lịch dự kiến + hoàn thành kỳ; kiểm tra Cập nhật pháp luật và lý do ảnh hưởng; export workspace v7; reload; kiểm tra overflow mobile.
+`tools/compliance-smoke.mjs`: tạo Hồ sơ tuân thủ qua UI; ánh xạ tín hiệu thành nhánh cần rà; tạo Sổ nghĩa vụ với người phụ trách, căn cứ, nguồn thời hạn và file bằng chứng; kiểm tra chu kỳ lặp + lịch dự kiến + hoàn thành kỳ; kiểm tra Cập nhật pháp luật và lý do ảnh hưởng; export workspace v8; reload; kiểm tra overflow mobile.
 
 Các kiểm thử header, sidebar, article layout, reading progress, IndexedDB, diagnostics, PWA và accessibility tiếp tục chạy trong CI.

@@ -5,7 +5,7 @@ Căn cứ Pháp lý Môi trường is a browser-based environmental compliance w
 ## Live environments
 
 - Production: `https://legalos-vn.netlify.app`
-- V14 Deploy Preview: `https://deploy-preview-1--legalos-vn.netlify.app`
+- V14 Deploy Preview (draft PR #3): `https://deploy-preview-3--legalos-vn.netlify.app`
 
 ## Branch workflow
 
@@ -36,6 +36,7 @@ assets/js/search-data.js
 assets/js/search-runtime.js
 assets/js/search-fuzzy.js
 assets/js/ui-shell.js
+assets/js/ui-utils.js
 assets/js/activity-workspace.js
 assets/js/project-tools.js
 assets/js/library.js
@@ -51,9 +52,11 @@ assets/js/oss-upgrades.js
 assets/js/library-search.js
 assets/js/classifier.js
 assets/js/boot.js
+assets/lazy/search-engine.js
+assets/lazy/workspace-data.js
 ```
 
-`boot.js` connects the modules. Progressive enhancements, fuzzy search and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete stylesheet and script order.
+`boot.js` connects the ordered shell modules. `search-fuzzy.js` lazy-loads the weighted Search V2 engine, while `workspace.js` lazy-loads backup/recovery data management. Progressive enhancements and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete shell stylesheet and script order.
 
 See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
 
@@ -71,7 +74,7 @@ The application deliberately avoids presenting automated screening as a legal co
 - **Kho Thuật ngữ** includes common environmental abbreviations such as ĐMC, ĐTM, GPMT, CTNH, TNN, CTR, BĐKH, BOD/COD/TSS and related technical/legal terms.
 - Dates such as a GPMT expiry are treated as user-declared tracking data unless independently verified from an authoritative source.
 - Dossier review and screening results can be converted into a compliance profile instead of being re-entered.
-- Workspace export schema `ccplmt-workspace-v8` includes compliance profiles, Sổ giấy phép entries, obligation-register entries, recurring cadence/history, manual/user-declared deadlines, file/evidence references and the compliance audit trail. Older workspace exports remain importable. Workspace v8 also carries quick notes, citation baskets, reading progress, interface preferences and the local recovery list; imported file bytes remain outside the JSON backup. Imported file bytes remain outside the JSON backup.
+- Workspace export schema `ccplmt-workspace-v8` includes compliance profiles (with Sổ giấy phép/Sổ nghĩa vụ), recurring cadence/history, manual/user-declared deadlines, audit history, law-watch rows, saved/recent items, document notes, procedure progress, screening/expert briefs, quick notes, citation baskets, reading progress, interface preferences and the local recovery list. Older workspace exports remain importable. The imported-document store in IndexedDB, including file bytes, remains outside workspace JSON.
 
 ## Validation
 
@@ -91,8 +94,13 @@ See `docs/ARCHITECTURE.md` for the migration plan and safety rules.
 
 ### Legal-data release gate
 
-Core environmental-law records carry an official source, a human-readable audit note, and a checked date. `tools/legal-data-release-gate.mjs` blocks validation if a core record loses that audit trail, points outside approved official-source domains, or has not been rechecked within 90 days.
+Core environmental-law records carry an official source, a human-readable audit note, and a checked date. `tools/legal-data-release-gate.mjs` blocks validation if a core record loses that audit trail, points outside approved official-source domains, or is more than 90 days old relative to the CI run date. `LEGAL_DATA_AUDIT_AS_OF=YYYY-MM-DD` is available only as an explicit reproducibility override.
 
 ### Hàng rà soát văn bản
 
 Từ trang chi tiết văn bản có thể chọn **Theo dõi** để đưa văn bản vào `Cập nhật pháp luật → Đang theo dõi`. Mỗi mục có trạng thái Cần rà/Đang rà/Đã rà, ngày xem lại nội bộ, ghi chú và liên kết Hồ sơ tuân thủ. Từ hàng rà soát có thể mở lại văn bản hoặc chuyển sang Sổ nghĩa vụ. Danh sách này là công cụ quản lý công việc, không phải kết luận văn bản chắc chắn áp dụng cho hồ sơ.
+
+
+## Licensing
+
+This repository does not currently grant an open-source license. Public visibility alone is not permission to copy, modify, or redistribute the code. A LICENSE file should be added only after the repository owner chooses the intended licensing terms.

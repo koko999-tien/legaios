@@ -23,6 +23,12 @@
 - Split library/document reader logic into `assets/js/library.js`.
 - Split procedure checklist/progress logic into `assets/js/procedures.js`.
 
+### Hardening
+- Fixed Search V2 acronym expansion so “ĐMC” can rank the core environmental-law corpus from its recognized expanded phrase, with an engine/UI regression test.
+- Made the legal-data freshness gate age against the actual CI date instead of a fixed 20/09/2026 baseline.
+- Bumped the PWA shell cache after the search-engine fix and added a deployment Content-Security-Policy compatible with the current static/Blob preview model.
+- Synchronized PR/preview, workspace-v8 and module-location documentation.
+
 ### Safety
 - Each permanent extraction is validated before commit.
 - Temporary write-enabled extraction workflows are removed immediately after use.

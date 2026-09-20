@@ -6,8 +6,8 @@ Căn cứ Pháp lý Môi trường is being migrated from one large HTML file in
 
 - `main` is production and deploys to `https://legalos-vn.netlify.app`.
 - `dev` is the V14 refactor branch.
-- Pull request #1 provides the Netlify Deploy Preview at `https://deploy-preview-1--legalos-vn.netlify.app`.
-- Structural changes must pass `.github/workflows/validate.yml` before merge.
+- Draft pull request #3 provides the Netlify Deploy Preview at `https://deploy-preview-3--legalos-vn.netlify.app`.
+- Release candidates must pass both `.github/workflows/validate.yml` and `.github/workflows/browser-smoke.yml` before merge.
 
 ## Current dev structure
 
@@ -39,15 +39,16 @@ assets/
     permits.js              # Sổ giấy phép UI, file/obligation links and permit actions
     compliance.js           # compliance rendering, editors and workspace integration
     workspace.js           # workspace/case runtime + lazy data-management loader
-  lazy/
-    workspace-data.js       # backup v8 + recovery, loaded on first workspace/data-management use
     legal-hub.js           # legal-pack, data-vault and update-hub runtime
     expert.js              # expert dossier review runtime
     navigation.js          # page navigation runtime
-    oss-upgrades.js         # diagnostics, accessibility and PWA integration
+    oss-upgrades.js        # diagnostics, accessibility and PWA integration
     library-search.js      # document-library search result rendering
     classifier.js          # project screening/classifier runtime
     boot.js                # final application initialization and event wiring
+  lazy/
+    search-engine.js       # weighted/fuzzy Search V2, loaded on focus/idle
+    workspace-data.js      # backup v8 + recovery, loaded on first data-management use
 ```
 
 `assets/js/app.js` has been fully retired on `dev`.
@@ -90,7 +91,7 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 
 1. Run a full manual smoke test in the Netlify Deploy Preview on desktop and mobile, including existing local browser data.
 2. Confirm the final smoke-tested commit still has green GitHub validation and Netlify Deploy Preview status.
-3. Keep PR #1 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
+3. Keep PR #3 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
 
 ## Safety rules
 
@@ -116,7 +117,7 @@ The permanent validator currently checks:
 - a self-contained static preview copy;
 - whitespace errors.
 
-This is structural validation, not a browser end-to-end test.
+The separate Browser smoke workflow covers browser behavior, search quality, legal comparison, sanitizer hardening, IndexedDB/data safety, compliance flows, mobile layout/navigation, reading progress, PWA behavior and accessibility. Structural validation alone is not treated as release approval.
 
 ## Minimum manual smoke test
 
