@@ -23,7 +23,6 @@ const STORE={
       for(const [k,v] of encoded){window.localStorage.setItem(k,v);written.push(k)}
       entries.forEach(([k])=>this.failedKeys.delete(k));this.failedKeys.delete('workspace-import');this.showWarning();return true;
     }catch{
-      // Restore only keys written by this attempt; keep in-memory workspace unchanged.
       for(const k of written.reverse()){
         try{const old=previous.get(k);if(old===null)window.localStorage.removeItem(k);else window.localStorage.setItem(k,old)}catch{this.warn(k)}
       }
@@ -49,7 +48,6 @@ let quickNote=STORE.get("v8_quick_note","");
 let uiPrefs=STORE.get("v8_ui_prefs",{scale:"normal",density:"comfortable",sidebar:false});
 let wizardState={pid:null,index:0};
 
-/* Shared view/search state used across classic-script modules. */
 let compareSelected=[];
 let currentCaseId=null;
 let currentUpdateYear="all";
