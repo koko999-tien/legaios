@@ -6,7 +6,7 @@ function safeName(v,i=0){let s=String(v||'file').normalize('NFKC').replace(/[<>:
 function workspaceSnapshot(){
  const gp=typeof complianceBackupRows==='function'?complianceBackupRows():(Array.isArray(complianceProfiles)?complianceProfiles:[]);
  const ga=typeof complianceAuditBackup==='function'?complianceAuditBackup():(Array.isArray(complianceAudit)?complianceAudit:[]);
- return {app:APP,schema:'ccplmt-workspace-v8',exportedAt:new Date().toISOString(),saved:Array.isArray(saved)?saved:[],recent:Array.isArray(recent)?recent:[],notes:notes&&typeof notes==='object'?notes:{},procDone:procDone&&typeof procDone==='object'?procDone:{},cases:Array.isArray(cases)?cases:[],expertBriefs:Array.isArray(expertBriefs)?expertBriefs:[],complianceProfiles:gp,complianceAudit:ga,lawWatch:STORE.get('v16_law_watchlist',[]),officialCandidates:STORE.get('v15_official_candidates',[]),quickNote:String(typeof quickNote==='undefined'?'':quickNote||''),uiPrefs:typeof uiPrefs==='object'&&uiPrefs?uiPrefs:{scale:'normal',density:'comfortable',sidebar:false},readingProgress:typeof readingProgressStore==='function'?readingProgressStore():STORE.get('v14_reading_progress',{}),citationBasket:typeof citationBasketV13!=='undefined'?citationBasketV13:STORE.get('v13_citation_basket',[]),citationMemoMeta:typeof citationMemoMetaV13!=='undefined'?citationMemoMetaV13:STORE.get('v13_citation_meta',{title:'',note:''}),trash:STORE.get('v15_workspace_trash',[])};
+ return {app:APP,schema:'ccplmt-workspace-v8',exportedAt:new Date().toISOString(),saved:Array.isArray(saved)?saved:[],recent:Array.isArray(recent)?recent:[],notes:notes&&typeof notes==='object'?notes:{},procDone:procDone&&typeof procDone==='object'?procDone:{},cases:Array.isArray(cases)?cases:[],expertBriefs:Array.isArray(expertBriefs)?expertBriefs:[],complianceProfiles:gp,complianceAudit:ga,lawWatch:STORE.get('v16_law_watchlist',[]),officialCandidates:STORE.get('v15_official_candidates',[]),quickNote:String(typeof quickNote==='undefined'?'':quickNote||''),uiPrefs:typeof uiPrefs==='object'&&uiPrefs?uiPrefs:{scale:'normal',density:'comfortable',sidebar:false},readingProgress:typeof readingProgressStore==='function'?readingProgressStore():STORE.get('v14_reading_progress',{}),citationBasket:typeof citationBasketV13!=='undefined'?citationBasketV13:STORE.get('v13_citation_basket',[]),citationMemoMeta:typeof citationMemoMetaV13!=='undefined'?citationMemoMetaV13:STORE.get('v13_citation_meta',{title:'',note:''}),trash:STORE.get('v15_workspace_trash',[]),activityAudit:STORE.get('v17_activity_audit',[])};
 }
 function documentManifest(rows){
  const files=[],used=new Set;
@@ -42,6 +42,7 @@ async function readJson(root,name){
 async function restoreWorkspace(){
  const root=await openBackupRoot();if(!root)return false;
  let data;try{data=await readJson(root,'workspace.json')}catch(e){console.error(e);typeof toast==='function'&&toast('Không tìm thấy workspace.json hợp lệ');return false}
+ if(Array.isArray(data.activityAudit))STORE.set('v17_activity_audit',data.activityAudit.slice(0,200));
  const file=new File([JSON.stringify(data)],'workspace.json',{type:'application/json'});
  if(typeof importWorkspace!=='function'){typeof toast==='function'&&toast('Phần khôi phục workspace chưa sẵn sàng');return false}
  importWorkspace(file);return true
