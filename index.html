@@ -1037,12 +1037,18 @@
         <div class="k">Dữ liệu cá nhân</div>
         <h3 style="margin-top:5px">Sao lưu dữ liệu</h3>
         <p style="color:var(--m);font-size:13px">Bản sao lưu gồm Hồ sơ tuân thủ, Sổ giấy phép, Sổ nghĩa vụ, thời hạn, hồ sơ sàng lọc, mục đã lưu, ghi chú, căn cứ hồ sơ, tiến độ đọc, thiết lập giao diện và lịch sử công việc.</p>
-        <p style="color:var(--m);font-size:12px">Nội dung file PDF/Word đã nhập không nằm trong JSON. Bản sao lưu chỉ giữ danh sách tham chiếu để nhận biết file cần nhập lại trên thiết bị mới. Dữ liệu của preview và website chính vẫn tách biệt theo từng tên miền.</p>
+        <p style="color:var(--m);font-size:12px">JSON vẫn là bản sao lưu nhẹ của workspace. Trên Chrome/Edge desktop, “Sao lưu đầy đủ” có thể ghi thêm toàn bộ PDF/Word/tệp đã nhập vào một thư mục riêng để chuyển sang máy khác.</p>
         <div class="row">
           <button class="btn bp" id="exportW" type="button">Xuất JSON</button>
           <button class="btn bs" id="importW" type="button">Nhập JSON</button>
+          <button class="btn bs" data-full-backup-action="export" type="button">Sao lưu đầy đủ</button>
           <input id="importFile" type="file" accept=".json,application/json" hidden>
         </div>
+        <div class="row" style="margin-top:8px">
+          <button class="tiny" data-full-backup-action="workspace" type="button">Khôi phục workspace từ thư mục</button>
+          <button class="tiny" data-full-backup-action="documents" type="button">Khôi phục tài liệu từ thư mục</button>
+        </div>
+        <p style="color:var(--m);font-size:10px;margin:8px 0 0">Full Backup Folder gồm <code>workspace.json</code>, <code>documents.json</code> và thư mục <code>documents/</code>. Hai bước khôi phục được tách riêng để tránh ghi đè file ngoài ý muốn.</p>
         <div id="workspaceTrash"></div>
       </div>
       <h2 id="workCases" style="margin-top:18px">Hồ sơ sàng lọc đã lưu</h2>
@@ -1236,5 +1242,6 @@
 </nav>
 
 <script src="assets/optional/grounded-ai-loader.js" defer></script>
-<script src="assets/optional/calendar-export-loader.js" defer></script>\n</body>
+<script src="assets/optional/calendar-export-loader.js" defer></script>
+<script src="assets/backup/full-backup-loader.js" defer></script>\n</body>
 </html>
