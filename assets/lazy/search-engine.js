@@ -43,7 +43,8 @@ function profile(d){
  const p={
   title:field(d.ttl||''),topic:field(topicLabel(d)),type:field(d.k||''),rel:field((m.rel||'')+' '+(m.issued||'')+' '+(m.eff||'')),
   structured:field((typeof clauseSearchText==='function'?clauseSearchText(d.id):'')+' '+core.flatMap(x=>[x.ref,x.title,x.theme,x.summary,x.caution]).join(' ')),
-  body:field(plain(d.b||'')+' '+(typeof deepGuideFor==='function'?plain(deepGuideFor(d.id)):''))
+  body:field(plain(d.b||'')+' '+(typeof deepGuideFor==='function'?plain(deepGuideFor(d.id)):'')),
+  rawHay:cleanLegalQuery(typeof legalDocHay==='function'?legalDocHay(d):((d.ttl||'')+' '+plain(d.b||'')))
  };
  p.all=uniq([...p.title.tokens,...p.topic.tokens,...p.type.tokens,...p.rel.tokens,...p.structured.tokens,...p.body.tokens]);
  p.allSet=new Set(p.all);p.important=uniq([...p.title.tokens,...p.topic.tokens,...p.type.tokens,...p.rel.tokens,...p.structured.tokens]).slice(0,320);
@@ -56,6 +57,7 @@ function exactWeight(p,t){
  if(p.rel.set.has(t))return [20,'Quan hệ/hiệu lực'];
  if(p.structured.set.has(t))return [18,'Điều khoản đã lập mục'];
  if(p.body.set.has(t))return [9,'Nội dung tóm tắt'];
+ if(p.rawHay.includes(t))return [7,'Nội dung'];
  return [0,''];
 }
 function near(t,p){
@@ -82,8 +84,8 @@ function model(q){
 function aliasBoost(m,p,reasons){
  let total=0,strong=false;
  for(const a of m.aliases){
-  if(a.anchors&&!a.anchors.some(g=>g.every(t=>p.allSet.has(t))))continue;
-  const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?hit/ts.length:0;
+  if(a.anchors&&!a.anchors.some(g=>g.every(t=>p.allSet.has(t)||p.rawHay.includes(t))))continue;
+  const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)||p.rawHay.includes(t)).length,ratio=ts.length?hit/ts.length:0;
   if(ratio>=.45){total=Math.max(total,Math.round(42+ratio*38));strong=true;reasons.push('Đúng chủ đề: '+a.label)}
  }
  return {total,strong};
