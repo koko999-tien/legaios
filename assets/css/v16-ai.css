@@ -1,0 +1,12 @@
+.grounded-ai-panel{margin-top:12px}
+.grounded-ai-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.grounded-ai-head h2{margin:3px 0 4px}.grounded-ai-head p{margin:0;color:var(--m);font-size:11px;line-height:1.55}
+.grounded-ai-count{border:1px solid var(--bd);border-radius:999px;padding:5px 8px;color:var(--m);font-size:10px;white-space:nowrap}
+.grounded-ai-panel textarea{width:100%;min-height:96px;margin-top:12px;resize:vertical}
+.grounded-ai-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.grounded-ai-privacy{margin:8px 0 0;color:var(--m);font-size:10px;line-height:1.5}
+.grounded-ai-status{min-height:18px;margin-top:9px;font-size:11px;color:var(--m)}.grounded-ai-status.error{color:var(--danger,#b42318)}.grounded-ai-status.ok{font-weight:700}
+.grounded-ai-answer{margin-top:10px}.grounded-ai-output{padding:12px;border:1px solid var(--bd);border-radius:9px;background:var(--bg);font-size:13px;line-height:1.65;white-space:pre-wrap}
+.grounded-ai-refs{display:grid;gap:5px;margin-top:9px;padding:10px;border:1px dashed var(--bd);border-radius:8px;font-size:11px}.grounded-ai-refs div{display:flex;gap:7px}.grounded-ai-refs div>span:first-child{font-weight:800}
+.grounded-ai-answer>small{display:block;margin-top:8px;color:var(--m);line-height:1.45}
+@media(max-width:700px){.grounded-ai-head{flex-direction:column}.grounded-ai-actions .btn{flex:1 1 100%;min-height:44px}}
