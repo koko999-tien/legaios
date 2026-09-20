@@ -92,3 +92,7 @@ See `docs/ARCHITECTURE.md` for the migration plan and safety rules.
 ### Legal-data release gate
 
 Core environmental-law records carry an official source, a human-readable audit note, and a checked date. `tools/legal-data-release-gate.mjs` blocks validation if a core record loses that audit trail, points outside approved official-source domains, or has not been rechecked within 90 days.
+
+### Hàng rà soát văn bản
+
+Từ trang chi tiết văn bản có thể chọn **Theo dõi** để đưa văn bản vào `Cập nhật pháp luật → Đang theo dõi`. Mỗi mục có trạng thái Cần rà/Đang rà/Đã rà, ngày xem lại nội bộ, ghi chú và liên kết Hồ sơ tuân thủ. Từ hàng rà soát có thể mở lại văn bản hoặc chuyển sang Sổ nghĩa vụ. Danh sách này là công cụ quản lý công việc, không phải kết luận văn bản chắc chắn áp dụng cho hồ sơ.
