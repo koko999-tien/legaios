@@ -24,6 +24,7 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 - Đã bổ sung **Audit trail + Undo** cho Hồ sơ tuân thủ, Sổ giấy phép, nghĩa vụ và thời hạn thủ công; xóa/sửa gần nhất có thể hoàn tác từ snapshot và lịch sử được mang theo Workspace v8.
 - Đã mở rộng **Kho Thuật ngữ** với ĐMC và nhóm viết tắt môi trường/quan trắc phổ biến; ĐMC cũng được nối vào global search synonym.
 - Đã bổ sung **Sổ giấy phép đa giấy phép**: GPMT/giấy phép liên quan, số giấy phép, cơ quan cấp, ngày cấp/hết hạn, mốc rà soát nội bộ, file gốc, điều kiện cần theo dõi và liên kết Sổ nghĩa vụ. Trường GPMT cũ tự migrate một lần vào registry.
+- Đã bổ sung **Hàng rà soát văn bản**: theo dõi văn bản cần đọc lại với trạng thái, ngày xem lại nội bộ, ghi chú và liên kết Hồ sơ tuân thủ; có thể chuyển trực tiếp sang Sổ nghĩa vụ và được mang theo Workspace v8.
 - Mốc rà soát/hết hạn trong Sổ giấy phép được đưa vào Lịch tuân thủ nhưng vẫn gắn nhãn là dữ liệu người dùng khai báo, không phải thời hạn pháp lý do hệ thống tự suy ra.
 
 ## Ưu tiên tiếp theo
@@ -40,7 +41,7 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 
 ## Phạm vi dữ liệu hiện tại
 
-- Workspace JSON v8: Hồ sơ tuân thủ + Sổ giấy phép + thời hạn thủ công, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục, hồ sơ sàng lọc và phiếu rà soát.
+- Workspace JSON v8: Hồ sơ tuân thủ + Sổ giấy phép + thời hạn thủ công, hàng rà soát văn bản, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục, hồ sơ sàng lọc và phiếu rà soát.
 - Chưa gồm: file tài liệu nhập, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc, cài đặt giao diện.
 - Kiểm tra hệ thống JSON chỉ là thông tin kỹ thuật; không dùng để khôi phục workspace.
 - Preview và production có origin khác nhau nên dữ liệu trình duyệt độc lập.
