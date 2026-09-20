@@ -54,3 +54,13 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 `tools/compliance-smoke.mjs`: tạo Hồ sơ tuân thủ qua UI; ánh xạ tín hiệu thành nhánh cần rà; tạo Sổ nghĩa vụ với người phụ trách, căn cứ, nguồn thời hạn và file bằng chứng; kiểm tra chu kỳ lặp + lịch dự kiến + hoàn thành kỳ; kiểm tra Cập nhật pháp luật và lý do ảnh hưởng; export workspace v8; reload; kiểm tra overflow mobile.
 
 Các kiểm thử header, sidebar, article layout, reading progress, IndexedDB, diagnostics, PWA và accessibility tiếp tục chạy trong CI.
+
+
+## V15 đang thử nghiệm trên `feat/v15-search-v4`
+
+- **Search V4:** mở rộng nguồn chính thức theo thao tác chủ động của người dùng; kết quả web tách khỏi corpus đã kiểm định và chỉ cho phép miền chính thức.
+- **Khôi phục an toàn hơn:** hiển thị bản xem trước số hồ sơ, giấy phép, nghĩa vụ, căn cứ và tiến độ trước khi thay workspace; có nút xuất bản hiện tại trước.
+- **Lịch tuân thủ rộng hơn:** chuyển giữa 30 ngày, 90 ngày và 12 tháng; mốc giấy phép mở thẳng Sổ giấy phép và nghĩa vụ mở thẳng Sổ nghĩa vụ.
+- **CI trên nhánh tính năng:** validate + browser smoke chạy trên `feat/**`; Search V4 có regression test riêng.
+
+Các mục này chưa phải release production. Search V4 hiện là lớp discovery; liên kết được phát hiện không được coi là xác nhận hiệu lực hay kết luận áp dụng pháp luật.
