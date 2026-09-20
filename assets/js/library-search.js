@@ -74,7 +74,7 @@ function docs(topic="all",q=""){
             ${professorVerified(d.id)?'<span class="prof-verified-dot">Đã đối chiếu</span>':(m.src?'<span class="verified-dot">Có nguồn</span>':'')}
             ${exactRef?'<span class="no-fulltext">Có tham chiếu trong chỉ mục</span>':''}
           </div>
-          <div class="doc-snippet">${hi(snippetText(d.b,q),q)}</div>
+          <div class="doc-snippet">${hi(window.LEGALOS_SEARCH_V2?.snippet?.(d,q)||snippetText(d.b,q),q)}</div>
           ${reasons.length?`<div class="match-reasons">${reasons.slice(0,4).map((r,i)=>`<span class="match-reason ${i===0&&exactRef?"exact":""}">${esc(r)}</span>`).join("")}</div>`:""}
           ${refs.length?`<div class="ref-strip">${refs.slice(0,6).map(r=>`<span class="ref-chip">${esc(r)}</span>`).join("")}</div>`:""}
           ${(m.issued||m.eff||m.rel)?`<div class="doc-meta-extra">${m.issued?`<span>Ban hành: ${m.issued}</span><span>·</span>`:''}${m.eff?`<span>Hiệu lực: ${m.eff}</span><span>·</span>`:''}<span>${m.rel||''}</span></div>`:''}
