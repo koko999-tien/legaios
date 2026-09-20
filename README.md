@@ -71,7 +71,7 @@ The application deliberately avoids presenting automated screening as a legal co
 - **Kho Thuật ngữ** includes common environmental abbreviations such as ĐMC, ĐTM, GPMT, CTNH, TNN, CTR, BĐKH, BOD/COD/TSS and related technical/legal terms.
 - Dates such as a GPMT expiry are treated as user-declared tracking data unless independently verified from an authoritative source.
 - Dossier review and screening results can be converted into a compliance profile instead of being re-entered.
-- Workspace export schema `ccplmt-workspace-v8` includes compliance profiles, Sổ giấy phép entries, obligation-register entries, recurring cadence/history, manual/user-declared deadlines, file/evidence references and the compliance audit trail. Older workspace exports remain importable. Workspace v8 also carries quick notes, citation baskets, reading progress, interface/search preferences and recent activity; imported file bytes remain outside the JSON backup. Imported file bytes remain outside the JSON backup.
+- Workspace export schema `ccplmt-workspace-v8` includes compliance profiles, Sổ giấy phép entries, obligation-register entries, recurring cadence/history, manual/user-declared deadlines, file/evidence references and the compliance audit trail. Older workspace exports remain importable. Workspace v8 also carries quick notes, citation baskets, reading progress, interface preferences and the local recovery list; imported file bytes remain outside the JSON backup. Imported file bytes remain outside the JSON backup.
 
 ## Validation
 
