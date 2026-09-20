@@ -242,7 +242,7 @@
     grid-template-columns:1fr 1fr!important;
     width:100% !important;
   }
-  #lib #docs.compact-view:not(.grid-view) .official-source-action{grid-column:1/-1}
+  #lib #docs.compact-view:not(.grid-view) .official-source-action{grid-column:1/-1;white-space:nowrap!important;writing-mode:horizontal-tb!important}
   #lib #docs.compact-view:not(.grid-view) .doc-tools-v11 .goto-match,
   #lib #docs.compact-view:not(.grid-view) .doc-tools-v11 .preview-btn{
     min-width:0 !important;
