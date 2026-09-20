@@ -129,6 +129,36 @@ try{
   assert(recurrenceAfter.lastDue===recurrenceBefore.dueDate,'Occurrence history did not preserve the completed due date');
   assert(recurrenceAfter.dueDate===recurrenceBefore.next,'Recurring obligation did not advance to the next due date');
 
+  assert((await page.locator('.permit-register').innerText()).includes('GPMT-QA-01'),'Legacy GPMT fields did not migrate into Permit Register');
+  await page.locator('[data-permit-new]').click();
+  await page.locator('#permitType').selectOption('water');
+  await page.locator('#permitStatus').selectOption('active');
+  await page.locator('#permitTitle').fill('Giấy phép tài nguyên nước QA');
+  await page.locator('#permitNumber').fill('TNN-QA-02');
+  await page.locator('#permitIssuer').fill('Cơ quan QA');
+  await page.locator('#permitIssueDate').fill(isoAfter(-30));
+  await page.locator('#permitExpiryDate').fill(isoAfter(25));
+  await page.locator('#permitReviewDate').fill(isoAfter(8));
+  await page.locator('#permitConditions').fill('Theo dõi điều kiện trong file gốc và đối chiếu trước khi kết luận.');
+  const permitFile=page.locator('#permitEditor [data-permit-file-id]').first();
+  assert(await permitFile.count()===1,'Imported file is not available in Permit Register');
+  await permitFile.check();
+  const permitObligation=page.locator('#permitEditor [data-permit-obligation-id]').first();
+  assert(await permitObligation.count()===1,'Obligation is not linkable from Permit Register');
+  await permitObligation.check();
+  await page.locator('[data-permit-save]').click();
+  const permitText=(await page.locator('.permit-register').innerText()).toLowerCase();
+  assert(permitText.includes('tnn-qa-02'),'Permit Register did not save permit number');
+  assert(permitText.includes('cơ quan qa'),'Permit Register did not save issuer');
+  assert(permitText.includes('1 nghĩa vụ liên kết'),'Permit Register did not preserve obligation linkage');
+  assert(permitText.includes('bien-ban-quan-trac-qa.pdf'),'Permit Register did not preserve source file reference');
+  assert((await page.locator('.compliance-calendar').innerText()).includes('Giấy phép tài nguyên nước QA'),'Permit review/expiry did not surface in the compliance calendar');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('[data-permit-delete]').filter({hasText:'Xóa'}).last().click();
+  assert(!(await page.locator('.permit-register').innerText()).includes('TNN-QA-02'),'Deleted permit is still visible');
+  await page.locator('.compliance-profile-detail [data-compliance-undo-last]').click();
+  assert((await page.locator('.permit-register').innerText()).includes('TNN-QA-02'),'Undo did not restore deleted permit');
+
   await page.locator('#cpTaskTitle').fill('Kiểm tra lịch quan trắc nội bộ');
   await page.locator('#cpTaskDate').fill(isoAfter(10));
   await page.locator('[data-compliance-task-add]').click();
@@ -158,7 +188,7 @@ try{
   const path=await download.path();
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
-  assert(exported.schema==='ccplmt-workspace-v6','Workspace export schema was not upgraded for audit trail');
+  assert(exported.schema==='ccplmt-workspace-v7','Workspace export schema was not upgraded for Permit Register');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');
@@ -167,6 +197,8 @@ try{
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.occurrenceHistory?.length===1,'Workspace export omitted recurring occurrence history');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalArticle==='39','Workspace export omitted structured article reference');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.legalAppendix==='II','Workspace export omitted appendix reference');
+  assert(Array.isArray(exported.complianceProfiles[0]?.permits)&&exported.complianceProfiles[0].permits.length>=2,'Workspace export omitted Permit Register entries');
+  assert(exported.complianceProfiles[0].permits.some(p=>p.number==='TNN-QA-02'&&p.fileRefs?.length===1&&p.obligationIds?.length===1),'Workspace export lost permit file/obligation links');
   assert(Array.isArray(exported.complianceAudit)&&exported.complianceAudit.length>=2,'Workspace export omitted compliance audit trail');
   assert(exported.complianceAudit.some(e=>e.action==='delete'&&e.undoneAt),'Workspace export lost the undone audit state');
 
@@ -189,7 +221,7 @@ try{
   console.log('  article -> obligation register action checked');
   console.log('  home pulse + profile-aware legal updates checked');
   console.log('  audit delete/undo + full obligation snapshot restoration checked');
-  console.log('  workspace v6 export includes audit, structured legal refs, recurrence history and evidence references');
+  console.log('  workspace v7 export includes Permit Register, audit, structured legal refs, recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
