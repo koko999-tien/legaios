@@ -139,7 +139,7 @@ function renderExpertResult(d,a){
 function analyzeExpert(){
   const d=collectExpertForm(),a=expertAnalyzeData(d);
   renderExpertResult(d,a);
-  logActivity("case","expert",`Phiếu chuyên gia: ${d.name||sectorLabel(d.sector)}`);
+  logActivity("case","expert",`Phiếu rà soát: ${d.name||sectorLabel(d.sector)}`);
 }
 function clearExpertForm(){
   ["expName","expLocation","expScale"].forEach(id=>{if($(id))$(id).value=""});
@@ -154,7 +154,7 @@ function saveExpertBrief(){
   const b={id:"eb"+Date.now(),createdAt:new Date().toISOString(),...lastExpertAnalysis};
   expertBriefs=[b,...expertBriefs].slice(0,50);
   STORE.set("v10_expert_briefs",expertBriefs);
-  renderExpertBriefs();renderWorkspaceStats();toast("Đã lưu phiếu chuyên gia");
+  renderExpertBriefs();renderWorkspaceStats();toast("Đã lưu phiếu rà soát");
 }
 function renderExpertBriefs(){
   if(!$("expertBriefList"))return;
