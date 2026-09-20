@@ -36,7 +36,7 @@ assets/
     library.js             # library filters, saved/recent docs, article reader
     procedures.js          # procedure checklist/progress/detail runtime
     compliance-core.js      # compliance state, normalization, audit, due-date/calendar model
-    permits.js              # Permit Register UI, file/obligation links and permit actions
+    permits.js              # Sổ giấy phép UI, file/obligation links and permit actions
     compliance.js           # compliance rendering, editors and workspace integration
     workspace.js           # workspace and command-palette runtime
     legal-hub.js           # legal-pack, data-vault and update-hub runtime
@@ -66,20 +66,20 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
 9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
 10. Added `tools/check-v14-structure.mjs`, which locks the ordered script load, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
-11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal updates and workspace-v7 backup compatibility.
+11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal updates and workspace-v8 backup compatibility.
 12. Made progressive runtime dependencies explicit in `index.html`, split V14/compliance CSS from the legacy stylesheet, and separated compliance model/state logic from rendering/editor code.
-13. Added a dedicated `permits.js` layer and workspace-v7 backup: multi-permit registry, legacy GPMT migration, file/original-document references, obligation links, review/expiry calendar items and audit/undo support.
+13. Added a dedicated `permits.js` layer and workspace-v8 backup: multi-permit registry, legacy GPMT migration, file/original-document references, obligation links, review/expiry calendar items and audit/undo support.
 
 ## Compliance workspace boundaries
 
 - `compliance-core.js` owns `ccplmt_compliance_profiles_v1` and loads before `compliance.js` / `workspace.js` so backup/import can include normalized profiles.
-- `compliance-core.js` also owns `ccplmt_compliance_audit_v1`: a capped append-only audit list with before/after snapshots for undoable compliance mutations. Workspace v7 exports/imports this log separately from profile data.
+- `compliance-core.js` also owns `ccplmt_compliance_audit_v1`: a capped append-only audit list with before/after snapshots for undoable compliance mutations. Workspace v8 exports/imports this log separately from profile data.
 - A profile stores declared context and tracking dates; it does **not** represent a finding of legal compliance.
 - Automatic branches are review priorities derived from user-declared signals. They must not be phrased as definitive applicability or non-applicability.
 - The system does not invent statutory deadlines. Manual tasks and user-entered permit dates are labeled as tracking data and should be checked against original records.
-- `ccplmt-workspace-v7` exports compliance profiles, Permit Register data and the existing workspace data. The importer still accepts backups that predate this field.
-- `tools/compliance-smoke.mjs` covers create → legacy-GPMT migration → Permit Register CRUD/file/obligation links → audit/undo → structured legal reference → recurring deadline → profile-aware legal update → workspace-v7 export → reload → mobile geometry.
-- The Permit Register is nested inside each compliance profile and stores user-managed permit status, number, issuer, issue/expiry/review dates, imported-file references, tracked conditions and obligation links. Permit dates remain tracking metadata until checked against the original record.
+- `ccplmt-workspace-v8` exports compliance profiles, Sổ giấy phép data, quick notes, citation baskets, reading progress, interface/search preferences, recent activity and imported-file references. The importer still accepts older backups; file bytes remain outside JSON.
+- `tools/compliance-smoke.mjs` covers create → legacy-GPMT migration → Sổ giấy phép CRUD/file/obligation links → audit/undo → structured legal reference → recurring deadline → profile-aware legal update → workspace-v8 export → reload → mobile geometry.
+- The Sổ giấy phép is nested inside each compliance profile and stores user-managed permit status, number, issuer, issue/expiry/review dates, imported-file references, tracked conditions and obligation links. Permit dates remain tracking metadata until checked against the original record.
 - The obligation register is nested inside each compliance profile and stores user-managed status, legal source, ownership, deadline basis/source, evidence references and notes. Imported evidence file bytes are not embedded in workspace JSON.
 - Structured legal references are stored separately as article/clause/point/appendix fields. Where the repository has an indexed clause pack, the editor offers those refs directly; otherwise the free-form legal note remains available.
 - Recurring obligations use a user-configured cadence (`monthly`, `quarterly`, `yearly`). Completing a period appends occurrence history and advances the next due date. Calendar projections are explicitly labeled as projected tracking dates, not inferred statutory deadlines.
