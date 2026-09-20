@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
   if($("topics"))$("topics").innerHTML=T.map(x=>`<button class="topic" type="button" data-t="${x[0]}"><b>${x[1]}</b><small>${x[2]}</small></button>`).join("");
   loadUserLegalPack();renderTypeFilter();renderYearFilter();updStats();renderWorkspace();initComplianceUI();renderHomeActivity();renderHomeContinue();renderWorkspaceStats();renderDataVault();renderLawNow();renderCoreMap();renderUpdateStats();renderTermCats();renderOfficialSources();populateWizard();applyUIPrefs();renderCommandCenter();syncQuickNote(quickNote);renderHomePortal();refreshImportedDocs();
-  renderLibraryTopicFilters();renderWorkspaceTrash();
+  renderLibraryTopicFilters();
   setLegalSearchMode(legalSearchMode);renderLegalSearchHistory();renderPopularRefs();renderCoreKnowledge();renderMemoV13();
   docs();
   renderProcList();
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   $("settingsSidebar").onclick=()=>{uiPrefs.sidebar=!uiPrefs.sidebar;saveUIPrefs()};
   $("settingsBtn").onclick=()=>openDrawer('settingsDrawer');$("settingsClose").onclick=closeDrawers;
   $("quickNoteBtn").onclick=()=>{syncQuickNote(quickNote);openDrawer('quickNoteDrawer');setTimeout(()=>$("quickNoteArea").focus(),0)};$("quickNoteClose").onclick=closeDrawers;$("drawerScrim").onclick=closeDrawers;$("previewClose").onclick=closeDrawers;
-  $("quickNoteArea").oninput=e=>syncQuickNote(e.target.value);$("workspaceQuickNote").oninput=e=>syncQuickNote(e.target.value);$("clearQuickNote").onclick=()=>{if(quickNote.trim())workspaceTrashPush("quick-note",quickNote,"Ghi chú nhanh");syncQuickNote('');toast('Đã chuyển ghi chú vào Đã xóa gần đây')};
+  $("quickNoteArea").oninput=e=>syncQuickNote(e.target.value);$("workspaceQuickNote").oninput=e=>syncQuickNote(e.target.value);$("clearQuickNote").onclick=()=>{const v=quickNote;if(!v.trim()){syncQuickNote('');return}workspaceTrashPush("quick-note",v,"Ghi chú nhanh").then(()=>{syncQuickNote('');toast('Đã chuyển ghi chú vào Đã xóa gần đây')}).catch(()=>{})};
   $("fontScale").onclick=e=>{const b=e.target.closest('[data-scale]');if(b){uiPrefs.scale=b.dataset.scale;saveUIPrefs()}};$("densityMode").onclick=e=>{const b=e.target.closest('[data-density]');if(b){uiPrefs.density=b.dataset.density;saveUIPrefs()}};
   $("resetPrefs").onclick=()=>{uiPrefs={scale:'normal',density:'comfortable',sidebar:false};saveUIPrefs();toast('Đã khôi phục giao diện mặc định')};
   $("viewMode").onclick=e=>{const b=e.target.closest('[data-view]');if(b){libraryView=b.dataset.view;STORE.set('v8_library_view',libraryView);applyLibraryView()}};
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     const pr=e.target.closest("[data-proc-reset]");if(pr){procDone[pr.dataset.procReset]=[];STORE.set("w3_proc",procDone);openProc(pr.dataset.procReset);renderProcList();toast("Đã đặt lại quy trình");return}
     const c=e.target.closest("[data-case]");if(c){showCase(c.dataset.case);return}
     const ctc=e.target.closest("[data-case-to-compliance]");if(ctc){const row=cases.find(x=>x.id===ctc.dataset.caseToCompliance);if(row)createComplianceFromCase(row);return}
-    const del=e.target.closest("[data-delcase]");if(del){const old=cases.find(x=>x.id===del.dataset.delcase);if(old&&confirm("Xóa hồ sơ sàng lọc “"+old.name+"”? Có thể khôi phục trong mục Đã xóa gần đây.")){workspaceTrashPush("case",old,"Hồ sơ sàng lọc · "+old.name);cases=cases.filter(x=>x.id!==del.dataset.delcase);STORE.set("w3_cases",cases);currentCaseId=null;renderWorkspace();$("caseDetail").className="empty";$("caseDetail").textContent="Đã xóa hồ sơ.";toast("Đã chuyển hồ sơ vào Đã xóa gần đây")}return}
+    const del=e.target.closest("[data-delcase]");if(del){const old=cases.find(x=>x.id===del.dataset.delcase);if(old&&confirm("Xóa hồ sơ sàng lọc “"+old.name+"”? Có thể khôi phục trong mục Đã xóa gần đây."))workspaceTrashPush("case",old,"Hồ sơ sàng lọc · "+old.name).then(()=>{cases=cases.filter(x=>x.id!==old.id);STORE.set("w3_cases",cases);currentCaseId=null;renderWorkspace();$("caseDetail").className="empty";$("caseDetail").textContent="Đã xóa hồ sơ.";toast("Đã chuyển hồ sơ vào Đã xóa gần đây")}).catch(()=>{});return}
     const os=e.target.closest("[data-open-proc]");if(os){openProc(os.dataset.openProc);return}
     const oc=e.target.closest("[data-open-case]");if(oc){go("work");setTimeout(()=>showCase(oc.dataset.openCase),0);return}
     const cp=e.target.closest("[data-copy-step]");if(cp){const [pid,si]=cp.dataset.copyStep.split(":");const p=P.find(x=>x.id===pid);const s=p?.st[+si];if(s){navigator.clipboard?.writeText(`${s[0]}\n${s[1]}`).then(()=>toast("Đã sao chép bước")).catch(()=>toast("Không thể sao chép"))}return}
