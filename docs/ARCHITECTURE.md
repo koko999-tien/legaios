@@ -145,3 +145,8 @@ Before a production merge, verify:
 ### Lazy data management
 
 Backup v8 and “Đã xóa gần đây” are isolated in `assets/lazy/workspace-data.js`. The main shell loads a small wrapper only; the optional chunk is fetched when the work area or backup/recovery actions are first used. The service worker caches same-origin static assets after that first request. CI budgets shell JavaScript and lazy JavaScript separately.
+
+
+### Search engine V2
+
+The ordered shell keeps a small `search-fuzzy.js` loader. Weighted ranking, typo tolerance, query correction, phrase/proximity scoring and domain-intent boosts live in `assets/lazy/search-engine.js`; the chunk is loaded on search focus or idle time and can rerank an active query without blocking initial application startup.
