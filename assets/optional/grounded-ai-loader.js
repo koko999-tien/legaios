@@ -12,6 +12,6 @@ function load(){
 }
 function warm(){load().then(x=>x.sync?.()).catch(()=>{})}
 document.addEventListener('focusin',e=>{if(e.target?.id==='groundedAiQuestion')warm()});
-document.addEventListener('click',e=>{if(e.target?.closest?.('#groundedAiAsk,#groundedAiClear'))warm()});
+document.addEventListener('click',e=>{const a=e.target?.closest?.('#groundedAiAsk'),c=e.target?.closest?.('#groundedAiClear');if(!a&&!c||window.CCPLMT_GROUNDED_AI?.ready)return;e.stopImmediatePropagation();load().then(x=>a?x.ask():x.clear()).catch(()=>{})});
 window.CCPLMT_GROUNDED_AI_LOADER={load};
 })();
