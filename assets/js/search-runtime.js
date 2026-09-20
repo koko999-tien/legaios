@@ -212,7 +212,7 @@ function setLegalSearchMode(mode){
   document.querySelectorAll("#searchMode [data-searchmode]").forEach(b=>b.classList.toggle("on",b.dataset.searchmode===legalSearchMode));
   if($("citationFinder"))$("citationFinder").hidden=legalSearchMode!=="ref";
   if($("q")){
-    $("q").placeholder=legalSearchMode==="number"?"Nhập số hiệu: 72/2020/QH14 · 48/2026/NĐ-CP…":legalSearchMode==="ref"?"Nhập hoặc dùng Finder: Điều 39 · khoản 2 Điều 49…":"Nhập căn cứ hoặc hỏi: Xưởng của tôi có cần GPMT không?…";
+    $("q").placeholder=legalSearchMode==="number"?"Nhập số hiệu: 72/2020/QH14 · 48/2026/NĐ-CP…":legalSearchMode==="ref"?"Nhập hoặc dùng Finder: Điều 39 · khoản 2 Điều 49…":"Nhập từ khóa hoặc nội dung: GPMT khí thải · quan trắc nước thải…";
   }
 }
 function buildRefQuery(){
@@ -241,7 +241,7 @@ function renderSearchCoach(list,q){
     ?"Kết quả dưới đây dùng để xác định căn cứ và nhánh cần kiểm tra, không phải câu trả lời có/không về nghĩa vụ pháp lý. Hãy mở văn bản gốc của kết quả phù hợp trước khi kết luận."
     :(exactRef?"Nếu cần nội dung Khoản/Điểm đầy đủ, hãy mở nguồn chính thức của văn bản phù hợp.":"");
   $("searchCoach").innerHTML=`<span class="coach-icon">${exactRef?"§":conversational?"?":"⌕"}</span><div><b>Phạm vi tra cứu: ${intent.join(" · ")}</b><p>${list.length?`Tìm thấy ${list.length} văn bản phù hợp trong kho tóm tắt/metadata.`:`Chưa thấy căn cứ khớp trong dữ liệu hiện có.`} ${guidance}</p></div>`;
-  if($("querySummary"))$("querySummary").innerHTML=`Chế độ: <b>${legalSearchMode==="ref"?"Điều/Khoản/Điểm":legalSearchMode==="number"?"Số hiệu":"Thông minh"}</b>`;
+  if($("querySummary"))$("querySummary").innerHTML=`Chế độ: <b>${legalSearchMode==="ref"?"Điều/Khoản/Điểm":legalSearchMode==="number"?"Số hiệu":"Theo nội dung"}</b>`;
 }
 function prepareLegalHtml(raw){
   const box=document.createElement("div");box.innerHTML=raw;
