@@ -10,3 +10,4 @@
 .grounded-ai-refs{display:grid;gap:5px;margin-top:9px;padding:10px;border:1px dashed var(--bd);border-radius:8px;font-size:11px}.grounded-ai-refs div{display:flex;gap:7px}.grounded-ai-refs div>span:first-child{font-weight:800}
 .grounded-ai-answer>small{display:block;margin-top:8px;color:var(--m);line-height:1.45}
 @media(max-width:700px){.grounded-ai-head{flex-direction:column}.grounded-ai-actions .btn{flex:1 1 100%;min-height:44px}}
+.grounded-ai-cite{display:inline;padding:1px 5px;margin:0 2px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--text);font:inherit;font-weight:800;cursor:pointer}.grounded-ai-cite:hover{text-decoration:underline}
