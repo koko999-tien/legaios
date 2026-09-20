@@ -56,9 +56,22 @@ assets/lazy/search-engine.js
 assets/lazy/workspace-data.js
 ```
 
-`boot.js` connects the ordered shell modules. `search-fuzzy.js` lazy-loads the weighted Search V2 engine, while `workspace.js` lazy-loads backup/recovery data management. Progressive enhancements and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete shell stylesheet and script order.
+`boot.js` connects the ordered shell modules. `search-fuzzy.js` lazy-loads the local Search V3 semantic-ranking engine, while `workspace.js` lazy-loads backup/recovery data management. Progressive enhancements and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete shell stylesheet and script order.
 
 See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
+
+## Search V3
+
+Legal search remains entirely client-side: queries and local search state are not sent to an external AI/search API. Search V3 improves relevance with corpus-aware term weighting, Vietnamese typo tolerance, domain concepts and user-intent detection.
+
+- Rare/specific terms receive more weight than generic legal/environment words.
+- Natural-language questions can combine concepts such as wastewater + monitoring instead of flattening the whole sentence into equal keywords.
+- Search recognizes goals such as applicability, procedure/dossier, authority, deadline/frequency, penalties, standards/QCVN, current/amended law and reporting.
+- Explicit document-kind requests (QCVN, consolidated document, decree, circular, law, decision, resolution) receive dedicated ranking boosts.
+- Shorthand references such as `NĐ 08`, `TT 02`, `Luật 72` and similar forms are understood even when the year is omitted.
+- Semantic snippets and visible concept/intent badges explain why a result matched.
+- Short folded Vietnamese tokens are excluded from fuzzy matching to avoid false matches such as `trắc` → `trách`.
+
 
 ## Product model
 
