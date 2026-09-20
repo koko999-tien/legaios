@@ -97,6 +97,10 @@ try{
   await page.locator('#qBtn').click();
   await page.waitForTimeout(180);
   const dmcCount=await page.locator('#docs [data-open]').count();
+  if(!dmcCount){
+    const dmcDebug=await page.evaluate(()=>D.map(d=>({id:d.id,title:d.ttl,...legalSearchScore(d,'ĐMC')})).sort((a,b)=>b.score-a.score).slice(0,5).map(x=>({id:x.id,title:x.title,score:x.score,matched:x.matched,reasons:x.reasons})));
+    console.error('ĐMC top candidates:',JSON.stringify(dmcDebug));
+  }
   assert(dmcCount>0,'ĐMC query returned no legal documents');
   const dmcText=(await page.locator('#docs').innerText()).toLowerCase();
   assert(dmcText.includes('bảo vệ môi trường')||dmcText.includes('đmc'),'ĐMC search did not surface an environmental-law source');
