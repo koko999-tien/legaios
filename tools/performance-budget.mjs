@@ -15,7 +15,8 @@ const limits={
   routeJsTotal:8*KB,
   activityJsTotal:12*KB,
   recoveryJsTotal:16*KB,
-  shortcutsJsTotal:4*KB
+  shortcutsJsTotal:4*KB,
+  experienceJsTotal:32*KB
 };
 
 async function walk(dir){
@@ -45,6 +46,7 @@ const route=await walk(join(root,'assets','route'));
 const activity=await walk(join(root,'assets','activity'));
 const recovery=await walk(join(root,'assets','recovery'));
 const shortcuts=await walk(join(root,'assets','shortcuts'));
+const experience=await walk(join(root,'assets','experience'));
 const cssTotal=css.reduce((n,x)=>n+x.size,0);
 const jsTotal=js.reduce((n,x)=>n+x.size,0);
 const lazyJsTotal=lazy.reduce((n,x)=>n+x.size,0);
@@ -54,6 +56,7 @@ const routeJsTotal=route.reduce((n,x)=>n+x.size,0);
 const activityJsTotal=activity.reduce((n,x)=>n+x.size,0);
 const recoveryJsTotal=recovery.reduce((n,x)=>n+x.size,0);
 const shortcutsJsTotal=shortcuts.reduce((n,x)=>n+x.size,0);
+const experienceJsTotal=experience.reduce((n,x)=>n+x.size,0);
 const shellTotal=index.size+cssTotal+jsTotal;
 const largest=[...js].sort((a,b)=>b.size-a.size)[0];
 
@@ -68,6 +71,7 @@ assertBudget('Route JavaScript total',routeJsTotal,limits.routeJsTotal);
 assertBudget('Activity JavaScript total',activityJsTotal,limits.activityJsTotal);
 assertBudget('Recovery JavaScript total',recoveryJsTotal,limits.recoveryJsTotal);
 assertBudget('Shortcuts JavaScript total',shortcutsJsTotal,limits.shortcutsJsTotal);
+assertBudget('Experience JavaScript total',experienceJsTotal,limits.experienceJsTotal);
 assertBudget('HTML + CSS + JS shell',shellTotal,limits.shellTotal);
 assertBudget(`largest JS (${relative(root,largest.path)})`,largest.size,limits.largestJs);
 
@@ -79,5 +83,6 @@ console.log(`  route JS files: ${route.length}`);
 console.log(`  activity JS files: ${activity.length}`);
 console.log(`  recovery JS files: ${recovery.length}`);
 console.log(`  shortcuts JS files: ${shortcuts.length}`);
+console.log(`  experience JS files: ${experience.length}`);
 console.log(`  CSS files: ${css.length}`);
 console.log('Căn cứ Pháp lý Môi trường performance budget passed.');
