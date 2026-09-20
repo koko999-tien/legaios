@@ -56,10 +56,11 @@ function docs(topic="all",q=""){
   renderSearchCoach(list,q);
   renderLibraryActiveFilters(topic,q);
 
-  $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs})=>{
+  $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs,concepts=[],actions=[]})=>{
     const m=metaOf(d.id),rank=qq?Math.max(1,Math.min(99,Math.round(score/3))):0;
     const p=parseLegalQuery(q);
     const exactRef=qq&&(p.article||p.clause||p.point)&&reasons.some(x=>/Điều|Khoản|Điểm/.test(x));
+    reasons=[...concepts.map(x=>`Chủ đề: ${x}`),...actions.map(x=>`Mục tiêu: ${x}`),...reasons];
     return `<div class="doc">
       <div class="docrow">
         <label class="selectbox" title="Chọn để so sánh"><input type="checkbox" data-compare="${d.id}" ${compareSelected.includes(d.id)?"checked":""}></label>
