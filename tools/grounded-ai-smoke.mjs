@@ -49,6 +49,12 @@ try{
   assert(answer.includes('mock-grounded'),'Grounded AI UI did not show provider/model provenance');
   assert(answer.includes('căn cứ đã gửi'),'Grounded AI UI did not show the sent-source list');
 
+  const cite=page.locator('.grounded-ai-cite').first();
+  assert(await cite.textContent()==='[1]','Grounded AI did not render an interactive citation marker');
+  await cite.click();
+  await page.waitForFunction(()=>document.getElementById('art')?.classList.contains('on'));
+  assert(await page.locator('#abody h1').count()===1,'Grounded AI citation marker did not open the linked legal document');
+
   await page.locator('#groundedAiClear').click();
   assert((await page.locator('#groundedAiQuestion').inputValue())==='','Grounded AI clear did not reset the question');
   console.log('Grounded AI smoke passed: no-source guard, payload privacy, citation-only request, answer provenance.');
