@@ -26,7 +26,7 @@ function coreKbGroupOf(id){const g=CORE_READING_CHAIN.find(x=>x.docs.includes(id
 function coreKbDocStatus(id){
   const p=professorVerified(id),m=metaOf(id),st=CORE_CONTENT_STATUS[id]||{};
   const upcoming=m.eff&&parseVNDate(m.eff)&&parseVNDate(m.eff)>new Date("2026-09-10T23:59:59");
-  return {verified:!!p,reviewed:st.summary==="reviewed",upcoming,label:upcoming?`Hiệu lực ${m.eff}`:(p?"Đã đối chiếu nguồn":(m.src?"Có nguồn":"Chưa đối chiếu"))};
+  return {verified:!!p,reviewed:st.summary==="reviewed",upcoming,label:upcoming?`Hiệu lực ${m.eff}`:(p?`Đối chiếu ${p.checked}`:(m.src?"Có nguồn":"Chưa đối chiếu"))};
 }
 function closeCoreKbStatDetail(){
   const box=$("coreKbStatDetail");if(!box)return;box.hidden=true;box.innerHTML="";coreKbStatOpen=null;
