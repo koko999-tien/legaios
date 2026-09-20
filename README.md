@@ -88,3 +88,7 @@ It checks structural HTML assumptions, referenced local assets, JavaScript synta
 Structural refactoring does **not** certify the accuracy or currency of the built-in legal content. Legal-data verification is tracked separately in Issue #2 and should not be mixed into code-only refactor commits.
 
 See `docs/ARCHITECTURE.md` for the migration plan and safety rules.
+
+### Legal-data release gate
+
+Core environmental-law records carry an official source, a human-readable audit note, and a checked date. `tools/legal-data-release-gate.mjs` blocks validation if a core record loses that audit trail, points outside approved official-source domains, or has not been rechecked within 90 days.
