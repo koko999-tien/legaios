@@ -81,11 +81,11 @@ try{
   assert(restoredExtras.scale==='large'&&restoredExtras.sidebar===true,'Restored UI preferences did not survive reload');
   assert(restoredExtras.reading===42,'Restored reading progress did not survive reload');
   assert(restoredExtras.citation==='Căn cứ QA','Restored citation basket did not survive reload');
-  const trashProbe=await page.evaluate(()=>{
-    workspaceTrashPush('quick-note','Recover QA','Ghi chú nhanh QA');
+  const trashProbe=await page.evaluate(async()=>{
+    await workspaceTrashPush('quick-note','Recover QA','Ghi chú nhanh QA');
     const id=workspaceTrashRows()[0]?.id||'';
     syncQuickNote('');
-    workspaceTrashRestore(id);
+    await workspaceTrashRestore(id);
     return {quickNote,remaining:workspaceTrashRows().length};
   });
   assert(trashProbe.quickNote==='Recover QA'&&trashProbe.remaining===0,'Recovery trash did not restore and remove the recovered item');
