@@ -276,6 +276,15 @@ try {
   assert(libraryUx.openTitle.length > 10, 'Primary document action is missing explanatory hover text');
   assert(libraryUx.previewText === 'Xem nhanh', `Quick-preview action changed unexpectedly: ${libraryUx.previewText}`);
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
+
+  // Advanced legal-search facets should expose and remove active criteria without resetting the whole search.
+  await page.locator('#scopeF').selectOption('core');
+  await page.waitForTimeout(80);
+  assert((await page.locator('#activeFilterList').innerText()).includes('Chuỗi pháp lý cốt lõi'), 'Active-filter panel did not expose the selected scope');
+  assert(await page.locator('#activeFilterList [data-clear-filter="scope"]').count()===1, 'Active-filter scope chip is missing');
+  await page.locator('#activeFilterList [data-clear-filter="scope"]').click();
+  await page.waitForTimeout(80);
+  assert(await page.locator('#scopeF').inputValue()==='all', 'Removing an active-filter chip did not reset only that criterion');
   assert(await page.locator('#advancedSearch').count() === 1, 'Advanced legal search panel is missing');
   assert(await page.locator('#effectF option[value="partial"]').count() === 1, 'Effect-metadata filter is missing the partial-effect option');
   if (!(await page.locator('#advancedSearch').evaluate(el => el.open))) await page.locator('#advancedSearch > summary').click();
