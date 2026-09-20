@@ -69,16 +69,60 @@ function exportWorkspaceV8(){
 }
 function workspaceNormalizeReadingV8(v){const out={};if(!v||typeof v!=="object"||Array.isArray(v))return out;Object.entries(v).slice(0,1000).forEach(([k,x])=>{if(!x||typeof x!=="object")return;const p=Math.max(0,Math.min(100,Number(x.pct)||0)),m=Math.max(p,Math.max(0,Math.min(100,Number(x.maxPct)||0)));out[String(k).slice(0,180)]={pct:p,maxPct:m,section:safeImportedText(x.section||"",140),updatedAt:Number(x.updatedAt)||0}});return out}
 function workspaceNormalizeCitationsV8(v){return Array.isArray(v)?v.slice(0,500).filter(x=>x&&x.doc).map(x=>({doc:safeId(x.doc,"doc"),article:safeImportedText(x.article||"",24),clause:safeImportedText(x.clause||"",24),point:safeImportedText(x.point||"",24),label:safeImportedText(x.label||"",500),text:safeImportedText(x.text||"",5000),note:safeImportedText(x.note||"",5000),source:/^https:\/\//i.test(String(x.source||""))?String(x.source).slice(0,2000):"",addedAt:safeImportedText(x.addedAt||"",40)})):[]}
+function workspaceRestoreCountsV9(next){
+  const profiles=Array.isArray(next.complianceProfiles)?next.complianceProfiles:[];
+  return {
+    profiles:profiles.length,
+    permits:profiles.reduce((n,p)=>n+(Array.isArray(p.permits)?p.permits.length:0),0),
+    obligations:profiles.reduce((n,p)=>n+(Array.isArray(p.obligations)?p.obligations.length:0),0),
+    deadlines:profiles.reduce((n,p)=>n+(Array.isArray(p.deadlines)?p.deadlines.length:0),0),
+    cases:Array.isArray(next.cases)?next.cases.length:0,
+    saved:Array.isArray(next.saved)?next.saved.length:0,
+    citations:Array.isArray(next.citationBasket)?next.citationBasket.length:0,
+    lawWatch:Array.isArray(next.lawWatch)?next.lawWatch.length:0,
+    reading:next.readingProgress&&typeof next.readingProgress==="object"?Object.keys(next.readingProgress).length:0
+  };
+}
+function workspaceConfirmRestoreV9(next){
+  const counts=workspaceRestoreCountsV9(next);
+  if(typeof HTMLDialogElement==="undefined"){
+    return Promise.resolve(confirm(`Khôi phục bản sao lưu: ${counts.profiles} hồ sơ tuân thủ, ${counts.permits} giấy phép, ${counts.obligations} nghĩa vụ, ${counts.cases} hồ sơ sàng lọc. Dữ liệu hiện tại sẽ được thay thế.`));
+  }
+  return new Promise(resolve=>{
+    document.getElementById("workspaceRestorePreviewV9")?.remove();
+    const dlg=document.createElement("dialog");dlg.id="workspaceRestorePreviewV9";dlg.className="workspace-restore-preview-v9";
+    const card=document.createElement("div");card.className="workspace-restore-card-v9";
+    const kicker=document.createElement("div");kicker.className="section-kicker";kicker.textContent="XEM TRƯỚC KHÔI PHỤC";
+    const h=document.createElement("h3");h.textContent="Dữ liệu nào sẽ thay thế workspace hiện tại?";
+    const p=document.createElement("p");p.className="workspace-restore-note-v9";p.textContent="Hãy kiểm tra số lượng trước khi tiếp tục. PDF/Word trong IndexedDB không nằm trong JSON này và vẫn phải nhập lại riêng trên thiết bị mới.";
+    const grid=document.createElement("div");grid.className="workspace-restore-grid-v9";
+    [
+      ["Hồ sơ tuân thủ",counts.profiles],["Sổ giấy phép",counts.permits],["Sổ nghĩa vụ",counts.obligations],
+      ["Deadline thủ công",counts.deadlines],["Hồ sơ sàng lọc",counts.cases],["Văn bản đã lưu",counts.saved],
+      ["Căn cứ hồ sơ",counts.citations],["Văn bản theo dõi",counts.lawWatch],["Tiến độ đọc",counts.reading]
+    ].forEach(([label,value])=>{const item=document.createElement("div"),b=document.createElement("b"),span=document.createElement("span");b.textContent=String(value);span.textContent=label;item.append(b,span);grid.append(item)});
+    const warn=document.createElement("div");warn.className="workspace-restore-warning-v9";warn.textContent="Khôi phục sẽ thay thế dữ liệu workspace hiện có trên tên miền này. Nên xuất một bản sao hiện tại trước nếu còn dữ liệu cần giữ.";
+    const actions=document.createElement("div");actions.className="workspace-restore-actions-v9";
+    const backup=document.createElement("button");backup.className="btn bs";backup.type="button";backup.textContent="Xuất bản hiện tại trước";backup.onclick=()=>exportWorkspaceV8();
+    const cancel=document.createElement("button");cancel.className="btn bs";cancel.type="button";cancel.textContent="Hủy";
+    const ok=document.createElement("button");ok.className="btn bp";ok.type="button";ok.textContent="Khôi phục dữ liệu";
+    actions.append(backup,cancel,ok);card.append(kicker,h,p,grid,warn,actions);dlg.append(card);document.body.append(dlg);
+    let done=false;const finish=v=>{if(done)return;done=true;dlg.close();dlg.remove();resolve(v)};
+    cancel.onclick=()=>finish(false);ok.onclick=()=>finish(true);dlg.addEventListener("cancel",e=>{e.preventDefault();finish(false)});dlg.addEventListener("click",e=>{if(e.target===dlg)finish(false)});
+    dlg.showModal();
+  });
+}
+
 function importWorkspaceV8(file){
   if(!file||file.size>10*1024*1024){toast("File sao lưu vượt giới hạn 10 MB");return}
-  const r=new FileReader();r.onload=()=>{try{
+  const r=new FileReader();r.onload=async()=>{try{
     const d=JSON.parse(r.result),obj=v=>v&&typeof v==="object"&&!Array.isArray(v),legacy=["Legal","OS"].join("");
     if(!obj(d)||!["Căn cứ Pháp lý Môi trường",legacy].includes(d.app)||!Array.isArray(d.saved)||!Array.isArray(d.recent)||!obj(d.notes)||!obj(d.procDone)||!Array.isArray(d.cases)||(d.expertBriefs!==undefined&&!Array.isArray(d.expertBriefs))||(d.complianceProfiles!==undefined&&!Array.isArray(d.complianceProfiles))||(d.complianceAudit!==undefined&&!Array.isArray(d.complianceAudit))){toast("Đây không phải bản sao lưu hợp lệ. Dữ liệu hiện tại được giữ nguyên.");return}
     const p=obj(d.uiPrefs)?d.uiPrefs:{},next={saved:d.saved.map(x=>safeId(x,"doc")).filter(id=>D.some(v=>v.id===id)),recent:d.recent.map(x=>safeId(x,"doc")).filter(id=>D.some(v=>v.id===id)),notes:{},procDone:{},cases:d.cases.slice(0,500).map(normalizeImportedCase),expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief),complianceProfiles:(d.complianceProfiles||[]).slice(0,300).map(normalizeComplianceProfile),complianceAudit:(d.complianceAudit||[]).slice(0,500).map(normalizeComplianceAuditEvent)};
     Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>next.notes[safeId(k,"doc")]=safeImportedText(v,50000));Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>next.procDone[safeId(k,"proc")]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]);
     next.lawWatch=Array.isArray(d.lawWatch)?d.lawWatch.map(lawWatchNormalizeV16).filter(Boolean).slice(0,200):lawWatchRowsV16();next.quickNote=d.quickNote!==undefined?safeImportedText(d.quickNote||"",20000):quickNote;next.uiPrefs=obj(d.uiPrefs)?{scale:["small","normal","large"].includes(p.scale)?p.scale:"normal",density:["compact","comfortable"].includes(p.density)?p.density:"comfortable",sidebar:!!p.sidebar}:uiPrefs;
     next.readingProgress=d.readingProgress!==undefined?workspaceNormalizeReadingV8(d.readingProgress):readingProgressStore();next.citationBasket=d.citationBasket!==undefined?workspaceNormalizeCitationsV8(d.citationBasket):citationBasketV13;next.citationMemoMeta=d.citationMemoMeta!==undefined?{title:safeImportedText(d.citationMemoMeta?.title||"",500),note:safeImportedText(d.citationMemoMeta?.note||"",10000)}:citationMemoMetaV13;next.trash=Array.isArray(d.trash)?d.trash.slice(0,30):workspaceTrashRowsV8();
-    const extra=next.citationBasket.length+Object.keys(next.readingProgress).length+(next.quickNote?1:0);if(!confirm(`Khôi phục bản sao lưu: ${next.complianceProfiles.length} hồ sơ tuân thủ, ${next.cases.length} hồ sơ sàng lọc, ${next.saved.length} mục đã lưu, ${extra} mục ghi chú/căn cứ/tiến độ. Dữ liệu hiện tại sẽ được thay thế.`)){toast("Đã hủy khôi phục dữ liệu");return}
+    const extra=next.citationBasket.length+Object.keys(next.readingProgress).length+(next.quickNote?1:0);if(!(await workspaceConfirmRestoreV9(next))){toast("Đã hủy khôi phục dữ liệu");return}
     const entries=[["w3_saved",next.saved],["w3_recent",next.recent],["w3_notes",next.notes],["w3_proc",next.procDone],["w3_cases",next.cases],["v10_expert_briefs",next.expertBriefs],[COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit],["v8_quick_note",next.quickNote],["v8_ui_prefs",next.uiPrefs],["v14_reading_progress",next.readingProgress],["v13_citation_basket",next.citationBasket],["v13_citation_meta",next.citationMemoMeta],[WORKSPACE_TRASH_KEY,next.trash],[LAW_WATCH_KEY,next.lawWatch]];
     if(!STORE.setBatch(entries)){toast("Không thể lưu bản nhập. Dữ liệu hiện tại chưa bị thay thế.");return}
     ({saved,recent,notes,procDone,cases,expertBriefs}=next);complianceProfiles=next.complianceProfiles;complianceAudit=next.complianceAudit;quickNote=next.quickNote;uiPrefs=next.uiPrefs;citationBasketV13=next.citationBasket;citationMemoMetaV13=next.citationMemoMeta;currentComplianceId=complianceProfiles[0]?.id||null;currentCaseId=null;
@@ -86,6 +130,6 @@ function importWorkspaceV8(file){
   }catch(e){console.error(e);toast("File JSON không hợp lệ")}};r.onerror=()=>toast("Không đọc được file sao lưu. Dữ liệu hiện tại được giữ nguyên.");r.readAsText(file);
 }
 
-Object.assign(window,{workspaceTrashRowsV8,workspaceTrashPushV8,workspaceTrashRestoreV8,workspaceTrashClearV8,renderWorkspaceTrashV8,exportWorkspaceV8,importWorkspaceV8,lawWatchAddV16,renderLawWatchV16});
+Object.assign(window,{workspaceTrashRowsV8,workspaceTrashPushV8,workspaceTrashRestoreV8,workspaceTrashClearV8,renderWorkspaceTrashV8,exportWorkspaceV8,importWorkspaceV8,workspaceRestoreCountsV9,workspaceConfirmRestoreV9,lawWatchAddV16,renderLawWatchV16});
 window.__ccplmtWorkspaceDataLoaded=true;
 })();
