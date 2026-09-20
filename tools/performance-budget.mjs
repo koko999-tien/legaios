@@ -10,7 +10,8 @@ const limits={
   shellTotal:850*KB,
   largestJs:170*KB,
   lazyJsTotal:52*KB,
-  optionalJsTotal:12*KB
+  optionalJsTotal:12*KB,
+  backupJsTotal:16*KB
 };
 
 async function walk(dir){
@@ -35,10 +36,12 @@ const css=await walk(join(root,'assets','css'));
 const js=await walk(join(root,'assets','js'));
 const lazy=await walk(join(root,'assets','lazy'));
 const optional=await walk(join(root,'assets','optional'));
+const backup=await walk(join(root,'assets','backup'));
 const cssTotal=css.reduce((n,x)=>n+x.size,0);
 const jsTotal=js.reduce((n,x)=>n+x.size,0);
 const lazyJsTotal=lazy.reduce((n,x)=>n+x.size,0);
 const optionalJsTotal=optional.reduce((n,x)=>n+x.size,0);
+const backupJsTotal=backup.reduce((n,x)=>n+x.size,0);
 const shellTotal=index.size+cssTotal+jsTotal;
 const largest=[...js].sort((a,b)=>b.size-a.size)[0];
 
@@ -48,11 +51,13 @@ assertBudget('CSS total',cssTotal,limits.cssTotal);
 assertBudget('JavaScript shell total',jsTotal,limits.jsTotal);
 assertBudget('Lazy JavaScript total',lazyJsTotal,limits.lazyJsTotal);
 assertBudget('Optional JavaScript total',optionalJsTotal,limits.optionalJsTotal);
+assertBudget('Backup JavaScript total',backupJsTotal,limits.backupJsTotal);
 assertBudget('HTML + CSS + JS shell',shellTotal,limits.shellTotal);
 assertBudget(`largest JS (${relative(root,largest.path)})`,largest.size,limits.largestJs);
 
 console.log(`  shell JS files: ${js.length}`);
 console.log(`  lazy JS files: ${lazy.length}`);
 console.log(`  optional JS files: ${optional.length}`);
+console.log(`  backup JS files: ${backup.length}`);
 console.log(`  CSS files: ${css.length}`);
 console.log('Căn cứ Pháp lý Môi trường performance budget passed.');
