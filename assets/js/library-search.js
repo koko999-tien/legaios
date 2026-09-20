@@ -81,8 +81,8 @@ function docs(topic="all",q=""){
           ${(m.issued||m.eff||m.rel)?`<div class="doc-meta-extra">${m.issued?`<span>Ban hành: ${m.issued}</span><span>·</span>`:''}${m.eff?`<span>Hiệu lực: ${m.eff}</span><span>·</span>`:''}<span>${m.rel||''}</span></div>`:''}
         </button>
         <div class="doc-tools doc-tools-v11">
-          <button class="goto-match" data-open-match="${d.id}" data-query="${esc(q)}" type="button" title="${qq?"Mở đúng đoạn liên quan trong trang văn bản":"Mở trang chi tiết của văn bản"}">${qq?"Đến đoạn khớp":"Mở chi tiết"}</button>
-          <button class="btn bs preview-btn" data-preview="${d.id}" type="button" title="Xem tóm tắt ngay trong danh sách">Xem nhanh</button>
+          <button class="goto-match" data-open-match="${d.id}" data-query="${esc(q)}" type="button" title="${qq?"Mở đúng đoạn liên quan trong trang văn bản":"Mở trang chi tiết của văn bản"}">${qq?"Mở vị trí khớp":"Mở chi tiết"}</button>
+          <button class="btn bs preview-btn" data-preview="${d.id}" type="button" title="Xem tóm tắt ngay trong danh sách">Tóm tắt</button>
           ${m.src?`<a class="btn bs official-source-action" href="${m.src}" target="_blank" rel="noopener" title="Mở văn bản tại nguồn chính thức">Nguồn chính thức ↗</a>`:""}
           <button class="mini" data-save="${d.id}" type="button" title="${saved.includes(d.id)?"Bỏ lưu":"Lưu"}">${saved.includes(d.id)?"★":"☆"}</button>
         </div>
