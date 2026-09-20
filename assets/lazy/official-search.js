@@ -71,7 +71,17 @@ function render(data,q){
       meta.append(el("span","official-search-v4-host",r.host||new URL(u).hostname),el("span","official-search-v4-unverified","Kết quả web · chưa kiểm định"));
       const a=el("a","official-search-v4-title",r.title||u);a.href=u;a.target="_blank";a.rel="noopener noreferrer";
       const url=el("small","official-search-v4-url",u);
-      card.append(meta,a,url);list.append(card);
+      const actions=el("div","official-search-v4-item-actions");
+      const review=el("button","tiny","Đưa vào hàng rà soát");review.type="button";
+      review.addEventListener("click",async()=>{
+        review.disabled=true;review.textContent="Đang lưu…";
+        try{
+          if(typeof window.workspaceDataCall!=="function")throw new Error("workspace data unavailable");
+          const ok=await window.workspaceDataCall("officialCandidateAddV15",[{title:r.title||u,url:u,host:r.host||new URL(u).hostname,query:q,status:"review"}]);
+          review.textContent=ok?"Đã đưa vào rà soát":"Đã có trong hàng rà soát";
+        }catch(err){console.error(err);review.disabled=false;review.textContent="Thử lại đưa vào rà soát"}
+      });
+      actions.append(review);card.append(meta,a,url,actions);list.append(card);
     });
     host.append(list);
   }
