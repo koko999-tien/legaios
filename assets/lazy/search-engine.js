@@ -32,11 +32,16 @@ function sim(a,b){
  const max=Math.max(a.length,b.length),d=lev(a,b,max>=5?2:1);return d>2?0:1-d/max;
 }
 function field(v){const text=cleanLegalQuery(v),tokens=rawTokens(text);return {text,tokens,set:new Set(tokens)}}
+function topicLabel(d){
+ const id=String(d?.t||''),els=document.querySelectorAll('#chips [data-t]');
+ for(const el of els)if(el.dataset.t===id){const v=el.querySelector('span')?.textContent||el.textContent||id;return v.replace(/\s+\d+\s*$/,'').trim()}
+ return id;
+}
 function profile(d){
  if(profiles.has(d.id))return profiles.get(d.id);
  const m=metaOf(d.id),core=typeof coreArticlesForDoc==='function'?coreArticlesForDoc(d.id):[];
  const p={
-  title:field(d.ttl||''),topic:field(topicName(d.t)||''),type:field(d.k||''),rel:field((m.rel||'')+' '+(m.issued||'')+' '+(m.eff||'')),
+  title:field(d.ttl||''),topic:field(topicLabel(d)),type:field(d.k||''),rel:field((m.rel||'')+' '+(m.issued||'')+' '+(m.eff||'')),
   structured:field((typeof clauseSearchText==='function'?clauseSearchText(d.id):'')+' '+core.flatMap(x=>[x.ref,x.title,x.theme,x.summary,x.caution]).join(' ')),
   body:field(plain(d.b||'')+' '+(typeof deepGuideFor==='function'?plain(deepGuideFor(d.id)):''))
  };
@@ -130,7 +135,7 @@ searchEligible=function(d,q){
 };
 const surfaces=new Map();
 function addSurface(v){const words=String(v||'').toLowerCase().match(/[\p{L}\p{N}]+/gu)||[];for(const w of words){const f=foldVN(w);if(f.length>1&&!COMMON.has(f)&&!surfaces.has(f))surfaces.set(f,w)}}
-D.forEach(d=>{addSurface(d.ttl);addSurface(topicName(d.t));addSurface(d.k)});ALIASES.forEach(a=>{addSurface(a.label);addSurface(a.terms)});
+D.forEach(d=>{addSurface(d.ttl);addSurface(topicLabel(d));addSurface(d.k)});ALIASES.forEach(a=>{addSurface(a.label);addSurface(a.terms)});
 function suggest(q){
  const p=parseLegalQuery(q);if(p.number||p.article||p.clause||p.point)return '';
  const ts=rawTokens(q);if(!ts.length)return '';let changed=0;
