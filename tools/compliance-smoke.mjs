@@ -123,6 +123,9 @@ try{
   const calendarText=(await page.locator('.compliance-calendar').innerText()).toLowerCase();
   assert(calendarText.includes('xác minh nghĩa vụ quan trắc nước thải'),'Compliance calendar omitted the recurring obligation');
   assert(calendarText.includes('dự kiến theo chu kỳ hàng tháng'),'Compliance calendar does not distinguish projected recurring occurrences');
+  await page.locator('[data-calendar-horizon="365"]').click();
+  assert(await page.locator('[data-calendar-horizon="365"]').evaluate(el=>el.classList.contains('on')),'12-month calendar horizon did not persist in the rendered controls');
+  assert(await page.evaluate(()=>JSON.parse(localStorage.getItem('v15_compliance_calendar_horizon'))===365),'Calendar horizon preference was not persisted');
 
   const recurrenceBefore=await page.evaluate(()=>{
     const p=complianceProfiles[0],o=p.obligations[0];
