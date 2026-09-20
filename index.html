@@ -1096,6 +1096,28 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<div class="modal-bg" id="permitModal" role="dialog" aria-modal="true" aria-label="Permit Register">
+  <div class="modal">
+    <div class="modal-head"><div><div class="k">Hồ sơ tuân thủ</div><b>Permit Register</b></div><button class="mini" data-permit-close type="button" aria-label="Đóng">×</button></div>
+    <div class="modal-body">
+      <input id="permitEditorId" type="hidden">
+      <div class="obligation-form-grid">
+        <label><span>Loại</span><select id="permitType"><option value="gpmt">Giấy phép môi trường (GPMT)</option><option value="water">Giấy phép / chấp thuận về tài nguyên nước</option><option value="waste">Giấy phép / hồ sơ về chất thải</option><option value="resource">Giấy phép tài nguyên / khoáng sản liên quan</option><option value="construction">Giấy phép / chấp thuận công trình liên quan</option><option value="other">Giấy phép / quyết định khác</option></select></label>
+        <label><span>Trạng thái theo dõi</span><select id="permitStatus"><option value="unknown">Chưa xác định</option><option value="active">Đang theo dõi</option><option value="pending">Đang làm thủ tục</option><option value="replaced">Đã được thay thế</option><option value="closed">Đã kết thúc</option></select></label>
+        <label class="wide"><span>Tên / mô tả giấy phép</span><input id="permitTitle" placeholder="Ví dụ: Giấy phép môi trường của Nhà máy A"></label>
+        <label><span>Số giấy phép / quyết định</span><input id="permitNumber" placeholder="Số, ký hiệu"></label><label><span>Cơ quan cấp</span><input id="permitIssuer" placeholder="Cơ quan / đơn vị ban hành"></label>
+        <label><span>Ngày cấp</span><input id="permitIssueDate" type="date"></label><label><span>Ngày hết hạn</span><input id="permitExpiryDate" type="date"></label><label><span>Mốc rà soát nội bộ</span><input id="permitReviewDate" type="date"></label>
+        <label class="wide"><span>File gốc / tài liệu liên quan</span><select id="permitFileIds" multiple size="4"></select><small>Chỉ lưu ID và tên tham chiếu trong backup workspace; file gốc vẫn ở kho tài liệu trên thiết bị.</small></label>
+        <label class="wide"><span>Liên kết Sổ nghĩa vụ</span><select id="permitObligationIds" multiple size="4"></select><small>Dùng để truy ngược điều kiện giấy phép sang việc đang theo dõi.</small></label>
+      </div>
+      <label class="obligation-note-field"><span>Điều kiện / nội dung cần theo dõi</span><textarea id="permitConditions" rows="3" placeholder="Tóm tắt để theo dõi; không thay thế nội dung file gốc."></textarea></label>
+      <label class="obligation-note-field"><span>Ghi chú</span><textarea id="permitNote" rows="2"></textarea></label>
+      <p class="micro-note">Trạng thái và mốc thời gian do người dùng quản lý. Hệ thống không tự kết luận hiệu lực giấy phép hoặc tự suy ra thời hạn pháp lý.</p>
+      <div class="obligation-editor-actions"><button class="btn bs" data-permit-cancel type="button">Hủy</button><button class="btn bp" data-permit-save type="button">Lưu Permit Register</button></div>
+    </div>
+  </div>
+</div>
+
 <div class="compare-bar" id="compareBar">
   <span id="compareText">Đã chọn 0/2 văn bản</span>
   <span style="display:flex;gap:6px">
