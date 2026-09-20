@@ -5,20 +5,26 @@ const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:900}});
 function assert(x,m){if(!x)throw new Error(m)}
 try{
-  await page.route('**/.netlify/functions/official-search**',route=>route.fulfill({
-    status:200,
-    contentType:'application/json',
-    body:JSON.stringify({
-      query:'nước thải',
-      provider:'mock',
-      verified:false,
-      results:[
-        {title:'Nghị định 48/2026/NĐ-CP',url:'https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=187432',host:'vbpl.vn'},
-        {title:'Hệ thống văn bản Chính phủ',url:'https://vanban.chinhphu.vn/',host:'vanban.chinhphu.vn'}
-      ],
-      directSources:[{name:'CSDL quốc gia VBPL',url:'https://vbpl.vn/Pages/vbpq-timkiem.aspx',host:'vbpl.vn'}]
-    })
-  }));
+  let officialRequests=0;
+  await page.route('**/*',route=>{
+    const url=new URL(route.request().url());
+    if(url.pathname!=='/.netlify/functions/official-search')return route.continue();
+    officialRequests++;
+    return route.fulfill({
+      status:200,
+      contentType:'application/json',
+      body:JSON.stringify({
+        query:url.searchParams.get('q')||'',
+        provider:'mock',
+        verified:false,
+        results:[
+          {title:'Nghị định 48/2026/NĐ-CP',url:'https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=187432',host:'vbpl.vn'},
+          {title:'Hệ thống văn bản Chính phủ',url:'https://vanban.chinhphu.vn/',host:'vanban.chinhphu.vn'}
+        ],
+        directSources:[{name:'CSDL quốc gia VBPL',url:'https://vbpl.vn/Pages/vbpq-timkiem.aspx',host:'vbpl.vn'}]
+      })
+    });
+  });
   await page.goto(baseURL,{waitUntil:'networkidle'});
   await page.evaluate(()=>window.go?.('lib'));
   await page.waitForFunction(()=>document.getElementById('lib')?.classList.contains('on'));
@@ -28,6 +34,7 @@ try{
   await page.locator('#q').fill('nước thải');
   await page.locator('#officialSearchBtn').click();
   await page.waitForFunction(()=>document.querySelectorAll('.official-search-v4-item').length===2);
+  assert(officialRequests===1,`Expected one opt-in web request, got ${officialRequests}`);
   const links=await page.locator('.official-search-v4-item a').evaluateAll(a=>a.map(x=>x.href));
   assert(links.every(x=>/^https:\/\/(?:[^/]+\.)?(?:vbpl\.vn|vanban\.chinhphu\.vn|congbao\.chinhphu\.vn|chinhphu\.vn|vbpl\.moj\.gov\.vn)\//.test(x)),`Non-official result escaped allowlist: ${JSON.stringify(links)}`);
   const badge=(await page.locator('.official-search-v4-unverified').first().innerText()).toLowerCase();
