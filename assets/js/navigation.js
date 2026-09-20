@@ -31,7 +31,7 @@ function syncRouteState(page,replace=false){
     const url=new URL(location.href),target=routeFromPage(page);
     url.pathname=target;url.hash='';
     (replace?history.replaceState:history.pushState).call(history,{page},'',url);
-  }catch{/* Keep the current URL when history is unavailable. */}
+  }catch{}
 }
 
 window.addEventListener('popstate',()=>{
