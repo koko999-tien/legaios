@@ -196,6 +196,19 @@ try{
   await page.evaluate(()=>openDoc('l72'));
   await page.waitForFunction(()=>document.getElementById('art')?.classList.contains('on'));
   assert(await page.locator('#art [data-obligation-from-doc="l72"]').count()===1,'Article view is missing the add-to-obligation-register action');
+  assert(await page.locator('#art [data-law-watch="l72"]').count()===1,'Article view is missing the legal-review watch action');
+  await page.locator('#art [data-law-watch="l72"]').click();
+  await go('upd');
+  await page.locator('[data-lawtab="watch"]').click();
+  await page.waitForSelector('#lawWatchList [data-law-watch-row]');
+  assert((await page.locator('#lawWatchList').innerText()).includes('Luật BVMT 2020'),'Law watchlist did not include the followed document');
+  const watchStatus=page.locator('#lawWatchList [data-law-watch-status]').first();
+  await watchStatus.selectOption('active');
+  await page.locator('#lawWatchList [data-law-watch-date]').first().fill('2026-10-20');
+  await page.locator('#lawWatchList [data-law-watch-date]').first().press('Tab');
+  await page.locator('#lawWatchList [data-law-watch-note]').first().fill('Kiểm tra lại tác động tới GPMT của hồ sơ QA');
+  await page.locator('#lawWatchList [data-law-watch-note]').first().press('Tab');
+  assert(await page.locator('#lawWatchList [data-obligation-from-doc="l72"]').count()===1,'Law watchlist is missing the obligation handoff action');
 
   const downloadPromise=page.waitForEvent('download');
   await page.evaluate(()=>exportWorkspace());
@@ -216,11 +229,19 @@ try{
   assert(exported.complianceProfiles[0].permits.some(p=>p.number==='TNN-QA-02'&&p.fileRefs?.length===1&&p.obligationIds?.length===1),'Workspace export lost permit file/obligation links');
   assert(Array.isArray(exported.complianceAudit)&&exported.complianceAudit.length>=2,'Workspace export omitted compliance audit trail');
   assert(exported.complianceAudit.some(e=>e.action==='delete'&&e.undoneAt),'Workspace export lost the undone audit state');
+  assert(Array.isArray(exported.lawWatch)&&exported.lawWatch.length===1,'Workspace export omitted the legal-review watchlist');
+  assert(exported.lawWatch[0].docId==='l72'&&exported.lawWatch[0].status==='active','Workspace export lost law-watch document/status');
+  assert(exported.lawWatch[0].nextReview==='2026-10-20','Workspace export lost law-watch review date');
+  assert(exported.lawWatch[0].profileId===exported.complianceProfiles[0].id,'Law watchlist did not retain the active compliance profile link');
 
   await page.reload({waitUntil:'networkidle'});
   await go('work');
   assert((await page.locator('#complianceProfileList').innerText()).includes('Nhà máy QA'),'Compliance profile did not persist across reload');
   assert((await page.locator('.obligation-register').innerText()).includes('Xác minh nghĩa vụ quan trắc nước thải'),'Obligation register did not persist across reload');
+  await go('upd');
+  await page.locator('[data-lawtab="watch"]').click();
+  await page.waitForSelector('#lawWatchList [data-law-watch-row]');
+  assert((await page.locator('#lawWatchList').innerText()).includes('Kiểm tra lại tác động tới GPMT của hồ sơ QA'),'Law watchlist did not persist across reload');
 
   await page.setViewportSize({width:390,height:844});
   await go('work');
@@ -233,10 +254,10 @@ try{
   console.log('  manual deadline + user-declared GPMT date checked');
   console.log('  obligation source + structured Điều/Khoản/Phụ lục + owner + due basis + evidence checked');
   console.log('  recurring cadence + projected calendar + period completion checked');
-  console.log('  article -> obligation register action checked');
+  console.log('  article -> obligation register + legal-review watchlist actions checked');
   console.log('  home pulse + profile-aware legal updates checked');
   console.log('  audit delete/undo + full obligation snapshot restoration checked');
-  console.log('  workspace v8 export includes Sổ giấy phép, audit, structured legal refs, recurrence history and evidence references');
+  console.log('  workspace v8 export includes Sổ giấy phép, audit, legal watchlist, structured refs, recurrence history and evidence references');
   console.log('  mobile 390px overflow checked');
 }finally{
   await browser.close();
