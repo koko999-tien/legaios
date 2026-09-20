@@ -5,12 +5,20 @@ const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:390,height:844},acceptDownloads:true});
 const baseURL=process.env.LEGALOS_URL||'http://127.0.0.1:4173/';
 function assert(value,message){if(!value)throw new Error(message)}
-let acceptImport=false,confirmations=0;
-page.on('dialog',async dialog=>{confirmations++;if(acceptImport)await dialog.accept();else await dialog.dismiss()});
+let confirmations=0;
+page.on('dialog',async dialog=>{confirmations++;await dialog.dismiss()});
 async function upload(data){
   await page.locator('#importFile').setInputFiles({name:'workspace.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
 }
 async function notes(){return page.evaluate(()=>({memory:JSON.stringify(notes),disk:localStorage.getItem('w3_notes')}))}
+async function respondRestore(accept){
+  const dlg=page.locator('#workspaceRestorePreviewV9');
+  await dlg.waitFor({state:'visible'});
+  const text=(await dlg.innerText()).toLowerCase();
+  assert(text.includes('xem trước khôi phục')&&text.includes('sổ giấy phép'),'Restore preview does not explain incoming workspace data');
+  if(accept)await dlg.getByRole('button',{name:'Khôi phục dữ liệu'}).click();
+  else await dlg.getByRole('button',{name:'Hủy'}).click();
+}
 try{
   await page.goto(baseURL,{waitUntil:'networkidle'});
   const id=await page.evaluate(()=>D[0].id);
@@ -45,11 +53,11 @@ try{
   assert(Array.isArray(backup.lawWatch)&&backup.lawWatch[0]?.docId===id,'Workspace backup omitted legal-review watchlist');
   backup.notes={[id]:'Restored note'};
   await upload(backup);
+  await respondRestore(false);
   await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã hủy khôi phục dữ liệu');
-  assert(confirmations===1,'Valid workspace import must request confirmation');
+  assert(confirmations===0,'Workspace preview should use an in-app dialog instead of a browser confirm');
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Cancelled import changed notes');
 
-  acceptImport=true;
   await page.evaluate(()=>{
     const original=Storage.prototype.setItem;
     window.__testStorageSet=original;
@@ -61,6 +69,7 @@ try{
   });
   const before=await page.evaluate(()=>Object.fromEntries(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1'].map(k=>[k,localStorage.getItem(k)])));
   await upload(backup);
+  await respondRestore(true);
   await page.waitForFunction(()=>document.getElementById('toast').textContent.includes('Không thể lưu bản nhập'));
   assert(await page.locator('#storageWarning').isVisible(),'Failed storage write was not announced');
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Failed import changed memory or notes');
@@ -68,6 +77,7 @@ try{
   assert(JSON.stringify(before)===JSON.stringify(after),'Failed import left partial storage changes');
   await page.evaluate(()=>{Storage.prototype.setItem=window.__testStorageSet;delete window.__testStorageSet});
   await upload(backup);
+  await respondRestore(true);
   await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã khôi phục dữ liệu');
   assert(!await page.locator('#storageWarning').count(),'Successful retry did not clear the storage warning');
   await page.reload({waitUntil:'networkidle'});
@@ -114,5 +124,5 @@ try{
     const rows=JSON.parse(localStorage.getItem('v14_reading_progress'));
     return rows['qa-reading-a'].pct===85&&rows['qa-reading-b'].pct===31;
   }),'Switching documents mixed or lost reading progress');
-  console.log('Data safety passed: invalid/cancelled import, quota rollback, v8 extended backup/restore including legal watchlist, recovery trash, trailing and pagehide reading saves.');
+  console.log('Data safety passed: restore preview, invalid/cancelled import, quota rollback, v8 extended backup/restore including legal watchlist, recovery trash, trailing and pagehide reading saves.');
 }finally{await browser.close()}
