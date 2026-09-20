@@ -127,6 +127,23 @@ try {
   }
 
   await assertTouchSwipeScrollsPage('#lib .library-filters','Library filter panel');
+
+  await page.evaluate(()=>window.go?.('lib'));
+  await page.waitForFunction(()=>document.getElementById('lib')?.classList.contains('on'));
+  const sourceGeometry=await page.locator('#docs .official-source-action').first().evaluate(el=>{
+    const r=el.getBoundingClientRect();return {width:r.width,height:r.height,text:el.textContent.trim()};
+  });
+  assert(sourceGeometry.width>160,`Official source action collapsed on mobile: ${sourceGeometry.width}x${sourceGeometry.height}`);
+  assert(sourceGeometry.height<90,`Official source action became vertical/tall on mobile: ${sourceGeometry.width}x${sourceGeometry.height}`);
+
+  const chem=page.locator('#chips .chip').filter({hasText:'Hóa chất'}).first();
+  await chem.scrollIntoViewIfNeeded();
+  await chem.click();
+  await page.waitForTimeout(450);
+  const resultJump=await page.locator('#dcount').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,text:el.textContent.trim(),scrollY:window.scrollY}});
+  assert(resultJump.scrollY>20,'Choosing a mobile topic did not move the page to results');
+  assert(resultJump.top>80&&resultJump.bottom<820,`Result count was not brought into view after choosing Hóa chất: top=${resultJump.top}, bottom=${resultJump.bottom}`);
+
   await page.evaluate(()=>window.go?.('expert'));
   await page.waitForFunction(()=>document.getElementById('expert')?.classList.contains('on'));
   await assertTouchSwipeScrollsPage('#expert .expert-side','Review side panel');
