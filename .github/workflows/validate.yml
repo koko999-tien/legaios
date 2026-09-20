@@ -41,6 +41,10 @@ jobs:
           node --check assets/lazy/workspace-data.js
           node --check assets/optional/grounded-ai-loader.js
           node --check assets/optional/grounded-ai.js
+          node --check assets/optional/calendar-export-loader.js
+          node --check assets/optional/calendar-export.js
+          node --check assets/backup/full-backup-loader.js
+          node --check assets/backup/full-backup.js
           node --check netlify/functions/official-search.mjs
           node --check netlify/functions/grounded-ai.mjs
 
