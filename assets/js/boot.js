@@ -93,8 +93,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.body.addEventListener('click',e=>{const o=e.target.closest('[data-file-open]');if(o){showImportDetail(o.dataset.fileOpen);return}const d=e.target.closest('[data-file-download]');if(d){downloadImported(d.dataset.fileDownload);return}const del=e.target.closest('[data-file-delete]');if(del){deleteImported(del.dataset.fileDelete);return}const ha=e.target.closest('[data-home-action]');if(ha){const a=ha.dataset.homeAction;if(a==='cmd')openCmd();else if(a==='quicknote'){$('quickNoteBtn').click()}else if(a==='settings')openDrawer('settingsDrawer');else if(a==='lawdata'){go('upd');setTimeout(()=>renderLawHubTab('data'),30)}else if(a==='sources'){go('upd');setTimeout(()=>renderLawHubTab('sources'),30)}return}});
   $('backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});window.addEventListener('scroll',()=>{$('backTop').classList.toggle('on',window.scrollY>700)},{passive:true});
 
-  if($("topics"))$("topics").onclick=e=>{const t=e.target.closest("[data-t]");if(!t)return;document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t===t.dataset.t));docs(t.dataset.t);go("lib")};
-  $("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;document.querySelectorAll("#chips .chip").forEach(x=>x.classList.toggle("on",x===c));docs(c.dataset.t,$("q").value)};
+  const jumpLib=()=>innerWidth<=820&&setTimeout(()=>$("dcount")?.scrollIntoView({behavior:"smooth",block:"center"}),30);
+  if($("topics"))$("topics").onclick=e=>{const t=e.target.closest("[data-t]");if(!t)return;document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t===t.dataset.t));docs(t.dataset.t);go("lib");jumpLib()};
+  $("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;document.querySelectorAll("#chips .chip").forEach(x=>x.classList.toggle("on",x===c));docs(c.dataset.t,$("q").value);jumpLib()};
   if($("topicFilterQ"))$("topicFilterQ").addEventListener("input",debounce(e=>renderLibraryTopicFilters(e.target.value),90));
   const vs=(remember=false)=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value);if(remember&&$("q").value.trim())addLegalSearchHistory($("q").value)};
   $("qBtn").onclick=()=>vs(true);$("q").addEventListener("keydown",e=>{if(e.key==="Enter")vs(true)});
