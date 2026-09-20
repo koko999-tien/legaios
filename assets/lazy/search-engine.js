@@ -99,10 +99,21 @@ function looseNumberMatch(q,p){
  const nums=cleanLegalQuery(q).match(/\b\d{1,4}\b/g)||[];
  return nums.length>=2&&/(nghi dinh|\bnd\b|thong tu|\btt\b|nghi quyet|\bnq\b|quyet dinh|\bqd\b|qh\d+|vbhn)/.test(cleanLegalQuery(q))&&nums.every(n=>p.title.text.includes(n));
 }
+function parseShortLegalRef(fold){
+ const rules=[
+  ['nd','NĐ',/\b(?:nghi dinh|nd)\s*0*(\d{1,4})\b/],
+  ['tt','TT',/\b(?:thong tu|tt)\s*0*(\d{1,4})\b/],
+  ['luat','Luật',/\bluat\s*0*(\d{1,4})\b/],
+  ['qd','QĐ',/\b(?:quyet dinh|qd)\s*0*(\d{1,4})\b/],
+  ['nq','NQ',/\b(?:nghi quyet|nq)\s*0*(\d{1,4}(?:\.\d+)?)\b/]
+ ];
+ for(const [kind,label,re] of rules){const m=fold.match(re);if(m)return {kind,label,num:String(Number(m[1]))==='NaN'?m[1]:String(Number(m[1]))}}
+ return null;
+}
 function model(q){
  const primary=uniq(rawTokens(q)),expanded=uniq((typeof expandTokens==='function'?expandTokens(q):primary).filter(x=>!COMMON.has(x)));
  const fold=cleanLegalQuery(q),aliases=ALIASES.filter(a=>a.re.test(fold)),actions=ACTIONS.filter(a=>a.re.test(fold));
- return {primary,expanded,fold,aliases,actions,phrase:primary.join(' '),intent:typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]}};
+ return {primary,expanded,fold,aliases,actions,shortRef:parseShortLegalRef(fold),phrase:primary.join(' '),intent:typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]}};
 }
 function aliasBoost(m,p,reasons){
  let total=0,hits=0;const labels=[];
@@ -146,6 +157,26 @@ function kindBoost(m,p,reasons){
  for(const k of KIND_RULES)if(k.re.test(m.fold)&&k.match(p)){total+=k.boost;hits++;if(reasons.length<6)reasons.push('Đúng loại văn bản: '+k.label)}
  return {total,hits};
 }
+function shortRefIn(text,ref){
+ if(!ref)return false;
+ const patterns={
+  nd:/\b(?:nd|nghi dinh)\s*0*(\d{1,4})\b/g,
+  tt:/\b(?:tt|thong tu)\s*0*(\d{1,4})\b/g,
+  luat:/\bluat\s*0*(\d{1,4})\b/g,
+  qd:/\b(?:qd|quyet dinh)\s*0*(\d{1,4})\b/g,
+  nq:/\b(?:nq|nghi quyet)\s*0*(\d{1,4}(?:\.\d+)?)\b/g
+ };
+ const re=patterns[ref.kind];if(!re)return false;
+ for(const m of String(text||'').matchAll(re)){const n=String(Number(m[1]))==='NaN'?m[1]:String(Number(m[1]));if(n===ref.num)return true}
+ return false;
+}
+function shortRefBoost(m,p,reasons){
+ const ref=m.shortRef;if(!ref)return {total:0,hits:0};
+ if(shortRefIn(p.title.text,ref)){reasons.push('Đúng tham chiếu: '+ref.label+' '+ref.num);return {total:230,hits:1}}
+ if(shortRefIn(p.structured.text,ref)||shortRefIn(p.rel.text,ref)){reasons.push('Có tham chiếu: '+ref.label+' '+ref.num);return {total:105,hits:1}}
+ if(shortRefIn(p.body.text,ref)){return {total:58,hits:1}}
+ return {total:0,hits:0};
+}
 function proximity(primary,p){
  if(primary.length<2)return 0;const pos=primary.map(t=>p.all.indexOf(t));if(pos.some(x=>x<0))return 0;
  const span=Math.max(...pos)-Math.min(...pos)+1;
@@ -184,10 +215,11 @@ function scoreV2(d,q){
  const alias=aliasBoost(m,p,reasons);boost+=alias.total;
  const action=actionBoost(m,p,reasons);boost+=action.total;
  const kind=kindBoost(m,p,reasons);boost+=kind.total;
+ const shortRef=shortRefBoost(m,p,reasons);boost+=shortRef.total;
  const expandedOnly=m.expanded.filter(t=>!m.primary.includes(t));for(const t of expandedOnly){const [w]=fieldWeighted(p,t);if(w)boost+=Math.min(14,Math.round(w*.16))}
  const baseStrong=(base.reasons||[]).some(x=>/Tên văn bản khớp|Đúng số hiệu|Có nhắc (Điều|Khoản|Điểm)|Đúng (Khoản|Điểm)|Điều .*đã bóc|Khớp cụm|Thỏa điều kiện/i.test(x));
  const needed=m.primary.length<=1?1:m.primary.length===2?2:Math.ceil(m.primary.length*(alias.strong?.35:.48));
- const semantic=alias.hits+action.hits+kind.hits;
+ const semantic=alias.hits+action.hits+kind.hits+shortRef.hits;
  const matched=number||baseStrong||semantic>0||(hits>=needed&&(coverage>=.45||strongField>0))||lexical>=58;
  let score=Math.round(base.score*(baseStrong?.72:.22))+boost;
  if(professorVerified(d.id))score+=5;else if(metaOf(d.id).src)score+=2;
