@@ -48,6 +48,7 @@ jobs:
           node --check assets/route/url-router.js
           node --check assets/activity/audit-trail.js
           node --check assets/recovery/workspace-recovery.js
+          node --check assets/shortcuts/extended-shortcuts.js
           node --check netlify/functions/official-search.mjs
           node --check netlify/functions/grounded-ai.mjs
 
