@@ -19,10 +19,10 @@ function renderHomePortal(){
     }else if(recent.length||saved.length||expertBriefs.length){
       $('homeResumeTitle').textContent='Tiếp tục công việc gần đây';
       $('homeResumeCopy').textContent=`${recent.length} văn bản vừa xem · ${saved.length} văn bản đã lưu · ${expertBriefs.length} phiếu rà soát.`;
-      $('homeResumeFoot').textContent='Mở workspace';
+      $('homeResumeFoot').textContent='Mở hồ sơ';
     }else{
-      $('homeResumeTitle').textContent='Quản lý nghĩa vụ, deadline và bằng chứng';
-      $('homeResumeCopy').textContent='Theo dõi hồ sơ tuân thủ, Sổ nghĩa vụ, người phụ trách, căn cứ và tài liệu chứng minh trong một nơi.';
+      $('homeResumeTitle').textContent='Theo dõi nghĩa vụ, thời hạn và tài liệu';
+      $('homeResumeCopy').textContent='Theo dõi hồ sơ tuân thủ, Sổ nghĩa vụ, người phụ trách, căn cứ và tài liệu chứng minh theo từng hồ sơ.';
       $('homeResumeFoot').textContent='Mở hồ sơ tuân thủ';
     }
   }
