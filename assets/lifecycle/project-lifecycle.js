@@ -28,7 +28,7 @@ function normalizeStore(raw){
  });return out
 }
 function store(){return normalizeStore(STORE.get(KEY,{}))}
-function save(all){STORE.set(KEY,normalizeStore(all));render()}
+function save(all,refresh=true){STORE.set(KEY,normalizeStore(all));if(refresh)render()}
 function profile(){return typeof complianceProfile==='function'?complianceProfile():null}
 function rowFor(all,pid){if(!all[pid])all[pid]={};STAGES.forEach(s=>all[pid][s.id]=normalizeStage(all[pid][s.id]));return all[pid]}
 function statusLabel(id){return STATUSES.find(x=>x.id===id)?.title||'Chưa bắt đầu'}
@@ -88,11 +88,11 @@ function render(){
  });host.append(board);
  const trust=document.createElement('div');trust.className='lifecycle-trust';trust.textContent='Các mốc, trạng thái và ghi chú do người dùng thiết lập để quản lý công việc. Hãy đối chiếu hồ sơ, giấy phép và nguồn pháp luật chính thức trước khi xác định nghĩa vụ hoặc thời hạn pháp lý.';host.append(trust)
 }
-function patch(stageId,changes){
- const p=profile();if(!p||!STAGES.some(s=>s.id===stageId))return false;const all=store(),row=rowFor(all,p.id),prev=row[stageId],next=normalizeStage({...prev,...changes,updatedAt:new Date().toISOString()});row[stageId]=next;save(all);if(typeof logActivity==='function')logActivity('compliance',p.id,'Cập nhật vòng đời · '+STAGES.find(s=>s.id===stageId).title+' · '+statusLabel(next.status));return true
+function patch(stageId,changes,refresh=true){
+ const p=profile();if(!p||!STAGES.some(s=>s.id===stageId))return false;const all=store(),row=rowFor(all,p.id),prev=row[stageId],next=normalizeStage({...prev,...changes,updatedAt:new Date().toISOString()});row[stageId]=next;save(all,refresh);if(refresh&&typeof logActivity==='function')logActivity('compliance',p.id,'Cập nhật vòng đời · '+STAGES.find(s=>s.id===stageId).title+' · '+statusLabel(next.status));return true
 }
 document.addEventListener('change',e=>{const s=e.target.closest?.('[data-lifecycle-status]');if(s){patch(s.dataset.lifecycleStatus,{status:s.value});return}const d=e.target.closest?.('[data-lifecycle-due]');if(d)patch(d.dataset.lifecycleDue,{due:d.value})});
-document.addEventListener('input',e=>{const n=e.target.closest?.('[data-lifecycle-note]');if(!n)return;clearTimeout(n._save);n._save=setTimeout(()=>patch(n.dataset.lifecycleNote,{note:n.value}),320)});
+document.addEventListener('input',e=>{const n=e.target.closest?.('[data-lifecycle-note]');if(!n)return;clearTimeout(n._save);n._save=setTimeout(()=>patch(n.dataset.lifecycleNote,{note:n.value},false),320)});
 const baseRender=typeof renderComplianceWorkspace==='function'?renderComplianceWorkspace:null;
 if(baseRender)renderComplianceWorkspace=function(){const out=baseRender.apply(this,arguments);queueMicrotask(render);return out};
 document.addEventListener('DOMContentLoaded',()=>setTimeout(render,0),{once:true});
