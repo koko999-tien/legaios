@@ -272,7 +272,7 @@ try {
   assert(libraryUx.groups >= 3, `Expected grouped library filters, found ${libraryUx.groups}`);
   assert(libraryUx.collapsed >= 1, 'Library filter groups should reduce long-scroll fatigue by collapsing secondary groups');
   assert(libraryUx.tagSize >= 9, `Compact library metadata is still too small: ${libraryUx.tagSize}px`);
-  assert(['Mở chi tiết','Đến đoạn khớp'].includes(libraryUx.openText), `Primary document action is unclear: ${libraryUx.openText}`);
+  assert(['Mở chi tiết','Mở vị trí khớp'].includes(libraryUx.openText), `Primary document action is unclear: ${libraryUx.openText}`);
   assert(libraryUx.openTitle.length > 10, 'Primary document action is missing explanatory hover text');
   assert(libraryUx.previewText === 'Tóm tắt', `Summary action changed unexpectedly: ${libraryUx.previewText}`);
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
