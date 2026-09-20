@@ -294,7 +294,7 @@ function readComplianceEditor(){
   COMPLIANCE_FEATURES.forEach(function(item){features[item[0]]=complianceSignal($("cp-"+item[0])&&$("cp-"+item[0]).value)});
   const gpmtNumber=$("cpGpmtNumber")&&$("cpGpmtNumber").value||"",gpmtExpires=$("cpGpmtExpires")&&$("cpGpmtExpires").value||"";
   const permits=(old&&old.permits?old.permits:[]).map(function(x){return complianceClone(x)});let gpmt=permits.find(function(x){return x.type==="gpmt"});
-  if(gpmtNumber||gpmtExpires){
+  if(gpmt||gpmtNumber||gpmtExpires){
     if(!gpmt){gpmt=normalizeCompliancePermit({type:"gpmt",title:"Giấy phép môi trường"});permits.unshift(gpmt)}
     gpmt.number=gpmtNumber;gpmt.expiryDate=gpmtExpires;gpmt.updatedAt=new Date().toISOString();
   }
