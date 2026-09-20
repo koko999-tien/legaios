@@ -65,6 +65,11 @@ try{
   const monitoringCount=await page.locator('#docs [data-open]').count();
   assert(monitoringCount>0,'Monitoring/wastewater query returned no documents');
   const monitoringReasons=(await page.locator('#docs .doc').first().innerText()).toLowerCase();
+  if(!(monitoringReasons.includes('quan trắc')||monitoringReasons.includes('nước thải')||monitoringReasons.includes('nuoc thai'))){
+    const monitoringDebug=await page.evaluate(()=>D.map(d=>({id:d.id,title:d.ttl,...legalSearchScore(d,'quan trac nuoc thai')})).filter(x=>x.matched).sort((a,b)=>b.score-a.score).slice(0,5).map(x=>({id:x.id,title:x.title,score:x.score,reasons:x.reasons,concepts:x.concepts,actions:x.actions})));
+    console.error('Monitoring top candidates:',JSON.stringify(monitoringDebug));
+    console.error('Monitoring top card:',monitoringReasons.slice(0,800));
+  }
   assert(monitoringReasons.includes('quan trắc')||monitoringReasons.includes('nước thải')||monitoringReasons.includes('nuoc thai'),'Monitoring query returned an unrelated top result');
 
   const searchVersion=await page.evaluate(()=>window.LEGALOS_SEARCH_V2?.version);
