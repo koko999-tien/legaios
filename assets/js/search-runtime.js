@@ -177,7 +177,7 @@ function legalSearchScore(d,q){
   });
   if(hit){reasons.push(`${hit}/${p.tokens.length} từ khóa khớp`)}
   const m=metaOf(d.id);
-  if(professorVerified(d.id)){score+=5;reasons.push("Đã kiểm chứng")}
+  if(professorVerified(d.id)){score+=5;reasons.push("Đã đối chiếu")}
   else if(m.src)score+=2;
   return {score,reasons:[...new Set(reasons)],refs:[...new Set([...extractLegalRefs(d.b),...coreRefsForDoc(d.id)])]};
 }
