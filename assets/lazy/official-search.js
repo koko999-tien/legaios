@@ -8,7 +8,7 @@ function query(){return String(document.getElementById("q")?.value||"").trim().r
 function panel(){
  let p=document.getElementById("officialSearchV4");if(p)return p;const a=document.querySelector(".search-intelligence");if(!a)return null;
  p=el("section","official-search-v4");p.id="officialSearchV4";
- const head=el("div","official-search-v4-head"),copy=el("div"),controls=el("div","official-search-v4-controls"),state=el("div","official-search-v4-state"),results=el("div","official-search-v4-results"),btn=el("button","btn bs","Mở rộng nguồn chính thức");
+ const head=el("div","official-search-v4-head"),copy=el("div"),controls=el("div","official-search-v4-controls"),state=el("div","official-search-v4-state"),results=el("div","official-search-v4-results"),btn=el("button","btn bs","Mở nguồn chính thức");
  state.id="officialSearchState";results.id="officialSearchResults";btn.id="officialSearchBtn";btn.type="button";
  copy.append(el("div","section-kicker","SEARCH V4 · NGUỒN CHÍNH THỨC"),el("h3","","Mở rộng tra cứu trên web chính thức"),el("p","official-search-v4-copy","Search V3 vẫn ưu tiên dữ liệu cục bộ. Chỉ bấm tìm web mới gửi truy vấn để phát hiện nguồn chính thức."));
  head.append(copy,el("span","official-search-v4-badge","Không tự xác minh nội dung"));
@@ -35,7 +35,7 @@ async function run(){
  const ac=new AbortController,t=setTimeout(()=>ac.abort(),9000);
  try{const r=await fetch("/.netlify/functions/official-search?q="+encodeURIComponent(q)+"&limit=8",{signal:ac.signal,headers:{Accept:"application/json"}});if(!r.ok)throw 0;const d=await r.json();cache.set(q,d);render(d,q)}
  catch(e){if(s){s.className="official-search-v4-state error";s.textContent=e?.name==="AbortError"?"Tìm nguồn quá thời gian. Bạn vẫn có thể mở trực tiếp các cổng chính thức.":"Không gọi được bộ tìm web trên bản chạy này. Local Search V3 vẫn hoạt động bình thường."}const h=p?.querySelector("#officialSearchResults");if(h){clear(h);renderDirect(h,[{name:"CSDL quốc gia VBPL",url:"https://vbpl.vn/Pages/vbpq-timkiem.aspx"},{name:"Hệ thống văn bản Chính phủ",url:"https://vanban.chinhphu.vn/"},{name:"Công báo Chính phủ",url:"https://congbao.chinhphu.vn/"}])}}
- finally{clearTimeout(t);if(b){b.disabled=q.length<2;b.textContent="Mở rộng nguồn chính thức"}}
+ finally{clearTimeout(t);if(b){b.disabled=q.length<2;b.textContent="Mở nguồn chính thức"}}
 }
 window.LEGALOS_OFFICIAL_SEARCH_V4={ready:true,version:4,run,syncQuery:sync};panel();
 })();
