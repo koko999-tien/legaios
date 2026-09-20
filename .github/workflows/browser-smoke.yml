@@ -69,6 +69,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/url-routing-smoke.mjs
 
+      - name: Verify local activity audit trail
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/activity-audit-smoke.mjs
+
       - name: Verify core legal trust metadata
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
