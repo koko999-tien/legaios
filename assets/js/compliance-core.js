@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — compliance profiles, deadlines and profile-aware radar. */
 const COMPLIANCE_KEY="ccplmt_compliance_profiles_v1";
 const COMPLIANCE_AUDIT_KEY="ccplmt_compliance_audit_v1";
 const COMPLIANCE_FEATURES=[
