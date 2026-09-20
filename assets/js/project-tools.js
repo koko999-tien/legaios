@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — update feed, screening presets, risk meter and case export. */
 function renderUpdates(year=currentUpdateYear){
   currentUpdateYear=year;
   const list=NWS.filter(n=>year==="all"||String(n[0]).startsWith(year));
