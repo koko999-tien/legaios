@@ -178,7 +178,7 @@
         <div class="home113-card-body compact-card-body">
           <h3 id="homeResumeTitle">Theo dõi nghĩa vụ và thời hạn</h3>
           <p id="homeResumeCopy">Theo dõi Sổ nghĩa vụ, người phụ trách, căn cứ, thời hạn và tài liệu chứng minh theo từng hồ sơ.</p>
-          <div class="card-mini-list"><span>Nghĩa vụ</span><span>Deadline</span><span>Bằng chứng</span></div>
+          <div class="card-mini-list"><span>Nghĩa vụ</span><span>Thời hạn</span><span>Tài liệu</span></div>
         </div>
         <div class="home113-card-foot"><span id="homeResumeFoot">Mở hồ sơ tuân thủ</span><b>→</b></div>
       </button>
@@ -200,7 +200,7 @@
     <div class="home113-support-grid compact-support-grid">
       <button class="home113-tile compact-tile" data-go="upd" type="button" aria-label="Mở Cập nhật pháp luật">
         <span class="home113-tile-icon">↻</span>
-        <div><b>Cập nhật pháp luật</b><small>Ưu tiên thay đổi và văn bản cần đọc theo hồ sơ cơ sở/dự án của bạn.</small></div>
+        <div><b>Cập nhật pháp luật</b><small>Ưu tiên thay đổi và văn bản cần đọc theo hồ sơ cơ sở hoặc dự án.</small></div>
         <span class="home113-tile-go">→</span>
       </button>
 
@@ -451,7 +451,7 @@
   <section class="legal-search-hub">
     <div class="search-mode-row">
       <div class="segmented search-mode" id="searchMode">
-        <button class="on" data-searchmode="smart" type="button">Tìm thông minh</button>
+        <button class="on" data-searchmode="smart" type="button">Tìm theo nội dung</button>
         <button data-searchmode="ref" type="button">Điều / Khoản / Điểm</button>
         <button data-searchmode="number" type="button">Số hiệu văn bản</button>
       </div>
@@ -522,7 +522,7 @@
             <select id="scopeF" aria-label="Phạm vi"><option value="all">Tất cả phạm vi</option><option value="2026">Mới / liên quan 2026</option><option value="core">Chuỗi pháp lý cốt lõi</option><option value="consolidated">Văn bản hợp nhất</option></select>
             <select id="yearF" aria-label="Năm"><option value="all">Tất cả năm</option></select>
             <select id="effectF" aria-label="Dữ liệu hiệu lực"><option value="all">Tất cả dữ liệu hiệu lực</option><option value="dated">Có ngày hiệu lực</option><option value="partial">Có ghi chú hết hiệu lực một phần</option><option value="unknown">Chưa có dữ liệu hiệu lực</option></select>
-            <select id="sourceF" aria-label="Nguồn"><option value="all">Tất cả trạng thái nguồn</option><option value="verified">Có liên kết nguồn</option><option value="prof">Đã kiểm chứng chuyên gia</option></select>
+            <select id="sourceF" aria-label="Nguồn"><option value="all">Tất cả trạng thái nguồn</option><option value="verified">Có liên kết nguồn</option><option value="prof">Đã đối chiếu thủ công</option></select>
             <select id="typeF" aria-label="Loại văn bản"><option value="all">Tất cả loại</option></select>
             <select id="sortF" aria-label="Sắp xếp"><option value="default">Ưu tiên dữ liệu</option><option value="az">Tên A → Z</option><option value="za">Tên Z → A</option></select>
             <label class="date-filter-v13" title="Chỉ lọc theo ngày hiệu lực có trong metadata; không tự kết luận văn bản đã hết hiệu lực"><span>Mốc áp dụng</span><input id="asOfF" type="date" aria-label="Mốc áp dụng theo metadata"></label>
@@ -816,7 +816,7 @@
 
 <section id="import" class="page"><div class="wrap">
   <div class="section-head"><div><div class="section-kicker">Hồ sơ</div><h1>Nhập &amp; quản lý tài liệu</h1><p class="lead">Đưa PDF, Word và các tài liệu dự án vào hệ thống để lưu cục bộ, xem lại, ghi chú và liên kết với hồ sơ.</p></div><div class="section-actions"><button class="btn bs" id="importIndexExport" type="button">Xuất danh mục JSON</button><button class="btn bs" id="importClearAll" type="button">Xóa toàn bộ</button></div></div>
-  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong hệ thống; “Nhập tài liệu” là file cá nhân của bạn. File Word/PDF nhập vào không tự được coi là văn bản pháp luật đã xác minh.</div></div>
+  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong hệ thống; “Nhập tài liệu” là kho file cá nhân đã nhập. File Word/PDF trong kho này không tự được coi là văn bản pháp luật đã xác minh.</div></div>
   <div class="import-hero">
     <div class="import-card">
       <div class="dropzone" id="importDrop" tabindex="0"><div class="drop-icon">⇩</div><b>Kéo file vào đây hoặc bấm để chọn</b><p>Hỗ trợ PDF, Word DOC/DOCX, ODT, RTF, TXT, Markdown, HTML, JSON và CSV. Có thể chọn nhiều file một lần.</p><div class="format-chips"><span class="format-chip">PDF</span><span class="format-chip">DOCX</span><span class="format-chip">DOC</span><span class="format-chip">ODT</span><span class="format-chip">RTF</span><span class="format-chip">TXT/MD</span><span class="format-chip">HTML</span><span class="format-chip">JSON/CSV</span></div></div>
@@ -982,8 +982,8 @@
 
   <div class="workspace-jump">
     <button data-jump="workCompliance" type="button">Tuân thủ</button>
-    <button data-jump="workActivity" type="button">Nhịp làm việc</button>
-    <button data-jump="workExpert" type="button">Phiếu chuyên gia</button>
+    <button data-jump="workActivity" type="button">Công việc gần đây</button>
+    <button data-jump="workExpert" type="button">Phiếu rà soát</button>
     <button data-jump="workCases" type="button">Hồ sơ</button>
     <button data-jump="workSaved" type="button">Văn bản đã lưu</button><button data-go="memo" type="button">Căn cứ đã lưu</button>
     <button data-jump="workNotes" type="button">Ghi chú</button>
@@ -994,14 +994,14 @@
       <div class="workspace-card"><b id="wkCases">0</b><small>Hồ sơ sàng lọc</small></div>
       <div class="workspace-card"><b id="wkSaved">0</b><small>Văn bản đã lưu</small></div>
       <div class="workspace-card"><b id="wkNotes">0</b><small>Ghi chú</small></div>
-      <div class="workspace-card"><b id="wkProgress">0%</b><small>Tiến độ quy trình</small></div><div class="workspace-card"><b id="wkFiles">0</b><small>Tài liệu đã nhập</small></div><div class="workspace-card"><b id="wkExpert">0</b><small>Phiếu chuyên gia</small></div>
+      <div class="workspace-card"><b id="wkProgress">0%</b><small>Tiến độ quy trình</small></div><div class="workspace-card"><b id="wkFiles">0</b><small>Tài liệu đã nhập</small></div><div class="workspace-card"><b id="wkExpert">0</b><small>Phiếu rà soát</small></div>
     </div>
     <section class="workspace-activity" id="workActivity">
       <div class="workspace-block-head">
         <div>
           <div class="section-kicker">Theo dõi công việc</div>
-          <h2>Nhịp làm việc của bạn</h2>
-          <p>Hoạt động gần đây và những việc có thể tiếp tục được gom về Workspace để trang Tổng quan gọn hơn.</p>
+          <h2>Công việc gần đây</h2>
+          <p>Hoạt động gần đây và các việc đang tiếp tục được tổng hợp tại đây để trang Tổng quan giữ bố cục gọn.</p>
         </div>
       </div>
       <div class="dash-grid workspace-dash">
@@ -1048,7 +1048,7 @@
     </div>
     <div>
       <h2 style="margin-top:0">Chi tiết hồ sơ</h2>
-      <div id="caseDetail" class="empty">Chưa chọn hồ sơ sàng lọc. Bạn có thể tạo Hồ sơ tuân thủ ở phần đầu trang hoặc mở một hồ sơ sàng lọc đã lưu.</div>
+      <div id="caseDetail" class="empty">Chưa chọn hồ sơ sàng lọc. Có thể tạo Hồ sơ tuân thủ ở phần đầu trang hoặc mở một hồ sơ sàng lọc đã lưu.</div>
       <h2 id="workSaved">Văn bản đã lưu</h2>
       <div class="docs" id="savedList"></div>
       <section class="notes-center" id="workNotes"><div class="notes-center-head"><div><div class="k">Ghi chú</div><h2>Trung tâm ghi chú</h2></div><button class="btn bs" id="clearQuickNote" type="button">Xóa ghi chú nhanh</button></div><div class="g2"><div class="card"><b>Ghi chú nhanh</b><textarea class="case-notes" id="workspaceQuickNote" placeholder="Ghi ý tưởng, việc cần kiểm tra, số hiệu cần đọc…"></textarea><small class="autosave">Tự động lưu trên trình duyệt</small></div><div class="card"><b>Ghi chú theo văn bản</b><div id="articleNotesList" class="note-index"></div></div></div></section>
@@ -1180,8 +1180,8 @@
     <div class="modal-body">
       <div class="feedback-context" id="feedbackContext">Phản hồi chung</div>
       <label class="feedback-field"><span>Loại vấn đề</span><select id="feedbackType"><option value="Nguồn / liên kết">Nguồn / liên kết</option><option value="Hiệu lực / sửa đổi">Hiệu lực / sửa đổi</option><option value="Tóm tắt nội dung">Tóm tắt nội dung</option><option value="Thiếu văn bản / quan hệ">Thiếu văn bản / quan hệ</option><option value="Giao diện / kỹ thuật">Giao diện / kỹ thuật</option><option value="Khác">Khác</option></select></label>
-      <label class="feedback-field"><span>Mô tả</span><textarea id="feedbackNote" rows="6" placeholder="Nêu chỗ sai hoặc thông tin cần kiểm tra lại. Nếu có thể, ghi kèm nguồn chính thức bạn đã đối chiếu."></textarea></label>
-      <p class="feedback-privacy">Nội dung chưa được gửi đi khi bạn đang gõ. Chỉ khi bấm “Mở GitHub để gửi”, trình duyệt mới mở trang GitHub với nội dung đã điền sẵn.</p>
+      <label class="feedback-field"><span>Mô tả</span><textarea id="feedbackNote" rows="6" placeholder="Nêu chỗ sai hoặc thông tin cần kiểm tra lại. Nếu có thể, ghi kèm nguồn chính thức đã đối chiếu."></textarea></label>
+      <p class="feedback-privacy">Nội dung chưa được gửi trong quá trình nhập. Chỉ khi bấm “Mở GitHub để gửi”, trình duyệt mới mở trang GitHub với nội dung đã điền sẵn.</p>
       <div class="feedback-actions"><button class="btn bs" id="feedbackCopy" type="button">Sao chép báo cáo</button><button class="btn bp" id="feedbackGitHub" type="button">Mở GitHub để gửi ↗</button></div>
     </div>
   </div>
