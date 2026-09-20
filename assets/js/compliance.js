@@ -109,7 +109,7 @@ function obligationEditorHtml(p,o){
   '<label class="wide"><span>Điều/Khoản/Điểm đã lập chỉ mục</span><select id="oblDeepRef">'+complianceStructuredRefOptions(o.legalDocId,o)+'</select></label>'+
   '<label><span>Phụ lục (nếu có)</span><input id="oblLegalAppendix" value="'+esc(o.legalAppendix||"")+'" placeholder="Ví dụ: Phụ lục II, Mục I.3"></label>'+
   '<label><span>Ghi chú căn cứ bổ sung</span><input id="oblLegalRef" value="'+esc(o.legalRef||"")+'" placeholder="Nội dung cần đối chiếu thêm"></label>'+
-  '<label><span>Deadline / kỳ tiếp theo</span><input id="oblDueDate" type="date" value="'+esc(o.dueDate||"")+'"></label>'+
+  '<label><span>Thời hạn / kỳ tiếp theo</span><input id="oblDueDate" type="date" value="'+esc(o.dueDate||"")+'"></label>'+
   '<label><span>Chu kỳ theo dõi</span><select id="oblRecurrence"><option value="none" '+(o.recurrence==="none"?"selected":"")+'>Không lặp</option><option value="monthly" '+(o.recurrence==="monthly"?"selected":"")+'>Hàng tháng</option><option value="quarterly" '+(o.recurrence==="quarterly"?"selected":"")+'>Hàng quý</option><option value="yearly" '+(o.recurrence==="yearly"?"selected":"")+'>Hàng năm</option></select></label>'+
   '<label><span>Căn cứ thời hạn</span><select id="oblDueBasis"><option value="manual" '+(o.dueBasis==="manual"?"selected":"")+'>Người dùng nhập</option><option value="permit" '+(o.dueBasis==="permit"?"selected":"")+'>Theo giấy phép/hồ sơ</option><option value="legal_source" '+(o.dueBasis==="legal_source"?"selected":"")+'>Theo căn cứ pháp luật</option><option value="verified" '+(o.dueBasis==="verified"?"selected":"")+'>Người dùng đánh dấu: đã đối chiếu nguồn</option></select></label>'+
   '<label class="wide"><span>Thông tin căn cứ thời hạn</span><input id="oblDueSource" value="'+esc(o.dueSource||"")+'" placeholder="Số giấy phép, Điều/Khoản, nguồn chính thức hoặc lý do đặt lịch"></label>'+
@@ -320,7 +320,7 @@ function addComplianceDeadline(){
   if(!p||!title){toast("Nhập tên việc cần theo dõi");return}
   const row={id:complianceId("task"),title:title,date:/^\d{4}-\d{2}-\d{2}$/.test(date)?date:"",kind:"manual",note:"",done:false,createdAt:new Date().toISOString()};
   p.deadlines.unshift(row);
-  complianceRecordAudit("create","deadline",p.id,row.id,"Thêm deadline · "+row.title,null,complianceClone(row),true);
+  complianceRecordAudit("create","deadline",p.id,row.id,"Thêm thời hạn · "+row.title,null,complianceClone(row),true);
   p.updatedAt=new Date().toISOString();saveComplianceProfiles();
 }
 function createComplianceFromExpertData(d){
@@ -331,7 +331,7 @@ function createComplianceFromExpertData(d){
 function createComplianceFromCase(c){
   c=c||{};
   const p=normalizeComplianceProfile({name:c.name||"Hồ sơ từ sàng lọc",profileType:"project",sector:c.input&&c.input.sector||"",location:c.input&&c.input.location||"",phase:c.input&&c.input.phase||"",note:"Tạo từ hồ sơ sàng lọc. Các tín hiệu môi trường cần được bổ sung và đối chiếu."});
-  complianceProfiles.unshift(p);complianceRecordAudit("create","profile",p.id,p.id,"Tạo hồ sơ từ sàng lọc · "+p.name,null,complianceClone(p),true);currentComplianceId=p.id;saveComplianceProfiles();go("work");setTimeout(function(){$("workCompliance")&&$("workCompliance").scrollIntoView({behavior:"smooth",block:"start"})},80);toast("Đã đưa hồ sơ vào workspace tuân thủ");return p.id;
+  complianceProfiles.unshift(p);complianceRecordAudit("create","profile",p.id,p.id,"Tạo hồ sơ từ sàng lọc · "+p.name,null,complianceClone(p),true);currentComplianceId=p.id;saveComplianceProfiles();go("work");setTimeout(function(){$("workCompliance")&&$("workCompliance").scrollIntoView({behavior:"smooth",block:"start"})},80);toast("Đã đưa hồ sơ vào khu quản lý tuân thủ");return p.id;
 }
 function complianceBackupRows(){return complianceProfiles.map(normalizeComplianceProfile)}
 function complianceAuditBackup(){return complianceAuditBackupRows()}
@@ -355,8 +355,8 @@ function initComplianceUI(){
     const to=e.target.closest("[data-track-to-obligation]");if(to){e.preventDefault();addTrackAsObligation(to.dataset.trackToObligation);return}
     const fd=e.target.closest("[data-obligation-from-doc]");if(fd){e.preventDefault();addDocumentAsObligation(fd.dataset.obligationFromDoc);return}
     if(e.target.closest("[data-compliance-report]")){e.preventDefault();exportComplianceReport();return}
-    const toggle=e.target.closest("[data-compliance-task-toggle]");if(toggle){const p=complianceProfile(),t=p&&p.deadlines.find(function(x){return x.id===toggle.dataset.complianceTaskToggle});if(t){const before=complianceClone(t);t.done=!t.done;complianceRecordAudit("toggle","deadline",p.id,t.id,(t.done?"Hoàn thành deadline · ":"Mở lại deadline · ")+t.title,before,complianceClone(t),true);p.updatedAt=new Date().toISOString();saveComplianceProfiles()}return}
-    const tdel=e.target.closest("[data-compliance-task-delete]");if(tdel){const p=complianceProfile(),t=p&&p.deadlines.find(function(x){return x.id===tdel.dataset.complianceTaskDelete});if(p&&t){complianceRecordAudit("delete","deadline",p.id,t.id,"Xóa deadline · "+t.title,complianceClone(t),null,true);p.deadlines=p.deadlines.filter(function(x){return x.id!==t.id});p.updatedAt=new Date().toISOString();saveComplianceProfiles();toast("Đã xóa deadline · có thể Hoàn tác")}return}
+    const toggle=e.target.closest("[data-compliance-task-toggle]");if(toggle){const p=complianceProfile(),t=p&&p.deadlines.find(function(x){return x.id===toggle.dataset.complianceTaskToggle});if(t){const before=complianceClone(t);t.done=!t.done;complianceRecordAudit("toggle","deadline",p.id,t.id,(t.done?"Hoàn thành thời hạn · ":"Mở lại thời hạn · ")+t.title,before,complianceClone(t),true);p.updatedAt=new Date().toISOString();saveComplianceProfiles()}return}
+    const tdel=e.target.closest("[data-compliance-task-delete]");if(tdel){const p=complianceProfile(),t=p&&p.deadlines.find(function(x){return x.id===tdel.dataset.complianceTaskDelete});if(p&&t){complianceRecordAudit("delete","deadline",p.id,t.id,"Xóa thời hạn · "+t.title,complianceClone(t),null,true);p.deadlines=p.deadlines.filter(function(x){return x.id!==t.id});p.updatedAt=new Date().toISOString();saveComplianceProfiles();toast("Đã xóa thời hạn · có thể Hoàn tác")}return}
     const undo=e.target.closest("[data-compliance-undo-last]");if(undo){e.preventDefault();complianceUndoLast(undo.dataset.complianceUndoLast||"");return}
   });
   renderComplianceWorkspace();renderComplianceHome();renderComplianceRadar();
