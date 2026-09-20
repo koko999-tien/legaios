@@ -24,6 +24,14 @@ try{
   });
   await page.reload({waitUntil:'networkidle'});
 
+  const migrationProbe=await page.evaluate(()=>{
+    const legacy=normalizeComplianceProfile({name:'Legacy QA',permit:{gpmtNumber:'OLD-GPMT-01',expires:'2099-12-31'}});
+    const cleared=normalizeComplianceProfile({name:'Cleared QA',permit:{gpmtNumber:'OLD-GPMT-02',expires:'2099-12-31'},permits:[]});
+    return {legacyCount:legacy.permits.length,legacyNumber:legacy.permits[0]?.number||'',clearedCount:cleared.permits.length};
+  });
+  assert(migrationProbe.legacyCount===1&&migrationProbe.legacyNumber==='OLD-GPMT-01','Legacy single-GPMT data did not migrate into Permit Register');
+  assert(migrationProbe.clearedCount===0,'An explicitly empty Permit Register resurrected legacy GPMT data');
+
   assert(await page.locator('#homeCompliancePulse [data-compliance-new]').count()===1,'Empty home state does not invite the first compliance profile');
 
   await go('work');
