@@ -76,14 +76,14 @@ function score(text,q){
 /* ---------- Command palette ---------- */
 function commandResults(q=''){
  const query=String(q||'').trim();
- const docs=(Array.isArray(window.D)?D:[]).map(d=>({kind:'doc',id:d.id,title:d.ttl,sub:(d.k||'Văn bản')+' · '+(typeof topicName==='function'?topicName(d.t):''),score:score((d.ttl||'')+' '+(d.b||''),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
- const forms=(typeof window.VBHN55_FORMS!=='undefined'&&Array.isArray(VBHN55_FORMS)?VBHN55_FORMS:[]).map(([n,t])=>({kind:'form',id:String(n),title:'Mẫu '+n+' · '+t,sub:'Biểu mẫu · 55/VBHN-BNNMT',score:score('mẫu '+n+' '+t+' biểu mẫu hồ sơ GPMT',query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,4);
+ const docs=(typeof D!=='undefined'&&Array.isArray(D)?D:[]).map(d=>({kind:'doc',id:d.id,title:d.ttl,sub:(d.k||'Văn bản')+' · '+(typeof topicName==='function'?topicName(d.t):''),score:score((d.ttl||'')+' '+(d.b||''),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+ const forms=(typeof VBHN55_FORMS!=='undefined'&&Array.isArray(VBHN55_FORMS)?VBHN55_FORMS:[]).map(([n,t])=>({kind:'form',id:String(n),title:'Mẫu '+n+' · '+t,sub:'Biểu mẫu · 55/VBHN-BNNMT',score:score('mẫu '+n+' '+t+' biểu mẫu hồ sơ GPMT',query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,4);
  const classifier=[
   {kind:'classifier',id:'cls',title:'Phân loại dự án / sàng lọc ĐTM – GPMT',sub:'Nhập loại hình, công suất, diện tích và nguồn thải',score:score('phân loại dự án sàng lọc dtm gpmt nhóm i ii iii iv',query)},
   {kind:'classifier',id:'expert',title:'Rà soát hồ sơ môi trường',sub:'Xác định câu hỏi còn thiếu và nhánh pháp lý cần đọc',score:score('rà soát hồ sơ dự án môi trường chuyên gia',query)}
  ].filter(x=>!query||x.score>0);
- const proc=(Array.isArray(window.P)?P:[]).map(p=>({kind:'proc',id:p.id,title:p.ttl,sub:'Quy trình nghiệp vụ',score:score((p.ttl||'')+' '+(p.st||[]).flat().join(' '),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
- const files=(typeof window.importedDocs!=='undefined'&&Array.isArray(importedDocs)?importedDocs:[]).map(f=>({kind:'file',id:f.id,title:f.name,sub:'Tài liệu đã nhập · .'+(f.ext||'file'),score:score((f.name||'')+' '+(f.note||''),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
+ const proc=(typeof P!=='undefined'&&Array.isArray(P)?P:[]).map(p=>({kind:'proc',id:p.id,title:p.ttl,sub:'Quy trình nghiệp vụ',score:score((p.ttl||'')+' '+(p.st||[]).flat().join(' '),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
+ const files=(typeof importedDocs!=='undefined'&&Array.isArray(importedDocs)?importedDocs:[]).map(f=>({kind:'file',id:f.id,title:f.name,sub:'Tài liệu đã nhập · .'+(f.ext||'file'),score:score((f.name||'')+' '+(f.note||''),query)})).filter(x=>!query||x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
  const pages=[
   ['graph','core','Bản đồ pháp lý tương tác','Luật → Nghị định → Thông tư'],
   ['page','lib','Tra cứu pháp luật','Kho văn bản và điều khoản'],
@@ -149,7 +149,7 @@ document.addEventListener('click',e=>{
 
 /* ---------- Interactive legal graph ---------- */
 function graphData(){
- const exists=id=>Array.isArray(window.D)&&D.some(d=>d.id===id);
+ const exists=id=>typeof D!=='undefined'&&Array.isArray(D)&&D.some(d=>d.id===id);
  const nodes=[
   {id:exists('vbhn98')?'vbhn98':'l72',tier:'law',label:'Luật BVMT',hint:'Khung nghĩa vụ và thủ tục môi trường'},
   {id:exists('vbhn49')?'vbhn49':'nd08',tier:'decree',label:'NĐ 08 + sửa đổi',hint:'Phân nhóm, ĐTM, GPMT, chất thải'},
@@ -162,7 +162,7 @@ function graphData(){
  return {nodes,edges:edges.filter(([a,b])=>ids.has(a)&&ids.has(b))};
 }
 function renderGraphDetail(host,id){
- if(!host)return;host.replaceChildren();const d=Array.isArray(window.D)?D.find(x=>x.id===id):null;if(!d){const e=document.createElement('div');e.className='graph-empty';e.textContent='Chọn một node để xem thông tin và mở văn bản.';host.append(e);return}
+ if(!host)return;host.replaceChildren();const d=typeof D!=='undefined'&&Array.isArray(D)?D.find(x=>x.id===id):null;if(!d){const e=document.createElement('div');e.className='graph-empty';e.textContent='Chọn một node để xem thông tin và mở văn bản.';host.append(e);return}
  const m=typeof metaOf==='function'?metaOf(id):{};
  const kind=document.createElement('div');kind.className='graph-detail-kind';kind.textContent=(d.k||'Văn bản').toUpperCase();
  const h=document.createElement('h3');h.textContent=d.ttl;
