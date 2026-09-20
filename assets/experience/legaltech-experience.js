@@ -11,7 +11,7 @@ function style(){
  if(document.getElementById(STYLE_ID))return;
  const el=document.createElement('style');el.id=STYLE_ID;
  el.textContent=`
- body.legalos-b2b-v17:not([data-theme="dark"]){--bg:#f8fafc;--c:#fff;--c2:#f8fafc;--bd:#e2e8f0;--m:#64748b;--tx:#0f172a;--a:#334155;--as:#eef2f7}
+ body.legalos-b2b-v17:not([data-theme="dark"]){--bg:#f8fafc;--c:#fff;--c2:#f8fafc;--bd:#e2e8f0;--m:#64748b;--tx:#0f172a;--a:#2563eb;--as:#eff6ff}
  body.legalos-b2b-v17{font-feature-settings:"kern" 1,"liga" 1;text-rendering:optimizeLegibility}
  body.legalos-b2b-v17 .wrap{max-width:1440px}
  body.legalos-b2b-v17 .card,body.legalos-b2b-v17 .home114-panel,body.legalos-b2b-v17 .corekb-block{box-shadow:0 1px 2px rgba(15,23,42,.035);border-color:var(--bd)}
