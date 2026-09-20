@@ -32,7 +32,7 @@ Rà soát ngày 20/09/2026. Đây là kế hoạch phát triển, không phải 
 | --- | --- | --- |
 | P0 trước merge | Kiểm tra điện thoại thật và phiên có dữ liệu cũ | Header, sidebar, đọc bài, xuất file, cập nhật PWA hoạt động; dữ liệu cũ còn nguyên. CI giả lập không thay thế bước này. |
 | P0 trước sử dụng pháp lý | Kiểm định dữ liệu theo Issue #2 | Đối chiếu số hiệu, ngày hiệu lực, quan hệ sửa đổi, nguồn chính thức; từng bản ghi có ngày và bằng chứng kiểm tra. |
-| P1 | Sao lưu đầy đủ có phiên bản và xem trước khôi phục | Workspace v8 đã gồm Hồ sơ tuân thủ, Sổ giấy phép, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc, tùy chọn, lịch sử công việc và danh sách file tham chiếu. File IndexedDB vẫn cần nhập lại; bước tiếp theo là xem trước khôi phục bằng giao diện riêng thay cho hộp xác nhận. |
+| P1 | Sao lưu đầy đủ có phiên bản và xem trước khôi phục | Workspace v8 đã gồm Hồ sơ tuân thủ, Sổ giấy phép, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc, tùy chọn giao diện và danh sách khôi phục cục bộ. File IndexedDB vẫn cần nhập lại; bước tiếp theo là xem trước khôi phục bằng giao diện riêng thay cho hộp xác nhận. |
 | P1 | Khôi phục sau thao tác xóa | Hồ sơ tuân thủ/Sổ nghĩa vụ/thời hạn có audit + Undo; hồ sơ sàng lọc, căn cứ hồ sơ và ghi chú nhanh có “Đã xóa gần đây”. Bước tiếp theo là thống nhất một màn hình recovery cho toàn bộ loại dữ liệu. |
 | P1 | Phối hợp nhiều tab | Đã cảnh báo khi dữ liệu thay đổi ở tab khác và đề nghị tải lại trước khi tiếp tục. Bước tiếp theo là khóa/merge theo phiên bản để xử lý xung đột thay vì chỉ cảnh báo. |
 | P1 | Lịch công việc có nguồn | Đã có lịch 90 ngày + chu kỳ lặp do người dùng cấu hình; bước tiếp theo là liên kết sâu thời hạn tới Điều/Khoản đã lập chỉ mục, giấy phép/file gốc và hỗ trợ chế độ lịch rộng hơn. |
