@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — application boot and event wiring. */
 document.addEventListener("click",e=>{const stat=e.target.closest("[data-core-stat]");if(stat){e.preventDefault();renderCoreKbStatDetail(stat.dataset.coreStat)}});
 
 
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   let savedTheme=null;try{savedTheme=window.localStorage.getItem("w1th")}catch{}
   const th=savedTheme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
   document.body.setAttribute("data-theme",th);
-  // Critical navigation is bound before optional UI initialization so the app remains clickable even if a secondary widget fails.
   if(!window.__legalosNavBound){
     window.__legalosNavBound=true;
     document.body.addEventListener("click",e=>{
@@ -38,7 +36,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   renderProcList();
   renderTerms();
     renderUpdates("all");
-  // Navigation uses the single delegated handler bound at startup.
   $("menuBtn").onclick=()=>{const on=$("nav").classList.toggle("open");$("navScrim").classList.toggle("on",on)};$("navScrim").onclick=()=>{$("nav").classList.remove("open");$("navScrim").classList.remove("on")};
   $("theme").onclick=()=>{const n=document.body.getAttribute("data-theme")==="dark"?"light":"dark";document.body.setAttribute("data-theme",n);try{window.localStorage.setItem("w1th",n)}catch{}};
   $("sidebarCollapse").onclick=()=>{uiPrefs.sidebar=!uiPrefs.sidebar;saveUIPrefs()};
@@ -90,7 +87,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>$(b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}));
 
 
-  // Import center
   $('importChooseBtn').onclick=()=>$('importDocsInput').click();$('importDrop').onclick=()=>$('importDocsInput').click();$('importDrop').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('importDocsInput').click()}};$('importDocsInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
   ['dragenter','dragover'].forEach(ev=>$('importDrop').addEventListener(ev,e=>{e.preventDefault();$('importDrop').classList.add('drag')}));['dragleave','drop'].forEach(ev=>$('importDrop').addEventListener(ev,e=>{$('importDrop').classList.remove('drag');if(ev==='drop'){e.preventDefault();importFiles(e.dataTransfer.files)}}));
   $('importQ').oninput=debounce(renderImportList,80);$('importTypeF').onchange=renderImportList;$('importCatF').onchange=renderImportList;$('importRefresh').onclick=refreshImportedDocs;$('importIndexExport').onclick=exportImportIndex;$('importClearAll').onclick=clearImported;
