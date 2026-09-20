@@ -83,6 +83,7 @@ function exactWeight(p,t){
  return [0,''];
 }
 function near(t,p){
+ if(t.length<5)return null;
  let best='',score=0,where='';
  const pools=[[p.title.tokens,'Tên văn bản'],[p.topic.tokens,'Lĩnh vực'],[p.structured.tokens,'Điều khoản'],[p.important,'Nội dung']];
  for(const [pool,label] of pools)for(const c of pool){
