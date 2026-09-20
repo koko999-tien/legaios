@@ -5,9 +5,9 @@ const baseScore=legalSearchScore,baseCoach=renderSearchCoach,profiles=new Map();
 const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','la','toi','minh','phai','khong','thi','nao','gi','hay','neu','muon','hoi','nay','do','nhu','khi']);
 const ALIASES=[
  {id:'gpmt',label:'Giấy phép môi trường',re:/\b(gpmt|giay phep moi truong|xin phep moi truong)\b/,terms:'giay phep moi truong cap phep doi tuong',anchors:[['giay','phep','moi','truong']]},
- {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an',anchors:[['danh','gia','tac','dong']]},
- {id:'dmc',label:'Đánh giá môi trường chiến lược',re:/\b(dmc|danh gia moi truong chien luoc)\b/,terms:'danh gia moi truong chien luoc quy hoach',anchors:[['chien','luoc']]},
- {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong',anchors:[['dang','ky']]},
+ {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an',anchors:[['dtm'],['danh','gia','tac','dong']]},
+ {id:'dmc',label:'Đánh giá môi trường chiến lược',re:/\b(dmc|danh gia moi truong chien luoc)\b/,terms:'danh gia moi truong chien luoc quy hoach',anchors:[['dmc'],['chien','luoc']]},
+ {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong',anchors:[['dkmt'],['dang','ky']]},
  {id:'waste',label:'Chất thải',re:/\b(rac|chat thai|ctnh|phe lieu|chat thai nguy hai)\b/,terms:'chat thai nguy hai phe lieu quan ly',anchors:[['chat','thai'],['phe','lieu']]},
  {id:'epr',label:'EPR · tái chế',re:/\b(epr|tai che|bao bi|trach nhiem mo rong)\b/,terms:'epr tai che bao bi trach nhiem nha san xuat',anchors:[['epr'],['tai','che']]},
  {id:'chemical',label:'Hóa chất',re:/\b(hoa chat|chemical|msds|sds|su co hoa chat)\b/,terms:'hoa chat an toan su co nguy hiem',anchors:[['hoa','chat']]},
