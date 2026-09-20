@@ -1,4 +1,31 @@
 /* Căn cứ Pháp lý Môi trường — document-library search result rendering. */
+function librarySelectLabel(id){
+  const el=$(id);if(!el)return "";
+  return el.selectedOptions?.[0]?.textContent?.trim()||el.value||"";
+}
+function libraryActiveFilters(topic="all",q=""){
+  const rows=[];
+  if(q.trim())rows.push({key:"q",label:`Từ khóa: “${q.trim()}”`});
+  if(topic!=="all")rows.push({key:"topic",label:`Lĩnh vực: ${topicName(topic)}`});
+  const defs=[
+    ["scopeF","scope","Phạm vi"],["yearF","year","Năm"],["effectF","effect","Hiệu lực"],
+    ["sourceF","source","Nguồn"],["typeF","type","Loại văn bản"]
+  ];
+  defs.forEach(([id,key,prefix])=>{const el=$(id);if(el&&el.value&&el.value!=="all")rows.push({key,label:`${prefix}: ${librarySelectLabel(id)}`})});
+  if($("asOfF")?.value)rows.push({key:"asOf",label:`Mốc áp dụng: ${$("asOfF").value.split("-").reverse().join("/")}`});
+  if(savedOnlyMode)rows.push({key:"saved",label:"Chỉ văn bản đã lưu"});
+  return rows;
+}
+function renderLibraryActiveFilters(topic="all",q=""){
+  const host=$("activeFilterList"),panel=$("activeFilters");if(!host||!panel)return;
+  const rows=libraryActiveFilters(topic,q);
+  panel.classList.toggle("empty",!rows.length);
+  host.innerHTML=rows.length
+    ?rows.map(x=>`<button class="active-filter-chip" data-clear-filter="${x.key}" type="button" title="Bỏ tiêu chí này"><span>${esc(x.label)}</span><b aria-hidden="true">×</b></button>`).join("")
+    :'<span class="active-filter-empty">Chưa áp dụng bộ lọc nâng cao.</span>';
+  if(rows.some(x=>!["q","topic","saved"].includes(x.key)))$("advancedSearch")?.setAttribute("open","");
+}
+
 function docs(topic="all",q=""){
   const qq=q.trim(),type=$("typeF")?.value||"all",sort=$("sortF")?.value||"default",scope=$("scopeF")?.value||"all",year=$("yearF")?.value||"all",effect=$("effectF")?.value||"all",source=$("sourceF")?.value||"all",asOf=$("asOfF")?.value||"";
   let list=D.filter(d=>{
@@ -20,6 +47,7 @@ function docs(topic="all",q=""){
   $("dcount").textContent=`${list.length} văn bản${qq?` phù hợp với “${q.trim()}”`:""}`;
   $("clearQ").classList.toggle("on",!!q.trim());
   renderSearchCoach(list,q);
+  renderLibraryActiveFilters(topic,q);
 
   $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs})=>{
     const m=metaOf(d.id),rank=qq?Math.max(1,Math.min(99,Math.round(score/3))):0;
