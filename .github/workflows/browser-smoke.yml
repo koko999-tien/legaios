@@ -119,6 +119,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/calendar-export-smoke.mjs
 
+      - name: Verify full backup folder
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/full-backup-smoke.mjs
+
       - name: Verify real mobile sidebar interaction
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
