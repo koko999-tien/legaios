@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 
 const expectedScripts = [
   'assets/js/legal-data.js',
@@ -30,6 +31,8 @@ const expectedScripts = [
   'assets/js/boot.js'
 ];
 
+const expectedLazyScripts = ['assets/lazy/workspace-data.js'];
+
 const expectedStyles = [
   'assets/css/app.css',
   'assets/css/v14-product.css',
@@ -51,7 +54,7 @@ if (JSON.stringify(actualScripts) !== JSON.stringify(expectedScripts)) {
   fail(`JavaScript load order changed.\nExpected: ${expectedScripts.join(' -> ')}\nActual:   ${actualScripts.join(' -> ')}`);
 }
 
-for (const file of [...expectedStyles, ...expectedScripts]) {
+for (const file of [...expectedStyles, ...expectedScripts, ...expectedLazyScripts]) {
   if (!fs.existsSync(file)) {
     fail(`Missing required asset: ${file}`);
     continue;
@@ -60,6 +63,7 @@ for (const file of [...expectedStyles, ...expectedScripts]) {
 }
 
 if (fs.existsSync('assets/js/app.js')) fail('Legacy assets/js/app.js must not return after Stage 2g.');
+for(const file of expectedLazyScripts){try{new vm.Script(fs.readFileSync(file,'utf8'),{filename:file})}catch(error){fail(`${file} syntax error: ${error.message}`)}}
 
 const requiredMarkers = [
   ['assets/js/boot.js', 'DOMContentLoaded'],
@@ -97,6 +101,7 @@ if (!process.exitCode) {
   console.log('V14 structure check passed.');
   console.log(`  ${expectedScripts.length} ordered JavaScript modules`);
   console.log(`  ${expectedStyles.length} ordered stylesheets`);
+  console.log(`  ${expectedLazyScripts.length} lazy JavaScript chunk(s)`);
   console.log(`  ${totalBytes.toLocaleString('en-US')} JavaScript bytes`);
   console.log('  no legacy app.js');
   console.log('  no temporary apply-stage workflows');
