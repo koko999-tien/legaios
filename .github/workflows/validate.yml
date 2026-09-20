@@ -50,6 +50,7 @@ jobs:
           node --check assets/recovery/workspace-recovery.js
           node --check assets/shortcuts/extended-shortcuts.js
           node --check assets/experience/legaltech-experience.js
+          node --check assets/lifecycle/project-lifecycle.js
           node --check netlify/functions/official-search.mjs
           node --check netlify/functions/grounded-ai.mjs
 
