@@ -1,5 +1,5 @@
 /* Căn cứ Pháp lý Môi trường — native service worker. */
-const CACHE_NAME='ccplmt-v14-shell-20260920-73';
+const CACHE_NAME='ccplmt-v14-shell-20260920-74';
 const APP_SHELL=[
   '/',
   '/index.html',
