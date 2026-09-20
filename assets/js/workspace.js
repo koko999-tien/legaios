@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — workspace/case management and command palette runtime. */
 function caseNextActions(c){
   const actions=[];
   if(!c?.result)return [{label:"Mở lại sàng lọc để kiểm tra dữ liệu đầu vào.",kind:"go",value:"cls"}];
