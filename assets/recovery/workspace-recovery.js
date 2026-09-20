@@ -40,12 +40,13 @@ function counts(data){
  const profiles=parse('ccplmt_compliance_profiles_v1'),cases=parse('w3_cases'),saved=parse('w3_saved'),cit=parse('v13_citation_basket'),audit=parse('v17_activity_audit');
  return {profiles:Array.isArray(profiles)?profiles.length:0,cases:Array.isArray(cases)?cases.length:0,saved:Array.isArray(saved)?saved.length:0,citations:Array.isArray(cit)?cit.length:0,audit:Array.isArray(audit)?audit.length:0};
 }
-async function list(){
- try{const rows=await tx('readonly',s=>request(s.getAll()));return (rows||[]).sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,MAX)}
+async function allRows(){
+ try{const rows=await tx('readonly',s=>request(s.getAll()));return (rows||[]).sort((a,b)=>String(b.at).localeCompare(String(a.at)))}
  catch(e){console.warn('Recovery list failed:',e);return[]}
 }
+async function list(){return (await allRows()).slice(0,MAX)}
 async function trim(){
- const rows=await list();for(const x of rows.slice(MAX)){await tx('readwrite',s=>request(s.delete(x.id)))}
+ const rows=await allRows();for(const x of rows.slice(MAX)){await tx('readwrite',s=>request(s.delete(x.id)))}
 }
 async function saveNow(kind='manual',force=false){
  const data=rawState(),h=hash(data);if(!force&&h===lastHash)return null;
