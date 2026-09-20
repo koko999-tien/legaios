@@ -176,7 +176,10 @@ function addDocumentAsObligation(docId){
 }
 function complianceReportMarkdown(p){
   if(!p)return "";
-  const lines=["# Báo cáo theo dõi tuân thủ — "+p.name,"","- Loại hồ sơ: "+complianceProfileTypeLabel(p.profileType),"- Lĩnh vực: "+(p.sector||"Chưa khai"),"- Địa điểm: "+(p.location||"Chưa khai"),"- Giai đoạn: "+compliancePhaseLabel(p.phase),"- Xuất lúc: "+new Date().toISOString(),"","> Đây là báo cáo tổ chức công việc từ dữ liệu người dùng và lớp tra cứu. Không thay thế văn bản gốc hoặc kết luận của cơ quan có thẩm quyền.","","## Sổ nghĩa vụ"];
+  const lines=["# Báo cáo theo dõi tuân thủ — "+p.name,"","- Loại hồ sơ: "+complianceProfileTypeLabel(p.profileType),"- Lĩnh vực: "+(p.sector||"Chưa khai"),"- Địa điểm: "+(p.location||"Chưa khai"),"- Giai đoạn: "+compliancePhaseLabel(p.phase),"- Xuất lúc: "+new Date().toISOString(),"","> Đây là báo cáo tổ chức công việc từ dữ liệu người dùng và lớp tra cứu. Không thay thế văn bản gốc hoặc kết luận của cơ quan có thẩm quyền.","","## Permit Register"];
+  if(!p.permits.length)lines.push("Chưa có giấy phép / quyết định.");
+  p.permits.forEach(function(x,i){lines.push("",(i+1)+". **"+(x.title||permitTypeLabel(x.type))+"**","   - Số: "+(x.number||"Chưa nhập"),"   - Cơ quan cấp: "+(x.issuer||"Chưa nhập"),"   - Trạng thái theo dõi: "+permitStatusLabel(x.status),"   - Ngày cấp: "+(x.issueDate||"Chưa nhập"),"   - Ngày hết hạn: "+(x.expiryDate||"Chưa nhập"),"   - Mốc rà soát: "+(x.reviewDate||"Chưa nhập"),"   - File tham chiếu: "+(x.fileRefs.length?x.fileRefs.map(function(f){return f.name||f.id}).join("; "):"Chưa gắn"),"   - Nghĩa vụ liên kết: "+(x.obligationIds.length||0),"   - Điều kiện / nội dung theo dõi: "+(x.conditions||"Chưa ghi"),"   - Ghi chú: "+(x.note||""));});
+  lines.push("","## Sổ nghĩa vụ");
   if(!p.obligations.length)lines.push("Chưa có mục nghĩa vụ.");
   p.obligations.forEach(function(o,i){
     const d=complianceLegalDoc(o.legalDocId);
@@ -247,6 +250,7 @@ function renderComplianceDetail(){
     '<div class="compliance-status-line"><b>'+esc(complianceStatus(p))+'</b><span>Không phải kết luận đạt/không đạt tuân thủ.</span></div>'+
     (unknown.length?'<div class="compliance-missing"><b>Còn chưa rõ:</b> '+unknown.slice(0,6).map(esc).join(" · ")+(unknown.length>6?"…":"")+'</div>':"")+
     '<div class="compliance-detail-actions"><button class="btn bs" data-compliance-edit="'+esc(p.id)+'" type="button">Sửa hồ sơ</button><button class="btn bs" data-go="expert" type="button">Rà soát sâu hơn</button><button class="btn bs" data-go="upd" type="button">Xem cập nhật pháp luật</button><button class="btn bs" data-compliance-report type="button">Xuất báo cáo</button><button class="btn bs danger-soft" data-compliance-delete="'+esc(p.id)+'" type="button">Xóa hồ sơ</button></div>'+
+    permitRegisterHtml(p)+
     '<section class="compliance-section obligation-register"><div class="compliance-section-head"><div><div class="section-kicker">Sổ nghĩa vụ tuân thủ</div><h3>Căn cứ · trách nhiệm · deadline · bằng chứng</h3></div><div class="obligation-register-actions"><span>'+p.obligations.length+' mục</span><button class="tiny" data-obligation-new type="button">+ Thêm nghĩa vụ</button></div></div><p class="micro-note">Trạng thái do người dùng quản lý. “Đã đáp ứng” hoặc “Không áp dụng” không phải kết luận của hệ thống.</p><div class="obligation-list">'+(p.obligations.length?p.obligations.map(complianceObligationHtml).join(""):'<div class="obligation-empty"><b>Chưa có mục nghĩa vụ</b><p>Thêm thủ công, hoặc dùng nút “+ Sổ nghĩa vụ” ở các nhánh cần đối chiếu bên dưới.</p></div>')+'</div><div id="obligationEditorMount"></div></section>'+
     '<section class="compliance-section compliance-calendar"><div class="compliance-section-head"><div><div class="section-kicker">Lịch tuân thủ</div><h3>90 ngày tới</h3></div><small>Chỉ dùng mốc người dùng nhập hoặc đã gắn nguồn</small></div><div class="calendar-board">'+complianceCalendarHtml(p)+'</div></section>'+
     '<section class=\"compliance-section\"><div class=\"compliance-section-head\"><div><div class=\"section-kicker\">Ưu tiên</div><h3>Việc cần làm & deadline</h3></div></div><ul class="compliance-task-list">'+(tasks.length?tasks.map(complianceTaskHtml).join(""):'<li class="empty-mini">Chưa có việc theo dõi.</li>')+'</ul><div class="compliance-task-add"><input id="cpTaskTitle" placeholder="Ví dụ: Kiểm tra hạn báo cáo / lịch quan trắc…"><input id="cpTaskDate" type="date"><button class="btn bp" data-compliance-task-add type="button">Thêm việc</button></div><p class="micro-note">Deadline thủ công chỉ là lịch theo dõi của bạn. Hệ thống không tự suy ra hạn pháp lý nếu chưa có dữ liệu đã xác minh.</p></section>'+
@@ -289,11 +293,17 @@ function fillComplianceEditor(p){
 function readComplianceEditor(){
   const old=complianceProfile($("complianceEditorId")&&$("complianceEditorId").value),features={};
   COMPLIANCE_FEATURES.forEach(function(item){features[item[0]]=complianceSignal($("cp-"+item[0])&&$("cp-"+item[0]).value)});
+  const gpmtNumber=$("cpGpmtNumber")&&$("cpGpmtNumber").value||"",gpmtExpires=$("cpGpmtExpires")&&$("cpGpmtExpires").value||"";
+  const permits=(old&&old.permits?old.permits:[]).map(function(x){return complianceClone(x)});let gpmt=permits.find(function(x){return x.type==="gpmt"});
+  if(gpmtNumber||gpmtExpires){
+    if(!gpmt){gpmt=normalizeCompliancePermit({type:"gpmt",title:"Giấy phép môi trường"});permits.unshift(gpmt)}
+    gpmt.number=gpmtNumber;gpmt.expiryDate=gpmtExpires;gpmt.updatedAt=new Date().toISOString();
+  }
   return normalizeComplianceProfile(Object.assign({},old||{},{
     id:old&&old.id||complianceId(),name:$("cpName")&&$("cpName").value||"Hồ sơ chưa đặt tên",
     profileType:$("cpType")&&$("cpType").value||"facility",sector:$("cpSector")&&$("cpSector").value||"",
     location:$("cpLocation")&&$("cpLocation").value||"",phase:$("cpPhase")&&$("cpPhase").value||"",
-    features:features,permit:{gpmtNumber:$("cpGpmtNumber")&&$("cpGpmtNumber").value||"",expires:$("cpGpmtExpires")&&$("cpGpmtExpires").value||""},
+    features:features,permit:{gpmtNumber:gpmtNumber,expires:gpmtExpires},permits:permits,
     note:$("cpNote")&&$("cpNote").value||"",deadlines:old&&old.deadlines||[],obligations:old&&old.obligations||[],createdAt:old&&old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()
   }));
 }
@@ -327,6 +337,7 @@ function createComplianceFromCase(c){
 function complianceBackupRows(){return complianceProfiles.map(normalizeComplianceProfile)}
 function complianceAuditBackup(){return complianceAuditBackupRows()}
 function initComplianceUI(){
+  if(typeof initPermitUI==="function")initPermitUI();
   document.body.addEventListener("click",function(e){
     const n=e.target.closest("[data-compliance-new]");if(n){e.preventDefault();go("work");setTimeout(function(){fillComplianceEditor(null);$("workCompliance")&&$("workCompliance").scrollIntoView({behavior:"smooth",block:"start"})},40);return}
     const open=e.target.closest("[data-compliance-open]");if(open){e.preventDefault();currentComplianceId=open.dataset.complianceOpen;go("work");renderComplianceWorkspace();setTimeout(function(){$("workCompliance")&&$("workCompliance").scrollIntoView({behavior:"smooth",block:"start"})},40);return}
