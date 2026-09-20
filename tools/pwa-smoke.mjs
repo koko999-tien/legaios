@@ -36,6 +36,16 @@ try {
   await page.reload({ waitUntil: 'domcontentloaded' });
   assert((await page.title()).includes('Căn cứ Pháp lý Môi trường'), 'Offline reload did not restore the application shell');
   assert(await page.locator('#home.page.on').count(), 'Offline reload did not restore the home page');
+  const offlineModules = await page.evaluate(() => ({
+    router: Boolean(window.LEGALOS_URL_ROUTER?.ready),
+    recovery: Boolean(window.LEGALOS_RECOVERY?.ready),
+    shortcuts: Boolean(window.LEGALOS_EXTENDED_SHORTCUTS?.ready),
+    audit: Boolean(window.LEGALOS_ACTIVITY_AUDIT?.ready)
+  }));
+  assert(offlineModules.router, 'Offline reload lost URL router');
+  assert(offlineModules.recovery, 'Offline reload lost workspace recovery');
+  assert(offlineModules.shortcuts, 'Offline reload lost extended shortcuts');
+  assert(offlineModules.audit, 'Offline reload lost activity audit');
   await context.setOffline(false);
 
   console.log('Căn cứ Pháp lý Môi trường PWA/offline smoke test passed.');
