@@ -1,5 +1,5 @@
 /* Căn cứ Pháp lý Môi trường — native service worker. */
-const CACHE_NAME='ccplmt-v14-shell-20260919-62';
+const CACHE_NAME='ccplmt-v14-shell-20260920-63';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -37,22 +37,27 @@ const APP_SHELL=[
 ];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
-});
-
-self.addEventListener('activate',event=>{
   event.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(keys.filter(key=>key.startsWith('ccplmt-')&&key!==CACHE_NAME).map(key=>caches.delete(key))))
-      .then(()=>self.clients.claim())
+    caches.open(CACHE_NAME)
+      .then(cache=>cache.addAll(APP_SHELL))
+      .then(()=>self.skipWaiting())
   );
 });
 
-async function networkFirstNavigation(request){
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith('ccplmt-')&&key!==CACHE_NAME).map(key=>caches.delete(key)));
+    if('navigationPreload' in self.registration) await self.registration.navigationPreload.enable();
+    await self.clients.claim();
+  })());
+});
+
+async function networkFirstNavigation(event){
   const cache=await caches.open(CACHE_NAME);
   try{
-    const response=await fetch(request);
-    if(response&&response.ok)cache.put('/index.html',response.clone());
+    const response=await (event.preloadResponse||Promise.resolve(null)) || await fetch(event.request);
+    if(response&&response.ok) await cache.put('/index.html',response.clone());
     return response;
   }catch{
     return (await cache.match('/index.html')) || (await cache.match('/')) || Response.error();
@@ -63,7 +68,7 @@ async function networkFirstAsset(request){
   const cache=await caches.open(CACHE_NAME);
   try{
     const response=await fetch(request);
-    if(response&&response.ok)cache.put(request,response.clone());
+    if(response&&response.ok) await cache.put(request,response.clone());
     return response;
   }catch{
     return (await cache.match(request)) || Response.error();
@@ -73,8 +78,8 @@ async function networkFirstAsset(request){
 async function staleWhileRevalidateAsset(request,event){
   const cache=await caches.open(CACHE_NAME);
   const cached=await cache.match(request);
-  const update=fetch(request).then(response=>{
-    if(response&&response.ok)cache.put(request,response.clone());
+  const update=fetch(request).then(async response=>{
+    if(response&&response.ok) await cache.put(request,response.clone());
     return response;
   });
   if(cached){
@@ -95,7 +100,7 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
   if(request.mode==='navigate'){
-    event.respondWith(networkFirstNavigation(request));
+    event.respondWith(networkFirstNavigation(event));
     return;
   }
   if(isStaticAsset(request,url)){
@@ -104,4 +109,3 @@ self.addEventListener('fetch',event=>{
   }
   event.respondWith(networkFirstAsset(request));
 });
-
