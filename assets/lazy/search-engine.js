@@ -4,18 +4,18 @@ if(typeof legalSearchScore!=='function'||typeof searchEligible!=='function')retu
 const baseScore=legalSearchScore,baseCoach=renderSearchCoach,profiles=new Map();
 const COMMON=new Set(['va','cua','cho','trong','theo','voi','cac','mot','nhung','duoc','la','toi','minh','phai','khong','thi','nao','gi','hay','neu','muon','hoi','nay','do','nhu','khi']);
 const ALIASES=[
- {id:'gpmt',label:'Giấy phép môi trường',re:/\b(gpmt|giay phep moi truong|xin phep moi truong)\b/,terms:'giay phep moi truong cap phep doi tuong'},
- {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an'},
- {id:'dmc',label:'Đánh giá môi trường chiến lược',re:/\b(dmc|danh gia moi truong chien luoc)\b/,terms:'danh gia moi truong chien luoc quy hoach'},
- {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong'},
- {id:'waste',label:'Chất thải',re:/\b(rac|chat thai|ctnh|phe lieu|chat thai nguy hai)\b/,terms:'chat thai nguy hai phe lieu quan ly'},
- {id:'epr',label:'EPR · tái chế',re:/\b(epr|tai che|bao bi|trach nhiem mo rong)\b/,terms:'epr tai che bao bi trach nhiem nha san xuat'},
- {id:'chemical',label:'Hóa chất',re:/\b(hoa chat|chemical|msds|sds|su co hoa chat)\b/,terms:'hoa chat an toan su co nguy hiem'},
- {id:'water',label:'Nước thải · tài nguyên nước',re:/\b(nuoc thai|xa thai|khai thac nuoc|tai nguyen nuoc|nguon nuoc)\b/,terms:'nuoc thai xa thai tai nguyen nuoc'},
- {id:'air',label:'Khí thải · không khí',re:/\b(khi thai|khong khi|bui|phat thai)\b/,terms:'khi thai khong khi bui phat thai'},
- {id:'monitor',label:'Quan trắc môi trường',re:/\b(quan trac|giam sat moi truong)\b/,terms:'quan trac moi truong nuoc thai khi thai'},
- {id:'climate',label:'Khí nhà kính · carbon',re:/\b(knk|khi nha kinh|carbon|kiem ke khi nha kinh)\b/,terms:'khi nha kinh carbon kiem ke phat thai'},
- {id:'noise',label:'Tiếng ồn · độ rung',re:/\b(tieng on|do rung|o nhiem tieng on)\b/,terms:'tieng on do rung moi truong'}
+ {id:'gpmt',label:'Giấy phép môi trường',re:/\b(gpmt|giay phep moi truong|xin phep moi truong)\b/,terms:'giay phep moi truong cap phep doi tuong',anchors:[['giay','phep','moi','truong']]},
+ {id:'dtm',label:'Đánh giá tác động môi trường',re:/\b(dtm|danh gia tac dong moi truong)\b/,terms:'danh gia tac dong moi truong du an',anchors:[['danh','gia','tac','dong']]},
+ {id:'dmc',label:'Đánh giá môi trường chiến lược',re:/\b(dmc|danh gia moi truong chien luoc)\b/,terms:'danh gia moi truong chien luoc quy hoach',anchors:[['chien','luoc']]},
+ {id:'dkmt',label:'Đăng ký môi trường',re:/\b(dkmt|dang ky moi truong)\b/,terms:'dang ky moi truong',anchors:[['dang','ky']]},
+ {id:'waste',label:'Chất thải',re:/\b(rac|chat thai|ctnh|phe lieu|chat thai nguy hai)\b/,terms:'chat thai nguy hai phe lieu quan ly',anchors:[['chat','thai'],['phe','lieu']]},
+ {id:'epr',label:'EPR · tái chế',re:/\b(epr|tai che|bao bi|trach nhiem mo rong)\b/,terms:'epr tai che bao bi trach nhiem nha san xuat',anchors:[['epr'],['tai','che']]},
+ {id:'chemical',label:'Hóa chất',re:/\b(hoa chat|chemical|msds|sds|su co hoa chat)\b/,terms:'hoa chat an toan su co nguy hiem',anchors:[['hoa','chat']]},
+ {id:'water',label:'Nước thải · tài nguyên nước',re:/\b(nuoc thai|xa thai|khai thac nuoc|tai nguyen nuoc|nguon nuoc)\b/,terms:'nuoc thai xa thai tai nguyen nuoc',anchors:[['nuoc','thai'],['tai','nguyen','nuoc']]},
+ {id:'air',label:'Khí thải · không khí',re:/\b(khi thai|khong khi|bui|phat thai)\b/,terms:'khi thai khong khi bui phat thai',anchors:[['khi','thai'],['khong','khi']]},
+ {id:'monitor',label:'Quan trắc môi trường',re:/\b(quan trac|giam sat moi truong)\b/,terms:'quan trac moi truong nuoc thai khi thai',anchors:[['quan','trac']]},
+ {id:'climate',label:'Khí nhà kính · carbon',re:/\b(knk|khi nha kinh|carbon|kiem ke khi nha kinh)\b/,terms:'khi nha kinh carbon kiem ke phat thai',anchors:[['khi','nha','kinh'],['carbon']]},
+ {id:'noise',label:'Tiếng ồn · độ rung',re:/\b(tieng on|do rung|o nhiem tieng on)\b/,terms:'tieng on do rung moi truong',anchors:[['tieng','on'],['do','rung']]}
 ];
 function rawTokens(v){
  const a=cleanLegalQuery(v).match(/[\p{L}\p{N}_]+/gu)||[];
@@ -82,8 +82,9 @@ function model(q){
 function aliasBoost(m,p,reasons){
  let total=0,strong=false;
  for(const a of m.aliases){
+  if(a.anchors&&!a.anchors.some(g=>g.every(t=>p.allSet.has(t))))continue;
   const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?hit/ts.length:0;
-  if(ratio>=.45){total+=Math.round(42+ratio*38);strong=true;reasons.push('Đúng chủ đề: '+a.label)}
+  if(ratio>=.45){total=Math.max(total,Math.round(42+ratio*38));strong=true;reasons.push('Đúng chủ đề: '+a.label)}
  }
  return {total,strong};
 }
