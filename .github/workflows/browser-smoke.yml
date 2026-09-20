@@ -74,6 +74,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/activity-audit-smoke.mjs
 
+      - name: Verify IndexedDB workspace recovery
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/workspace-recovery-smoke.mjs
+
       - name: Verify core legal trust metadata
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
