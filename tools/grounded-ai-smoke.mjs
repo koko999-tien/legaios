@@ -54,6 +54,8 @@ try{
   await cite.click();
   await page.waitForFunction(()=>document.getElementById('art')?.classList.contains('on'));
   assert(await page.locator('#abody h1').count()===1,'Grounded AI citation marker did not open the linked legal document');
+  await page.evaluate(()=>go('memo'));
+  await page.waitForFunction(()=>document.getElementById('memo')?.classList.contains('on'));
 
   await page.locator('#groundedAiClear').click();
   assert((await page.locator('#groundedAiQuestion').inputValue())==='','Grounded AI clear did not reset the question');
