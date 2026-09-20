@@ -47,7 +47,7 @@ assets/
     classifier.js          # project screening/classifier runtime
     boot.js                # final application initialization and event wiring
   lazy/
-    search-engine.js       # weighted/fuzzy Search V2, loaded on focus/idle
+    search-engine.js       # local semantic Search V3, loaded on focus/idle
     workspace-data.js      # backup v8 + recovery, loaded on first data-management use
 ```
 
@@ -148,6 +148,8 @@ Before a production merge, verify:
 Backup v8 and “Đã xóa gần đây” are isolated in `assets/lazy/workspace-data.js`. The main shell loads a small wrapper only; the optional chunk is fetched when the work area or backup/recovery actions are first used. The service worker caches same-origin static assets after that first request. CI budgets shell JavaScript and lazy JavaScript separately.
 
 
-### Search engine V2
+### Search engine V3
 
-The ordered shell keeps a small `search-fuzzy.js` loader. Weighted ranking, typo tolerance, query correction, phrase/proximity scoring and domain-intent boosts live in `assets/lazy/search-engine.js`; the chunk is loaded on search focus or idle time and can rerank an active query without blocking initial application startup.
+The ordered shell keeps a small `search-fuzzy.js` loader. Search V3 lives in `assets/lazy/search-engine.js` and remains fully browser-side/offline-capable: it does not send queries to an external AI/search service.
+
+The engine combines corpus-frequency (IDF) weighting, typo tolerance, phrase/proximity scoring, environmental-law concept aliases, user-goal detection, explicit document-kind intent, shorthand legal-reference matching and semantic snippet selection. Query interpretation is surfaced in the result UI so users can see which concepts/goals affected ranking. The chunk is loaded on search focus or idle time and can rerank an active query without blocking initial application startup.
