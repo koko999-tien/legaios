@@ -1,40 +1,15 @@
-let complianceCalendarHorizonV15=Number(STORE.get("v15_compliance_calendar_horizon",90));
-if(![30,90,365].includes(complianceCalendarHorizonV15))complianceCalendarHorizonV15=90;
-function complianceCalendarToolbarV15(){
-  return '<div class="segmented compliance-calendar-range-v15" aria-label="Khoảng thời gian lịch">'+
-    [30,90,365].map(function(n){const label=n===365?"12 tháng":n+" ngày";return '<button type="button" data-calendar-horizon="'+n+'" '+(complianceCalendarHorizonV15===n?'class="on"':'')+'>'+label+'</button>'}).join("")+
-  '</div>';
-}
+let complianceCalendarHorizonV15=Number(STORE.get("v15_compliance_calendar_horizon",90));if(![30,90,365].includes(complianceCalendarHorizonV15))complianceCalendarHorizonV15=90;
+function complianceCalendarToolbarV15(){return '<div class="segmented compliance-calendar-range-v15" aria-label="Khoảng thời gian lịch">'+[30,90,365].map(n=>'<button type="button" data-calendar-horizon="'+n+'" '+(complianceCalendarHorizonV15===n?'class="on"':'')+'>'+(n===365?"12 tháng":n+" ngày")+'</button>').join("")+'</div>'}
 function complianceCalendarHtml(p){
-  const items=complianceCalendarItems(p);
-  const today=new Date();today.setHours(0,0,0,0);
-  const cutoff=new Date(today);cutoff.setDate(cutoff.getDate()+complianceCalendarHorizonV15);
-  const visible=items.filter(function(x){
-    const d=new Date(x.date+"T00:00:00");return d<=cutoff;
-  }).slice(0,120);
-  if(!visible.length)return '<div class="calendar-empty"><b>Chưa có mốc trong khoảng đang xem</b><p>Thêm deadline, ngày rà soát giấy phép hoặc ngày đến hạn nghĩa vụ để xây lịch công việc.</p></div>';
-  const groups={};
-  visible.forEach(function(item){
-    const key=item.date.slice(0,7);(groups[key]||(groups[key]=[])).push(item);
-  });
-  return Object.keys(groups).map(function(key){
-    const d=new Date(key+"-01T00:00:00");
-    const label=d.toLocaleDateString("vi-VN",{month:"long",year:"numeric"});
-    return '<section class="calendar-month"><h4>'+esc(label)+'</h4><div>'+groups[key].map(function(item){
-      const days=complianceDays(item.date),cls=days!==null&&days<0?"late":days!==null&&days<=15?"soon":"";
-      let action="";
-      if(item.type==="obligation"&&!item.projected)action='<button class="tiny" data-obligation-edit="'+esc(item.refId)+'" type="button">Mở nghĩa vụ</button>';
-      else if(item.type==="permit")action='<button class="tiny" data-permit-edit="'+esc(item.refId)+'" type="button">Mở giấy phép</button>';
-      return '<article class="calendar-item '+cls+(item.projected?" projected":"")+'"><time datetime="'+esc(item.date)+'"><b>'+esc(item.date.slice(8,10))+'</b><span>'+esc(item.date.slice(5,7))+'</span></time><div><b>'+esc(item.title)+'</b><small>'+esc(item.source)+'</small></div>'+action+'</article>';
-    }).join("")+'</div></section>';
-  }).join("");
+  const t=new Date;t.setHours(0,0,0,0);const c=new Date(t);c.setDate(c.getDate()+complianceCalendarHorizonV15);
+  const v=complianceCalendarItems(p).filter(x=>new Date(x.date+"T00:00:00")<=c).slice(0,120);if(!v.length)return '<div class="calendar-empty"><b>Chưa có mốc trong khoảng đang xem</b><p>Thêm deadline, ngày rà soát giấy phép hoặc ngày đến hạn nghĩa vụ để xây lịch công việc.</p></div>';
+  const g={};v.forEach(x=>(g[x.date.slice(0,7)]||(g[x.date.slice(0,7)]=[])).push(x));
+  return Object.keys(g).map(k=>'<section class="calendar-month"><h4>'+esc(new Date(k+"-01T00:00:00").toLocaleDateString("vi-VN",{month:"long",year:"numeric"}))+'</h4><div>'+g[k].map(x=>{
+    const d=complianceDays(x.date),cl=d!==null&&d<0?"late":d!==null&&d<=15?"soon":"",a=x.type==="obligation"&&!x.projected?'<button class="tiny" data-obligation-edit="'+esc(x.refId)+'" type="button">Mở nghĩa vụ</button>':x.type==="permit"?'<button class="tiny" data-permit-edit="'+esc(x.refId)+'" type="button">Mở giấy phép</button>':"";
+    return '<article class="calendar-item '+cl+(x.projected?" projected":"")+'"><time datetime="'+esc(x.date)+'"><b>'+esc(x.date.slice(8,10))+'</b><span>'+esc(x.date.slice(5,7))+'</span></time><div><b>'+esc(x.title)+'</b><small>'+esc(x.source)+'</small></div>'+a+'</article>'
+  }).join("")+'</div></section>').join("")
 }
-document.addEventListener("click",function(e){
-  const b=e.target.closest("[data-calendar-horizon]");if(!b)return;
-  const n=Number(b.dataset.calendarHorizon);if(![30,90,365].includes(n))return;
-  complianceCalendarHorizonV15=n;STORE.set("v15_compliance_calendar_horizon",n);renderComplianceWorkspace();
-});
-
+document.addEventListener("click",e=>{const b=e.target.closest("[data-calendar-horizon]");if(!b)return;const n=Number(b.dataset.calendarHorizon);if([30,90,365].includes(n)){complianceCalendarHorizonV15=n;STORE.set("v15_compliance_calendar_horizon",n);renderComplianceWorkspace()}});
 function complianceEvidenceResolved(ref){
   return typeof importedDocs!=="undefined"&&importedDocs.some(function(x){return x.id===ref.id});
 }
