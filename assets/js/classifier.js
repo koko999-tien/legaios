@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — project screening/classifier runtime. */
 function analyze(){
   if(!validateClassifier())return;
   const kind=$("kind").value,cap=+$("cap").value||0,area=+$("area").value||0,ww=+$("ww").value||0,tr=+$("tr").value||0,hz=+$("hz").value||0,air=+$("air").value||0,sens=$("sens").value==="yes";
