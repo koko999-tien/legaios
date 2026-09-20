@@ -79,6 +79,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/official-search-smoke.mjs
 
+      - name: Verify grounded AI citation-only boundary
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/grounded-ai-smoke.mjs
+
       - name: Verify structured legal comparison
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
