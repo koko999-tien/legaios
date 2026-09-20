@@ -63,7 +63,12 @@ for (const file of [...expectedStyles, ...expectedScripts, ...expectedLazyScript
 }
 
 if (fs.existsSync('assets/js/app.js')) fail('Legacy assets/js/app.js must not return after Stage 2g.');
-for(const file of expectedLazyScripts){try{new vm.Script(fs.readFileSync(file,'utf8'),{filename:file})}catch(error){fail(`${file} syntax error: ${error.message}`)}}
+for(const file of expectedLazyScripts){
+  const code=fs.readFileSync(file,'utf8');
+  try{new vm.Script(code,{filename:file})}catch(error){fail(`${file} syntax error: ${error.message}`)}
+  if(/\beval\s*\(|\bnew\s+Function\s*\(|document\.write\s*\(|javascript\s*:|set(?:Timeout|Interval)\s*\(\s*["']/i.test(code))fail(`${file} contains a blocked execution pattern.`);
+  if((code.match(/\.innerHTML\s*=/g)||[]).length)fail(`${file} must not add innerHTML assignment sinks.`);
+}
 
 const requiredMarkers = [
   ['assets/js/boot.js', 'DOMContentLoaded'],
