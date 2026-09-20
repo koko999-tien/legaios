@@ -21,62 +21,30 @@ function syncHomeCleanMode(page=currentPage()){
   document.body.classList.toggle('home-clean-v91',page==='home');
 }
 
-function routeFromPage(page){
-  const map={
-    home:'/',
-    lib:'/lib',
-    expert:'/expert',
-    work:'/work',
-    corekb:'/corekb',
-    info:'/info',
-    import:'/import',
-    term:'/term',
-    proc:'/proc',
-    memo:'/memo',
-    upd:'/upd',
-    cls:'/cls',
-    fee:'/fee',
-    art:'/art',
-    pone:'/proc'
-  };
-  return map[page] || '/';
-}
+const LEGALOS_ROUTES={home:'/',lib:'/lib',expert:'/expert',work:'/work',corekb:'/corekb',info:'/info',import:'/import',term:'/term',proc:'/proc',memo:'/memo',upd:'/upd',cls:'/cls',fee:'/fee',art:'/art',pone:'/proc'};
+const LEGALOS_PATH_TO_PAGE=Object.fromEntries(Object.entries(LEGALOS_ROUTES).map(([page,path])=>[path,page]));
 
-function syncRouteState(page){
-  const target=routeFromPage(page);
+function routeFromPage(page){return LEGALOS_ROUTES[page]||'/'}
+function pageFromLocation(){return LEGALOS_PATH_TO_PAGE[location.pathname]||'home'}
+function syncRouteState(page,replace=false){
   try{
-    const url=new URL(location.href);
-    if(target==='/' && url.pathname !== '/') url.pathname = '/';
-    else url.pathname = target;
-    url.hash='';
-    history.pushState({page}, '', url);
-  }catch{
-    // no-op: keep the existing browser state if URL rewriting is blocked.
-  }
+    const url=new URL(location.href),target=routeFromPage(page);
+    url.pathname=target;url.hash='';
+    (replace?history.replaceState:history.pushState).call(history,{page},'',url);
+  }catch{/* Keep the current URL when history is unavailable. */}
 }
 
 window.addEventListener('popstate',()=>{
-  const match=Object.entries({
-    home:'/',
-    lib:'/lib',
-    expert:'/expert',
-    work:'/work',
-    corekb:'/corekb',
-    info:'/info',
-    import:'/import',
-    term:'/term',
-    proc:'/proc',
-    memo:'/memo',
-    upd:'/upd',
-    cls:'/cls',
-    fee:'/fee',
-    art:'/art'
-  }).find(([,value])=>value===location.pathname);
-  const page=match ? match[0] : 'home';
-  if(page && typeof currentPage === 'function' && currentPage() !== page) go(page);
+  const page=pageFromLocation();
+  if(typeof currentPage!=='function'||currentPage()!==page)go(page,{history:false});
 });
 
-function go(p){
+document.addEventListener('DOMContentLoaded',()=>{
+  const page=pageFromLocation();
+  if(page!=='home')go(page,{history:false});
+},{once:true});
+
+function go(p,options={}){
   const activate=()=>{
     document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id===p));
     syncHomeCleanMode(p);
@@ -97,12 +65,12 @@ function go(p){
       syncMobileNav();
       renderCommandCenter();
       if(p==='home'){renderHomeActivity();renderHomeContinue();renderHomePortal();}
-      if(p==='corekb'){renderCoreKnowledge($('[data-core-kb]')||null);}
-      if(p==='lib'){docs();}
+      if(p==='corekb')renderCoreKnowledge($('coreKbQ')?.value||'');
+      if(p==='lib')docs();
       if(p==='work'){renderWorkspace();renderWorkspaceStats();}
-      if(p==='info'){renderCommandCenter();}
+      if(p==='info')renderCommandCenter();
     });
-    syncRouteState(p);
+    if(options.history!==false)syncRouteState(p,false);
   };
   activate();
 }
