@@ -92,6 +92,7 @@ function workspaceBackupExtras(){
     libraryPrefs:{view:typeof libraryView==="undefined"?"list":libraryView,density:typeof libraryDensity==="undefined"?"compact":libraryDensity,assist:!!(typeof libraryAssistOpen!=="undefined"&&libraryAssistOpen),savedOnly:!!(typeof savedOnlyMode!=="undefined"&&savedOnlyMode)},
     searchPrefs:{mode:typeof legalSearchMode==="undefined"?"smart":legalSearchMode,history:typeof legalSearchHistory==="undefined"?[]:legalSearchHistory},
     activity:STORE.get("w4_activity",[]),
+    trash:workspaceTrashRows(),
     importedFileRefs:imported.slice(0,500).map(function(x){return {id:String(x.id||"").slice(0,180),name:String(x.name||"").slice(0,300),ext:String(x.ext||"").slice(0,20),size:Number(x.size)||0,category:String(x.category||"other").slice(0,40),importedAt:String(x.importedAt||"").slice(0,40)}})
   };
 }
@@ -139,27 +140,29 @@ function importWorkspace(file){
       expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief),
       complianceProfiles:(d.complianceProfiles||[]).slice(0,300).map(normalizeComplianceProfile),
       complianceAudit:(d.complianceAudit||[]).slice(0,500).map(normalizeComplianceAuditEvent),
-      quickNote:safeImportedText(d.quickNote||"",20000),
-      uiPrefs:{scale:["small","normal","large"].includes(prefs.scale)?prefs.scale:"normal",density:["compact","comfortable"].includes(prefs.density)?prefs.density:"comfortable",sidebar:!!prefs.sidebar},
-      readingProgress:workspaceNormalizeReading(d.readingProgress),
-      citationBasket:workspaceNormalizeCitations(d.citationBasket),
-      citationMemoMeta:{title:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.title||"",500),note:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.note||"",10000)},
-      libraryPrefs:{view:["list","grid"].includes(library.view)?library.view:"list",density:["compact","detail"].includes(library.density)?library.density:"compact",assist:!!library.assist,savedOnly:!!library.savedOnly},
-      searchPrefs:{mode:["smart","ref","number"].includes(search.mode)?search.mode:"smart",history:Array.isArray(search.history)?search.history.slice(0,8).map(x=>safeImportedText(x,300)).filter(Boolean):[]},
-      activity:Array.isArray(d.activity)?d.activity.slice(0,10).filter(x=>x&&typeof x==="object").map(x=>({type:safeImportedText(x.type||"",30),id:safeImportedText(x.id||"",180),label:safeImportedText(x.label||"",500),at:safeImportedText(x.at||"",40)})):[],
-      importedFileRefs:workspaceNormalizeImportedRefs(d.importedFileRefs)
+      quickNote:d.quickNote!==undefined?safeImportedText(d.quickNote||"",20000):String(typeof quickNote==="undefined"?"":quickNote||"").slice(0,20000),
+      uiPrefs:object(d.uiPrefs)?{scale:["small","normal","large"].includes(prefs.scale)?prefs.scale:"normal",density:["compact","comfortable"].includes(prefs.density)?prefs.density:"comfortable",sidebar:!!prefs.sidebar}:(typeof uiPrefs==="object"&&uiPrefs?uiPrefs:{scale:"normal",density:"comfortable",sidebar:false}),
+      readingProgress:d.readingProgress!==undefined?workspaceNormalizeReading(d.readingProgress):(typeof readingProgressStore==="function"?readingProgressStore():STORE.get("v14_reading_progress",{})),
+      citationBasket:d.citationBasket!==undefined?workspaceNormalizeCitations(d.citationBasket):(typeof citationBasketV13!=="undefined"?citationBasketV13:STORE.get("v13_citation_basket",[])),
+      citationMemoMeta:d.citationMemoMeta!==undefined?{title:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.title||"",500),note:safeImportedText(d.citationMemoMeta&&d.citationMemoMeta.note||"",10000)}:(typeof citationMemoMetaV13!=="undefined"?citationMemoMetaV13:STORE.get("v13_citation_meta",{title:"",note:""})),
+      libraryPrefs:object(d.libraryPrefs)?{view:["list","grid"].includes(library.view)?library.view:"list",density:["compact","detail"].includes(library.density)?library.density:"compact",assist:!!library.assist,savedOnly:!!library.savedOnly}:{view:typeof libraryView==="undefined"?"list":libraryView,density:typeof libraryDensity==="undefined"?"compact":libraryDensity,assist:!!(typeof libraryAssistOpen!=="undefined"&&libraryAssistOpen),savedOnly:!!(typeof savedOnlyMode!=="undefined"&&savedOnlyMode)},
+      searchPrefs:object(d.searchPrefs)?{mode:["smart","ref","number"].includes(search.mode)?search.mode:"smart",history:Array.isArray(search.history)?search.history.slice(0,8).map(x=>safeImportedText(x,300)).filter(Boolean):[]}:{mode:typeof legalSearchMode==="undefined"?"smart":legalSearchMode,history:typeof legalSearchHistory==="undefined"?[]:legalSearchHistory},
+      activity:Array.isArray(d.activity)?d.activity.slice(0,10).filter(x=>x&&typeof x==="object").map(x=>({type:safeImportedText(x.type||"",30),id:safeImportedText(x.id||"",180),label:safeImportedText(x.label||"",500),at:safeImportedText(x.at||"",40)})):STORE.get("w4_activity",[]),
+      trash:Array.isArray(d.trash)?d.trash.slice(0,30):workspaceTrashRows(),
+      importedFileRefs:Array.isArray(d.importedFileRefs)?workspaceNormalizeImportedRefs(d.importedFileRefs):STORE.get("v15_import_manifest",[])
     };
     Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{next.notes[safeId(k,'doc')]=safeImportedText(v,50000)});
     Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{next.procDone[safeId(k,'proc')]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]});
     const extraCount=next.citationBasket.length+Object.keys(next.readingProgress).length+(next.quickNote?1:0);
-    const fileWarning=next.importedFileRefs.length?` Bản sao lưu có tham chiếu ${next.importedFileRefs.length} tài liệu; nội dung file PDF/Word phải nhập lại trên thiết bị mới.`:"";
+    const presentIds=new Set((typeof importedDocs!=="undefined"?importedDocs:[]).map(x=>x.id)),missingRefs=next.importedFileRefs.filter(x=>!presentIds.has(x.id));
+    const fileWarning=missingRefs.length?` Có ${missingRefs.length} tài liệu tham chiếu chưa có trên thiết bị này; cần nhập lại file gốc.`:"";
     if(!confirm(`Khôi phục bản sao lưu: ${next.complianceProfiles.length} hồ sơ tuân thủ, ${next.cases.length} hồ sơ sàng lọc, ${next.saved.length} mục đã lưu, ${extraCount} mục ghi chú/căn cứ/tiến độ. Dữ liệu hiện tại sẽ được thay thế.${fileWarning}`)){toast('Đã hủy khôi phục dữ liệu');return}
     const entries=[
       ['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs],
       [COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit],['v8_quick_note',next.quickNote],['v8_ui_prefs',next.uiPrefs],
       ['v14_reading_progress',next.readingProgress],['v13_citation_basket',next.citationBasket],['v13_citation_meta',next.citationMemoMeta],
       ['v8_library_view',next.libraryPrefs.view],['v13_library_density',next.libraryPrefs.density],['v13_library_assist',next.libraryPrefs.assist],['v8_saved_only',next.libraryPrefs.savedOnly],
-      ['v11_search_mode',next.searchPrefs.mode],['v11_search_history',next.searchPrefs.history],['w4_activity',next.activity],['v15_import_manifest',next.importedFileRefs]
+      ['v11_search_mode',next.searchPrefs.mode],['v11_search_history',next.searchPrefs.history],['w4_activity',next.activity],[WORKSPACE_TRASH_KEY,next.trash],['v15_import_manifest',next.importedFileRefs]
     ];
     if(!STORE.setBatch(entries)){toast('Không thể lưu bản nhập. Dữ liệu hiện tại chưa bị thay thế.');return}
     ({saved,recent,notes,procDone,cases,expertBriefs}=next);complianceProfiles=next.complianceProfiles;complianceAudit=next.complianceAudit;
@@ -168,7 +171,7 @@ function importWorkspace(file){
     currentComplianceId=complianceProfiles[0]?.id||null;currentCaseId=null;
     if($('caseDetail')){$('caseDetail').className='empty';$('caseDetail').textContent='Chọn hồ sơ để xem chi tiết.'}
     applyUIPrefs();syncQuickNote(quickNote);setLegalSearchMode(legalSearchMode);renderLegalSearchHistory();renderMemoV13();renderWorkspace();renderComplianceWorkspace();renderComplianceHome();renderProcList();docs(curTopic(),$("q").value);
-    toast(next.importedFileRefs.length?"Đã khôi phục dữ liệu · cần nhập lại file gốc":"Đã khôi phục dữ liệu");
+    toast(missingRefs.length?"Đã khôi phục dữ liệu · cần nhập lại file gốc":"Đã khôi phục dữ liệu");
   }catch(e){console.error(e);toast("File JSON không hợp lệ")}};
   r.onerror=()=>toast('Không đọc được file sao lưu. Dữ liệu hiện tại được giữ nguyên.');
   r.readAsText(file);
