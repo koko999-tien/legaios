@@ -7,7 +7,7 @@ function sources(){
 }
 function sync(){
  const n=sources().length,c=$('groundedAiSourceCount');if(c)c.textContent=n?n+' căn cứ sẽ được gửi':'Chưa có căn cứ để hỏi';
- const b=$('groundedAiAsk');if(b)b.disabled=!n;
+ const b=$('groundedAiAsk');if(b)b.disabled=false;
 }
 function state(text,kind=''){const n=$('groundedAiStatus');if(n){n.className='grounded-ai-status '+kind;n.textContent=text}}
 function render(answer,rows,meta={}){
@@ -31,7 +31,7 @@ async function ask(){
    if(!res.ok)throw new Error(data.error||('HTTP '+res.status));
    render(data.answer,rows,{model:data.model});state('Đã trả lời từ '+rows.length+' căn cứ đã chọn.','ok');
  }catch(e){console.error(e);state('Không thể gọi AI lúc này. Căn cứ của bạn vẫn được giữ cục bộ.','error')}
- finally{if(b){b.disabled=!sources().length;b.textContent='Hỏi từ căn cứ đã chọn'}}
+ finally{if(b){b.disabled=false;b.textContent='Hỏi từ căn cứ đã chọn'}}
 }
 function clear(){const a=$('groundedAiAnswer');if(a)a.replaceChildren();if($('groundedAiQuestion'))$('groundedAiQuestion').value='';state('')}
 document.addEventListener('click',e=>{if(e.target?.closest?.('#groundedAiAsk'))ask();if(e.target?.closest?.('#groundedAiClear'))clear()});
