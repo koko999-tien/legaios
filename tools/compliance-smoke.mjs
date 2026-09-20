@@ -159,7 +159,9 @@ try{
   assert(permitLinks.obligations.length===1,'Permit Register did not preserve the selected obligation link');
   assert((await page.locator('.compliance-calendar').innerText()).includes('Giấy phép tài nguyên nước QA'),'Permit review/expiry did not surface in the compliance calendar');
   page.once('dialog',dialog=>dialog.accept());
-  await page.locator('[data-permit-delete]').filter({hasText:'Xóa'}).last().click();
+  const waterPermitRow=page.locator('.permit-register .obligation-item').filter({hasText:'TNN-QA-02'});
+  assert(await waterPermitRow.count()===1,'Target permit row is missing before delete');
+  await waterPermitRow.locator('[data-permit-delete]').click();
   assert(!(await page.locator('.permit-register').innerText()).includes('TNN-QA-02'),'Deleted permit is still visible');
   await page.locator('.compliance-profile-detail [data-compliance-undo-last]').click();
   assert((await page.locator('.permit-register').innerText()).includes('TNN-QA-02'),'Undo did not restore deleted permit');
