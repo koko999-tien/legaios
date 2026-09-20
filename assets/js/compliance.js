@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — compliance rendering, editors and workspace integration. */
 function complianceCalendarHtml(p){
   const items=complianceCalendarItems(p);
   const today=new Date();today.setHours(0,0,0,0);
