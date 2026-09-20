@@ -49,5 +49,17 @@ try{
   assert(links.every(x=>/^https:\/\/(?:[^/]+\.)?(?:vbpl\.vn|vanban\.chinhphu\.vn|congbao\.chinhphu\.vn|chinhphu\.vn|vbpl\.moj\.gov\.vn)\//.test(x)),`Non-official result escaped allowlist: ${JSON.stringify(links)}`);
   const badge=(await page.locator('.official-search-v4-unverified').first().innerText()).toLowerCase();
   assert(badge.includes('chưa kiểm định'),'Web result is not visibly separated from verified local data');
+  await page.locator('.official-search-v4-item').first().locator('.official-search-v4-item-actions button').click();
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('v15_official_candidates')||'[]').length===1);
+  const candidate=await page.evaluate(()=>JSON.parse(localStorage.getItem('v15_official_candidates')||'[]')[0]);
+  assert(candidate?.url?.startsWith('https://vbpl.vn/'),'Search V4 review queue did not persist the selected official URL');
+  assert(candidate?.query==='nước thải','Search V4 review queue did not preserve query provenance');
+  await page.evaluate(()=>window.go?.('upd'));
+  await page.waitForFunction(()=>document.getElementById('upd')?.classList.contains('on'));
+  await page.locator('[data-lawtab="watch"]').click();
+  await page.waitForFunction(()=>document.querySelector('.candidate-review-item'));
+  const reviewText=(await page.locator('.candidate-review-section').innerText()).toLowerCase();
+  assert(reviewText.includes('nghị định 48/2026/nđ-cp'),'Official candidate is missing from the legal review queue');
+  assert(reviewText.includes('chưa kiểm định'),'Official candidate lost its unverified trust label');
   console.log('Official Search V4 browser smoke passed.');
 }finally{await browser.close()}
