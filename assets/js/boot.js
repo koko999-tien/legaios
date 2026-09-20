@@ -52,6 +52,20 @@ document.addEventListener("DOMContentLoaded",()=>{
   if($("libraryDensity"))$("libraryDensity").onclick=e=>{const b=e.target.closest('[data-libdensity]');if(b){libraryDensity=b.dataset.libdensity;STORE.set('v13_library_density',libraryDensity);applyLibraryView()}};
   if($("toggleAssist"))$("toggleAssist").onclick=()=>{libraryAssistOpen=!libraryAssistOpen;STORE.set('v13_library_assist',libraryAssistOpen);applyLibraryView()};
   $("savedOnly").onclick=()=>{savedOnlyMode=!savedOnlyMode;STORE.set('v8_saved_only',savedOnlyMode);vs()};$("resetFilters").onclick=resetLibraryFilters;
+  if($("clearActiveFilters"))$("clearActiveFilters").onclick=resetLibraryFilters;
+  if($("activeFilterList"))$("activeFilterList").onclick=e=>{
+    const b=e.target.closest("[data-clear-filter]");if(!b)return;
+    const key=b.dataset.clearFilter;
+    if(key==="q")$("q").value="";
+    else if(key==="topic")document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t==="all"));
+    else if(key==="saved"){savedOnlyMode=false;STORE.set("v8_saved_only",false)}
+    else if(key==="asOf")$("asOfF").value="";
+    else {
+      const ids={scope:"scopeF",year:"yearF",effect:"effectF",source:"sourceF",type:"typeF"};
+      if(ids[key]&&$(ids[key]))$(ids[key]).value="all";
+    }
+    vs(false);
+  };
   if($("asOfF"))$("asOfF").onchange=()=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value)};
   $("procWizardStart").onclick=()=>openWizard($("procWizardSelect").value,0);$("wizardClose").onclick=closeWizard;$("wizardModal").onclick=e=>{if(e.target===$("wizardModal"))closeWizard()};
   if($("openShortcuts"))$("openShortcuts").onclick=()=>$("shortcutsModal")?.classList.add('on');if($("shortcutsClose"))$("shortcutsClose").onclick=()=>$("shortcutsModal")?.classList.remove('on');if($("shortcutsModal"))$("shortcutsModal").onclick=e=>{if(e.target===$("shortcutsModal"))$("shortcutsModal").classList.remove('on')};
