@@ -111,8 +111,10 @@ function parseShortLegalRef(fold){
  return null;
 }
 function model(q){
- const primary=uniq(rawTokens(q)),expanded=uniq((typeof expandTokens==='function'?expandTokens(q):primary).filter(x=>!COMMON.has(x)));
- const fold=cleanLegalQuery(q),aliases=ALIASES.filter(a=>a.re.test(fold)),actions=ACTIONS.filter(a=>a.re.test(fold));
+ const fold=cleanLegalQuery(q);let primary=uniq(rawTokens(q));
+ if(/\bquy dinh\b/.test(fold))primary=primary.filter(t=>t!=='quy'&&t!=='dinh');
+ if(/\bo dau\b/.test(fold))primary=primary.filter(t=>t!=='dau');
+ const expanded=uniq((typeof expandTokens==='function'?expandTokens(q):primary).filter(x=>!COMMON.has(x))),aliases=ALIASES.filter(a=>a.re.test(fold)),actions=ACTIONS.filter(a=>a.re.test(fold));
  return {primary,expanded,fold,aliases,actions,shortRef:parseShortLegalRef(fold),phrase:primary.join(' '),intent:typeof detectLegalIntent==='function'?detectLegalIntent(q):{labels:[]}};
 }
 function aliasBoost(m,p,reasons){
@@ -121,10 +123,13 @@ function aliasBoost(m,p,reasons){
   const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?hit/ts.length:0;
   const anchored=!a.anchors||a.anchors.some(g=>g.every(t=>p.allSet.has(t)));
   const directAlias=a.re.test(m.fold),directAcronym=directAlias&&m.primary.length===1&&m.primary[0]===a.id;
-  if(!anchored&&!(directAlias&&ratio>=.5))continue;
-  if(ratio>=.38){
-   total+=Math.round((directAcronym?54:34)+ratio*(directAcronym?42:34));hits++;labels.push(a.label);
-   if(reasons.length<6)reasons.push((directAcronym?'Mở rộng viết tắt: ':'Đúng chủ đề: ')+a.label);
+  const titleDirect=directAlias&&a.re.test(p.title.text),bodyDirect=directAlias&&a.re.test(p.body.text);
+  if(!anchored&&!(directAlias&&ratio>=.5)&&!titleDirect&&!bodyDirect)continue;
+  if(ratio>=.38||titleDirect||bodyDirect){
+   let add=Math.round((directAcronym?54:34)+ratio*(directAcronym?42:34));
+   if(titleDirect)add+=150;else if(bodyDirect)add+=48;
+   total+=add;hits++;labels.push(a.label);
+   if(reasons.length<6)reasons.push(titleDirect?'Cụm chủ đề trong tên văn bản':(directAcronym?'Mở rộng viết tắt: ':'Đúng chủ đề: ')+a.label);
   }
  }
  if(hits>=2){total+=48;reasons.push('Khớp đồng thời nhiều chủ đề')}
