@@ -38,7 +38,9 @@ assets/
     compliance-core.js      # compliance state, normalization, audit, due-date/calendar model
     permits.js              # Sổ giấy phép UI, file/obligation links and permit actions
     compliance.js           # compliance rendering, editors and workspace integration
-    workspace.js           # workspace and command-palette runtime
+    workspace.js           # workspace/case runtime + lazy data-management loader
+  lazy/
+    workspace-data.js       # backup v8 + recovery, loaded on first workspace/data-management use
     legal-hub.js           # legal-pack, data-vault and update-hub runtime
     expert.js              # expert dossier review runtime
     navigation.js          # page navigation runtime
@@ -138,3 +140,8 @@ Before a production merge, verify:
 
 - `knowledge-base.js` owns the `TERMS` dataset used by the Thuật ngữ page.
 - Common environmental abbreviations are searchable by abbreviation and full phrase; `search-utils.js` carries selected abbreviations into global legal-search expansion (including ĐMC).
+
+
+### Lazy data management
+
+Backup v8 and “Đã xóa gần đây” are isolated in `assets/lazy/workspace-data.js`. The main shell loads a small wrapper only; the optional chunk is fetched when the work area or backup/recovery actions are first used. The service worker caches same-origin static assets after that first request. CI budgets shell JavaScript and lazy JavaScript separately.
