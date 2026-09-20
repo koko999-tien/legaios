@@ -2,8 +2,8 @@
 'use strict';if(window.CCPLMT_GROUNDED_AI?.ready)return;
 const $=id=>document.getElementById(id);
 function sources(){
- const rows=Array.isArray(window.citationBasketV13)?window.citationBasketV13:[];
- return rows.slice(0,12).map((x,i)=>{const d=Array.isArray(window.D)?window.D.find(v=>v.id===x.doc):null;return{id:String(i+1),document:String(d?.ttl||x.doc||'Văn bản').slice(0,500),label:String(x.label||'Căn cứ').slice(0,500),text:String(x.text||'').slice(0,5000),source:/^https:\/\//i.test(String(x.source||''))?String(x.source).slice(0,2000):''}}).filter(x=>x.text);
+ const rows=typeof citationBasketV13!=="undefined"&&Array.isArray(citationBasketV13)?citationBasketV13:[];
+ return rows.slice(0,12).map((x,i)=>{const d=typeof D!=="undefined"&&Array.isArray(D)?D.find(v=>v.id===x.doc):null;return{id:String(i+1),document:String(d?.ttl||x.doc||'Văn bản').slice(0,500),label:String(x.label||'Căn cứ').slice(0,500),text:String(x.text||'').slice(0,5000),source:/^https:\/\//i.test(String(x.source||''))?String(x.source).slice(0,2000):''}}).filter(x=>x.text);
 }
 function sync(){
  const n=sources().length,c=$('groundedAiSourceCount');if(c)c.textContent=n?n+' căn cứ sẽ được gửi':'Chưa có căn cứ để hỏi';
