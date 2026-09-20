@@ -20,9 +20,17 @@ function renderLibraryActiveFilters(topic="all",q=""){
   const host=$("activeFilterList"),panel=$("activeFilters");if(!host||!panel)return;
   const rows=libraryActiveFilters(topic,q);
   panel.classList.toggle("empty",!rows.length);
-  host.innerHTML=rows.length
-    ?rows.map(x=>`<button class="active-filter-chip" data-clear-filter="${x.key}" type="button" title="Bỏ tiêu chí này"><span>${esc(x.label)}</span><b aria-hidden="true">×</b></button>`).join("")
-    :'<span class="active-filter-empty">Chưa áp dụng bộ lọc nâng cao.</span>';
+  host.replaceChildren();
+  if(rows.length){
+    rows.forEach(x=>{
+      const b=document.createElement("button"),label=document.createElement("span"),close=document.createElement("b");
+      b.className="active-filter-chip";b.type="button";b.dataset.clearFilter=x.key;b.title="Bỏ tiêu chí này";
+      label.textContent=x.label;close.textContent="×";close.setAttribute("aria-hidden","true");
+      b.append(label,close);host.append(b);
+    });
+  }else{
+    const empty=document.createElement("span");empty.className="active-filter-empty";empty.textContent="Chưa áp dụng bộ lọc nâng cao.";host.append(empty);
+  }
   if(rows.some(x=>!["q","topic","saved"].includes(x.key)))$("advancedSearch")?.setAttribute("open","");
 }
 
