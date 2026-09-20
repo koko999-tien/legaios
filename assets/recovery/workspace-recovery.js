@@ -5,7 +5,7 @@ const KEYS=[
 'w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs',
 'ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1','v8_quick_note','v8_ui_prefs',
 'v14_reading_progress','v13_citation_basket','v13_citation_meta','v15_workspace_trash',
-'v16_law_watchlist','v15_official_candidates','v17_activity_audit'
+'v16_law_watchlist','v15_official_candidates','v17_activity_audit','v17_project_lifecycle'
 ];
 let dbPromise=null,timer=null,lastHash='';
 
