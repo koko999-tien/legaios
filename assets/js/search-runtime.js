@@ -62,9 +62,9 @@ function addCitationV13(doc,article=null,clause=null,point=null){
  citationBasketV13=[item,...citationBasketV13];STORE.set(MEMO_KEY_V13,citationBasketV13);renderMemoV13();toast("Đã thêm căn cứ");
 }
 function removeCitationV13(id){
- const old=citationBasketV13.find(x=>citationIdV13(x)===id);if(old&&typeof workspaceTrashPush==="function")workspaceTrashPush("citation",old,"Căn cứ hồ sơ · "+(old.label||old.doc));
- citationBasketV13=citationBasketV13.filter(x=>citationIdV13(x)!==id);
- STORE.set(MEMO_KEY_V13,citationBasketV13);renderMemoV13();
+ const old=citationBasketV13.find(x=>citationIdV13(x)===id),drop=()=>{citationBasketV13=citationBasketV13.filter(x=>citationIdV13(x)!==id);STORE.set(MEMO_KEY_V13,citationBasketV13);renderMemoV13()};
+ if(old&&typeof workspaceTrashPush==="function")return workspaceTrashPush("citation",old,"Căn cứ hồ sơ · "+(old.label||old.doc)).then(drop).catch(()=>{});
+ drop();
 }
 function updateCitationNoteV13(id,val){
  const x=citationBasketV13.find(x=>citationIdV13(x)===id);if(!x)return;x.note=val;STORE.set(MEMO_KEY_V13,citationBasketV13);renderMemoStatsV13();
