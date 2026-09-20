@@ -41,7 +41,7 @@ function openPermitEditor(id){
   const p=complianceProfile();if(!p){toast("Tạo Hồ sơ tuân thủ trước");return}
   const host=$("permitEditorMount");if(!host)return;
   const found=(p.permits||[]).find(function(x){return x.id===id});
-  host.innerHTML=permitEditorHtml(p,found||normalizeCompliancePermit({id:""}));
+  host.replaceChildren(document.createRange().createContextualFragment(permitEditorHtml(p,found||normalizeCompliancePermit({id:""}))));
   host.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
 }
 function readPermitEditor(){
@@ -78,6 +78,6 @@ function initPermitUI(){
     const del=e.target.closest("[data-permit-delete]");if(del){e.preventDefault();deletePermit(del.dataset.permitDelete);return}
     const obl=e.target.closest("[data-permit-obligation]");if(obl){e.preventDefault();permitToObligation(obl.dataset.permitObligation);return}
     if(e.target.closest("[data-permit-save]")){e.preventDefault();savePermitEditor();return}
-    if(e.target.closest("[data-permit-cancel]")){e.preventDefault();const host=$("permitEditorMount");if(host)host.innerHTML="";return}
+    if(e.target.closest("[data-permit-cancel]")){e.preventDefault();const host=$("permitEditorMount");if(host)host.replaceChildren();return}
   });
 }
