@@ -32,8 +32,17 @@ try{
   const privacy=(await page.locator('.official-search-v4-privacy').innerText()).toLowerCase();
   assert(privacy.includes('không gửi hồ sơ'),'Search V4 privacy boundary is missing');
   await page.locator('#q').fill('nước thải');
+  assert(!(await page.locator('#officialSearchBtn').isDisabled()),'Search V4 button stayed disabled after entering a query');
   await page.locator('#officialSearchBtn').click();
-  await page.waitForFunction(()=>document.querySelectorAll('.official-search-v4-item').length===2);
+  await page.waitForTimeout(1200);
+  const probe=await page.evaluate(()=>({
+    items:document.querySelectorAll('.official-search-v4-item').length,
+    state:document.getElementById('officialSearchState')?.textContent||'',
+    button:document.getElementById('officialSearchBtn')?.textContent||'',
+    disabled:!!document.getElementById('officialSearchBtn')?.disabled,
+    html:document.getElementById('officialSearchResults')?.innerHTML||''
+  }));
+  assert(probe.items===2,`Search V4 render probe failed: requests=${officialRequests} probe=${JSON.stringify(probe)}`);
   assert(officialRequests===1,`Expected one opt-in web request, got ${officialRequests}`);
   const links=await page.locator('.official-search-v4-item a').evaluateAll(a=>a.map(x=>x.href));
   assert(links.every(x=>/^https:\/\/(?:[^/]+\.)?(?:vbpl\.vn|vanban\.chinhphu\.vn|congbao\.chinhphu\.vn|chinhphu\.vn|vbpl\.moj\.gov\.vn)\//.test(x)),`Non-official result escaped allowlist: ${JSON.stringify(links)}`);
