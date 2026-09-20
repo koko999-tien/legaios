@@ -11,7 +11,18 @@ function extract(start,end){
 const core=vm.runInNewContext('['+extract('const CORE_IDS=[','];\n\nconst CORE_READING_CHAIN')+']');
 const professor=vm.runInNewContext('({'+extract('const PROFESSOR_VERIFIED={','\n};\nfunction professorVerified')+'})');
 const allowed=new Set(['vanban.chinhphu.vn','congbao.chinhphu.vn','vbpl.vn','vbpl.moj.gov.vn','chinhphu.vn']);
-const baseline=new Date('2026-09-20T00:00:00+07:00');
+function releaseBaseline(){
+  const override=String(process.env.LEGAL_DATA_AUDIT_AS_OF||'').trim();
+  if(override){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(override))throw new Error('LEGAL_DATA_AUDIT_AS_OF must use YYYY-MM-DD');
+    const parsed=new Date(override+'T00:00:00Z');
+    if(Number.isNaN(parsed.getTime()))throw new Error('LEGAL_DATA_AUDIT_AS_OF is not a valid date');
+    return parsed;
+  }
+  const now=new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
+}
+const baseline=releaseBaseline();
 const errors=[];
 function escapeRe(s){return s.replace(/[.*+?^$()|[\]\\]/g,'\\$&')}
 function metaHasSource(id){
@@ -45,4 +56,5 @@ if(errors.length){
 console.log('Legal-data release gate passed.');
 console.log('  '+core.length+' core records have official source metadata');
 console.log('  audit notes and checked dates are present');
+console.log('  release baseline: '+baseline.toISOString().slice(0,10));
 console.log('  all core audit dates are within 90 days of the release baseline');

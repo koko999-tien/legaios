@@ -91,6 +91,13 @@ try{
   assert(coach.includes('câu hỏi về giấy phép môi trường'),'Search coach did not explain the detected conversational intent');
   assert(coach.includes('không phải câu trả lời có/không'),'Search coach did not preserve the no-legal-conclusion boundary');
 
+  const dmcEngine=await page.evaluate(()=>{
+    const target=D.find(d=>d.id==='l72')||D.find(d=>/bảo vệ môi trường/i.test(d.ttl))||D[0];
+    const result=legalSearchScore(target,'ĐMC');
+    return {title:target?.ttl||'',matched:!!result.matched,score:Number(result.score||0),reasons:Array.isArray(result.reasons)?result.reasons:[]};
+  });
+  assert(dmcEngine.matched,`ĐMC acronym expansion did not match the core environmental-law document: ${JSON.stringify(dmcEngine)}`);
+  assert(dmcEngine.reasons.some(r=>/Mở rộng viết tắt|Đúng chủ đề/i.test(String(r))),`ĐMC acronym match has no alias-expansion evidence: ${JSON.stringify(dmcEngine.reasons)}`);
   const dmcIntent=await page.evaluate(()=>detectLegalIntent('ĐMC'));
   assert(dmcIntent.labels.includes('Câu hỏi về ĐMC'),`ĐMC intent was not recognized: ${JSON.stringify(dmcIntent)}`);
   await q.fill('ĐMC');
@@ -117,6 +124,7 @@ try{
   console.log('  nonsense query returns zero results');
   console.log('  exact legal-number search still works');
   console.log(`  conversational GPMT query results: ${naturalCount}`);
+  console.log(`  ĐMC engine target: ${dmcEngine.title} · score ${dmcEngine.score}`);
   console.log(`  ĐMC query results: ${dmcCount}`);
 }finally{
   await browser.close();

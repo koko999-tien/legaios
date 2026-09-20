@@ -82,9 +82,14 @@ function model(q){
 function aliasBoost(m,p,reasons){
  let total=0,strong=false;
  for(const a of m.aliases){
-  if(a.anchors&&!a.anchors.some(g=>g.every(t=>p.allSet.has(t))))continue;
   const ts=rawTokens(a.terms),hit=ts.filter(t=>p.allSet.has(t)).length,ratio=ts.length?hit/ts.length:0;
-  if(ratio>=.45){total=Math.max(total,Math.round(42+ratio*38));strong=true;reasons.push('Đúng chủ đề: '+a.label)}
+  const anchored=!a.anchors||a.anchors.some(g=>g.every(t=>p.allSet.has(t)));
+  const directAlias=a.re.test(m.fold),directAcronym=directAlias&&m.primary.length===1&&m.primary[0]===a.id;
+  if(!anchored&&!(directAlias&&ratio>=.55))continue;
+  if(ratio>=.45){
+   total=Math.max(total,Math.round((directAcronym?58:42)+ratio*(directAcronym?46:38)));
+   strong=true;reasons.push((directAcronym?'Mở rộng viết tắt: ':'Đúng chủ đề: ')+a.label);
+  }
  }
  return {total,strong};
 }
