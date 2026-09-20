@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — page navigation and route activation. */
 (function installMobileArticleFixes(){
   if(document.getElementById('legalosMobileArticleFixes'))return;
   const style=document.createElement('style');
