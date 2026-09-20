@@ -16,3 +16,15 @@
 .official-search-v4-url{color:var(--m);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .official-search-v4-direct{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bd);font-size:11px}.official-search-v4-direct-links{flex-wrap:wrap;margin-top:6px}
 @media(max-width:700px){.official-search-v4-head,.official-search-v4-controls{align-items:stretch;flex-direction:column}.official-search-v4-badge{align-self:flex-start}.official-search-v4-query{white-space:normal}.official-search-v4-controls .btn{width:100%;min-height:44px}.official-search-v4-meta{align-items:flex-start;flex-direction:column;gap:4px}}
+
+.official-search-v4-item-actions{display:flex;justify-content:flex-end;margin-top:4px}
+.candidate-review-section,.local-law-watch-section{margin-bottom:16px}
+.candidate-review-head,.candidate-review-top,.candidate-review-actions{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.candidate-review-head{margin-bottom:8px}.candidate-review-head h3{margin:3px 0 0;font-size:16px}
+.candidate-review-note{margin:0 0 10px;color:var(--m);font-size:11px;line-height:1.55}
+.candidate-review-badge{border:1px solid var(--bd);border-radius:999px;padding:4px 7px;color:var(--m);font-size:10px;white-space:nowrap}
+.candidate-review-item{display:grid;gap:9px;margin-bottom:9px;padding:11px;border:1px solid var(--bd);border-radius:9px;background:var(--card)}
+.candidate-review-item h4{margin:3px 0 4px;font-size:13px}.candidate-review-item small{color:var(--m)}
+.candidate-review-fields{align-items:end}.candidate-review-note-field{grid-column:1/-1}
+.candidate-review-actions{align-items:center}.candidate-review-warning{color:var(--m);font-size:10px}
+@media(max-width:700px){.candidate-review-head,.candidate-review-top,.candidate-review-actions{flex-direction:column;align-items:stretch}.candidate-review-fields{grid-template-columns:1fr}.official-search-v4-item-actions .tiny{min-height:40px;width:100%}}
