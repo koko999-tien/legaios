@@ -61,6 +61,7 @@ Các kiểm thử header, sidebar, article layout, reading progress, IndexedDB, 
 - **Search V4:** mở rộng nguồn chính thức theo thao tác chủ động của người dùng; kết quả web tách khỏi corpus đã kiểm định và chỉ cho phép miền chính thức.
 - **Khôi phục an toàn hơn:** hiển thị bản xem trước số hồ sơ, giấy phép, nghĩa vụ, căn cứ và tiến độ trước khi thay workspace; có nút xuất bản hiện tại trước.
 - **Lịch tuân thủ rộng hơn:** chuyển giữa 30 ngày, 90 ngày và 12 tháng; mốc giấy phép mở thẳng Sổ giấy phép và nghĩa vụ mở thẳng Sổ nghĩa vụ.
+- **Phối hợp nhiều tab:** Hồ sơ tuân thủ có revision metadata; khi phát hiện tab khác đã ghi phiên mới, hệ thống hợp nhất theo từng hồ sơ dựa trên `updatedAt` và hợp nhất audit trail theo ID trước khi ghi tiếp. Đây vẫn là local multi-tab coordination, chưa phải cloud sync.
 - **CI trên nhánh tính năng:** validate + browser smoke chạy trên `feat/**`; Search V4 có regression test riêng.
 
 Các mục này chưa phải release production. Search V4 hiện là lớp discovery; liên kết được phát hiện không được coi là xác nhận hiệu lực hay kết luận áp dụng pháp luật.
