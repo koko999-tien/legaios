@@ -31,7 +31,7 @@ const expectedScripts = [
   'assets/js/boot.js'
 ];
 
-const expectedLazyScripts = ['assets/lazy/workspace-data.js'];
+const expectedLazyScripts = ['assets/lazy/workspace-data.js','assets/lazy/search-engine.js'];
 
 const expectedStyles = [
   'assets/css/app.css',
@@ -82,7 +82,7 @@ const requiredMarkers = [
   ['assets/js/permits.js', 'function permitRegisterHtml('],
   ['assets/js/compliance.js', 'function renderComplianceWorkspace('],
   ['assets/js/idb-resilience.js', 'window.LEGALOS_IDB_RESILIENCE'],
-  ['assets/js/search-fuzzy.js', 'window.LEGALOS_FUZZY_SEARCH'],
+  ['assets/js/search-fuzzy.js', 'window.LEGALOS_SEARCH_LOADER'],
   ['assets/js/oss-upgrades.js', 'window.CCPLMT_DIAGNOSTICS']
 ];
 for (const [file, marker] of requiredMarkers) {
