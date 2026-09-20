@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — procedure checklist, progress and detail runtime. */
 function renderProcSummary(){
   const total=P.reduce((n,p)=>n+p.st.length,0);
   let done=0;P.forEach(p=>done+=(procDone[p.id]||[]).length);
