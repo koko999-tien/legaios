@@ -219,12 +219,38 @@ function complianceStatus(p){
   const n=complianceTracks(p).length;
   return n>1?n+" nhánh cần đối chiếu":"Sẵn sàng rà căn cứ nền";
 }
+const COMPLIANCE_REVISION_KEY_V15="v15_compliance_revision";
+const COMPLIANCE_TAB_ID_V15=sessionStorage.getItem("ccplmt_compliance_tab_id")||("tab-"+Date.now()+"-"+Math.random().toString(16).slice(2));
+sessionStorage.setItem("ccplmt_compliance_tab_id",COMPLIANCE_TAB_ID_V15);
+let complianceKnownRevisionV15=Number(STORE.get(COMPLIANCE_REVISION_KEY_V15,{rev:0}).rev)||0;
+function complianceMergeProfilesV15(disk,local){
+  const rows=new Map();
+  (Array.isArray(disk)?disk:[]).map(normalizeComplianceProfile).forEach(p=>rows.set(p.id,p));
+  (Array.isArray(local)?local:[]).map(normalizeComplianceProfile).forEach(p=>{
+    const old=rows.get(p.id);
+    if(!old||String(p.updatedAt||"")>=String(old.updatedAt||""))rows.set(p.id,p);
+  });
+  return [...rows.values()].sort((a,b)=>String(b.updatedAt||"").localeCompare(String(a.updatedAt||""))).slice(0,300);
+}
 function saveComplianceProfiles(){
   complianceProfiles=complianceProfiles.map(normalizeComplianceProfile);
-  STORE.set(COMPLIANCE_KEY,complianceProfiles);
+  const meta=STORE.get(COMPLIANCE_REVISION_KEY_V15,{rev:0,tabId:""})||{rev:0,tabId:""};
+  const diskRev=Number(meta.rev)||0;
+  if(diskRev>complianceKnownRevisionV15&&meta.tabId!==COMPLIANCE_TAB_ID_V15){
+    const disk=STORE.get(COMPLIANCE_KEY,[]);
+    complianceProfiles=complianceMergeProfilesV15(disk,complianceProfiles);
+    if(typeof showExternalDataChangeNotice==="function")showExternalDataChangeNotice();
+  }
+  const nextRev=Math.max(diskRev,complianceKnownRevisionV15)+1;
+  const ok=STORE.setBatch([
+    [COMPLIANCE_KEY,complianceProfiles],
+    [COMPLIANCE_REVISION_KEY_V15,{rev:nextRev,tabId:COMPLIANCE_TAB_ID_V15,updatedAt:new Date().toISOString()}]
+  ]);
+  if(ok)complianceKnownRevisionV15=nextRev;
   renderComplianceWorkspace();renderComplianceHome();renderComplianceRadar();
   if(typeof renderHomePortal==="function")renderHomePortal();
   if(typeof renderWorkspaceStats==="function")renderWorkspaceStats();
+  return ok;
 }
 function complianceTrackHtml(track){
   const docs=track.docs.length?track.docs.slice(0,5).map(function(d){
