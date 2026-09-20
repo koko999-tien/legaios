@@ -114,6 +114,11 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/compliance-smoke.mjs
 
+      - name: Verify compliance calendar ICS export
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/calendar-export-smoke.mjs
+
       - name: Verify real mobile sidebar interaction
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
