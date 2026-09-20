@@ -72,7 +72,7 @@ function docs(topic="all",q=""){
             <span class="tag">${d.k}</span><span class="tag">${topicName(d.t)}</span>
             ${m.temp?'<span class="doc-state temp">Có thời hạn</span>':(m.eff?'<span class="doc-state">Có dữ liệu hiệu lực</span>':'')}
             <span class="role-badge ${lawRole(d)}">${roleLabel(lawRole(d))}</span>
-            ${professorVerified(d.id)?'<span class="prof-verified-dot">Đã kiểm chứng</span>':(m.src?'<span class="verified-dot">Có nguồn</span>':'')}
+            ${professorVerified(d.id)?'<span class="prof-verified-dot">Đã đối chiếu</span>':(m.src?'<span class="verified-dot">Có nguồn</span>':'')}
             ${exactRef?'<span class="no-fulltext">Có tham chiếu trong chỉ mục</span>':''}
           </div>
           <div class="doc-snippet">${hi(snippetText(d.b,q),q)}</div>
