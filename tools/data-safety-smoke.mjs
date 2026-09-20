@@ -29,7 +29,7 @@ try{
   const backup=JSON.parse(await readFile(await download.path(),'utf8'));
   backup.notes={[id]:'Restored note'};
   await upload(backup);
-  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã hủy nhập workspace');
+  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã hủy khôi phục dữ liệu');
   assert(confirmations===1,'Valid workspace import must request confirmation');
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Cancelled import changed notes');
 
@@ -52,7 +52,7 @@ try{
   assert(JSON.stringify(before)===JSON.stringify(after),'Failed import left partial storage changes');
   await page.evaluate(()=>{Storage.prototype.setItem=window.__testStorageSet;delete window.__testStorageSet});
   await upload(backup);
-  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã nhập workspace');
+  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã khôi phục dữ liệu');
   assert(!await page.locator('#storageWarning').count(),'Successful retry did not clear the storage warning');
   await page.reload({waitUntil:'networkidle'});
   assert(JSON.parse((await notes()).disk)[id]==='Restored note','Imported notes did not survive reload');
