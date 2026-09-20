@@ -201,6 +201,6 @@ function renderImpact(){if(!$('impactGrid'))return;$('impactGrid').innerHTML=IMP
 function renderLawHubTab(tab){
   document.querySelectorAll('[data-lawtab]').forEach(b=>b.classList.toggle('on',b.dataset.lawtab===tab));
   document.querySelectorAll('[data-lawpanel]').forEach(p=>p.hidden=p.dataset.lawpanel!==tab);
-  if(tab==='upcoming')renderUpcoming();if(tab==='impact'){renderImpact();if(typeof renderComplianceRadar==='function')renderComplianceRadar('complianceRadarHub')}if(tab==='core')renderCoreMap('coreMapHub');if(tab==='verify')renderVerifiedAudit();if(tab==='sources')renderOfficialSources();if(tab==='data')renderDataVault();renderUpdateStats();
+  if(tab==='upcoming')renderUpcoming();if(tab==='impact'){renderImpact();if(typeof renderComplianceRadar==='function')renderComplianceRadar('complianceRadarHub')}if(tab==='watch')workspaceDataCall('renderLawWatchV16');if(tab==='core')renderCoreMap('coreMapHub');if(tab==='verify')renderVerifiedAudit();if(tab==='sources')renderOfficialSources();if(tab==='data')renderDataVault();renderUpdateStats();
 }
 function is2026Doc(d){const m=metaOf(d.id);return (m.eff||'').endsWith('2026')||/2026/.test(d.ttl)}
