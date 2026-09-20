@@ -70,8 +70,8 @@ function workspaceTrashPush(...a){return workspaceDataCall("workspaceTrashPushV8
 function workspaceTrashRestore(id){return workspaceDataCall("workspaceTrashRestoreV8",[id])}
 function workspaceTrashClear(){return workspaceDataCall("workspaceTrashClearV8")}
 function renderWorkspaceTrash(){return workspaceDataCall("renderWorkspaceTrashV8")}
-function exportWorkspace(){return workspaceDataCall("exportWorkspaceV8")}
-function importWorkspace(file){return workspaceDataCall("importWorkspaceV8",[file])}
+function exportWorkspace(){return workspaceDataCall("exportWorkspaceV8").catch(()=>{})}
+function importWorkspace(file){return workspaceDataCall("importWorkspaceV8",[file]).catch(()=>{})}
 function cmdResults(q=""){
   const s=q.trim().toLowerCase();
   const docsR=D.filter(d=>!s||(d.ttl+" "+d.k+" "+plain(d.b)).toLowerCase().includes(s)).slice(0,6).map(d=>({kind:"doc",id:d.id,title:d.ttl,sub:`${d.k} · ${topicName(d.t)}`}));
