@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — navigation state, recent activity, comparison and workspace summary UI. */
 function currentPage(){
   return document.querySelector(".page.on")?.id||"home";
 }

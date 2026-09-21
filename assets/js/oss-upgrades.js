@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — progressive enhancements. */
 (function(){
   'use strict';
 
@@ -8,8 +7,7 @@
     if(!value)return '';
     try{
       const u=new URL(String(value),location.href);
-      // Only report shipped same-origin script paths, never imported filenames or URLs.
-      const known=[...document.scripts].some(script=>{
+          const known=[...document.scripts].some(script=>{
         if(!script.src)return false;
         const src=new URL(script.src,location.href);
         return src.origin===location.origin&&src.pathname===u.pathname&&/^\/assets\/js\/[a-z-]+\.js$/.test(src.pathname);
@@ -32,8 +30,7 @@
   function readDiagErrors(){
     try{
       const x=JSON.parse(sessionStorage.getItem(DIAG_KEY)||'[]');
-      // Sanitize older session records too; they may contain raw error text.
-      return Array.isArray(x)?x.slice(-12).map(safeDiagError).filter(Boolean):[];
+          return Array.isArray(x)?x.slice(-12).map(safeDiagError).filter(Boolean):[];
     }catch{return []}
   }
   function writeDiagErrors(rows){try{sessionStorage.setItem(DIAG_KEY,JSON.stringify(rows.slice(-12)))}catch{}}
@@ -73,7 +70,7 @@
     const payload=await diagnosticSnapshot();
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Can-cu-phap-ly-moi-truong-diagnostics-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800);
-    if(typeof window.toast==='function')window.toast('Đã xuất chẩn đoán kỹ thuật');
+    if(typeof window.toast==='function')window.toast('Đã xuất thông tin kiểm tra hệ thống');
     return payload;
   }
   window.CCPLMT_DIAGNOSTICS={snapshot:diagnosticSnapshot,download:downloadDiagnostics,clearErrors:()=>writeDiagErrors([])};
@@ -92,17 +89,17 @@
     const group=document.createElement('div');
     group.className='setting-group';
     const title=document.createElement('b');
-    title.textContent='Chẩn đoán kỹ thuật';
+    title.textContent='Kiểm tra hệ thống';
     const note=document.createElement('p');
     note.textContent='Xuất trạng thái trình duyệt, PWA và lỗi kỹ thuật gần nhất. Không xuất nội dung hồ sơ, ghi chú hoặc tên tài liệu.';
     const button=document.createElement('button');
     button.className='btn bs';
     button.id='diagExportBtn';
     button.type='button';
-    button.textContent='Xuất file chẩn đoán';
+    button.textContent='Xuất thông tin kiểm tra';
     button.addEventListener('click',()=>downloadDiagnostics().catch(err=>{
       recordDiagError('diagnostics-export');
-      if(typeof window.toast==='function')window.toast('Không thể xuất chẩn đoán');
+      if(typeof window.toast==='function')window.toast('Không thể xuất thông tin kiểm tra');
     }));
     group.append(title,note,button);
     body.appendChild(group);

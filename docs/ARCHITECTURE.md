@@ -6,8 +6,8 @@ Căn cứ Pháp lý Môi trường is being migrated from one large HTML file in
 
 - `main` is production and deploys to `https://legalos-vn.netlify.app`.
 - `dev` is the V14 refactor branch.
-- Pull request #1 provides the Netlify Deploy Preview at `https://deploy-preview-1--legalos-vn.netlify.app`.
-- Structural changes must pass `.github/workflows/validate.yml` before merge.
+- Draft pull request #3 provides the Netlify Deploy Preview at `https://deploy-preview-3--legalos-vn.netlify.app`.
+- Release candidates must pass both `.github/workflows/validate.yml` and `.github/workflows/browser-smoke.yml` before merge.
 
 ## Current dev structure
 
@@ -16,7 +16,7 @@ index.html
 assets/
   css/
     app.css               # legacy/base visual system
-    v14-product.css       # V14 task-first/product refinements
+    v14-product.css       # V14 task-first/product refinements + product-page overrides migrated out of app.css
     compliance.css        # compliance workspace/calendar/register styles
     oss-upgrades.css      # accessibility/PWA progressive enhancement layer
   js/
@@ -36,15 +36,19 @@ assets/
     library.js             # library filters, saved/recent docs, article reader
     procedures.js          # procedure checklist/progress/detail runtime
     compliance-core.js      # compliance state, normalization, audit, due-date/calendar model
+    permits.js              # Sổ giấy phép UI, file/obligation links and permit actions
     compliance.js           # compliance rendering, editors and workspace integration
-    workspace.js           # workspace and command-palette runtime
+    workspace.js           # workspace/case runtime + lazy data-management loader
     legal-hub.js           # legal-pack, data-vault and update-hub runtime
     expert.js              # expert dossier review runtime
     navigation.js          # page navigation runtime
-    oss-upgrades.js         # diagnostics, accessibility and PWA integration
+    oss-upgrades.js        # diagnostics, accessibility and PWA integration
     library-search.js      # document-library search result rendering
     classifier.js          # project screening/classifier runtime
     boot.js                # final application initialization and event wiring
+  lazy/
+    search-engine.js       # local semantic Search V3, loaded on focus/idle
+    workspace-data.js      # backup v8 + recovery, loaded on first data-management use
 ```
 
 `assets/js/app.js` has been fully retired on `dev`.
@@ -65,18 +69,20 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 8. Isolated workspace/command palette, legal hub/data vault, expert review, navigation, library search and project classifier.
 9. Moved the remaining initialization/event wiring into `boot.js`; the legacy `app.js` no longer exists.
 10. Added `tools/check-v14-structure.mjs`, which locks the ordered script load, required module markers, the absence of legacy `app.js`, and removal of temporary write-enabled extraction workflows.
-11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal updates and workspace-v6 backup compatibility.
+11. Added the task-first compliance layer: locally stored profiles, user-entered deadlines, signal-driven review branches, profile-aware legal updates and workspace-v8 backup compatibility.
 12. Made progressive runtime dependencies explicit in `index.html`, split V14/compliance CSS from the legacy stylesheet, and separated compliance model/state logic from rendering/editor code.
+13. Added a dedicated `permits.js` layer and workspace-v8 backup: multi-permit registry, legacy GPMT migration, file/original-document references, obligation links, review/expiry calendar items and audit/undo support.
 
 ## Compliance workspace boundaries
 
 - `compliance-core.js` owns `ccplmt_compliance_profiles_v1` and loads before `compliance.js` / `workspace.js` so backup/import can include normalized profiles.
-- `compliance-core.js` also owns `ccplmt_compliance_audit_v1`: a capped append-only audit list with before/after snapshots for undoable compliance mutations. Workspace v6 exports/imports this log separately from profile data.
+- `compliance-core.js` also owns `ccplmt_compliance_audit_v1`: a capped append-only audit list with before/after snapshots for undoable compliance mutations. Workspace v8 exports/imports this log separately from profile data.
 - A profile stores declared context and tracking dates; it does **not** represent a finding of legal compliance.
 - Automatic branches are review priorities derived from user-declared signals. They must not be phrased as definitive applicability or non-applicability.
 - The system does not invent statutory deadlines. Manual tasks and user-entered permit dates are labeled as tracking data and should be checked against original records.
-- `ccplmt-workspace-v6` exports compliance profiles with the existing workspace data. The importer still accepts backups that predate this field.
-- `tools/compliance-smoke.mjs` covers create → signal mapping → structured legal reference → recurring deadline → profile-aware legal update → export → reload → mobile geometry.
+- `ccplmt-workspace-v8` exports compliance profiles, Sổ giấy phép data, quick notes, citation baskets, reading progress, interface preferences and the local recovery list. The importer still accepts older backups; imported PDF/Word bytes remain outside JSON.
+- `tools/compliance-smoke.mjs` covers create → legacy-GPMT migration → Sổ giấy phép CRUD/file/obligation links → audit/undo → structured legal reference → recurring deadline → profile-aware legal update → workspace-v8 export → reload → mobile geometry.
+- The Sổ giấy phép is nested inside each compliance profile and stores user-managed permit status, number, issuer, issue/expiry/review dates, imported-file references, tracked conditions and obligation links. Permit dates remain tracking metadata until checked against the original record.
 - The obligation register is nested inside each compliance profile and stores user-managed status, legal source, ownership, deadline basis/source, evidence references and notes. Imported evidence file bytes are not embedded in workspace JSON.
 - Structured legal references are stored separately as article/clause/point/appendix fields. Where the repository has an indexed clause pack, the editor offers those refs directly; otherwise the free-form legal note remains available.
 - Recurring obligations use a user-configured cadence (`monthly`, `quarterly`, `yearly`). Completing a period appends occurrence history and advances the next due date. Calendar projections are explicitly labeled as projected tracking dates, not inferred statutory deadlines.
@@ -85,7 +91,7 @@ The scripts intentionally remain **ordered classic scripts** for V14. This prese
 
 1. Run a full manual smoke test in the Netlify Deploy Preview on desktop and mobile, including existing local browser data.
 2. Confirm the final smoke-tested commit still has green GitHub validation and Netlify Deploy Preview status.
-3. Keep PR #1 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
+3. Keep PR #3 as draft and do **not** merge to `main` until the preview behaves like production for supported flows.
 
 ## Safety rules
 
@@ -111,7 +117,7 @@ The permanent validator currently checks:
 - a self-contained static preview copy;
 - whitespace errors.
 
-This is structural validation, not a browser end-to-end test.
+The separate Browser smoke workflow covers browser behavior, search quality, legal comparison, sanitizer hardening, IndexedDB/data safety, compliance flows, mobile layout/navigation, reading progress, PWA behavior and accessibility. Structural validation alone is not treated as release approval.
 
 ## Minimum manual smoke test
 
@@ -135,3 +141,15 @@ Before a production merge, verify:
 
 - `knowledge-base.js` owns the `TERMS` dataset used by the Thuật ngữ page.
 - Common environmental abbreviations are searchable by abbreviation and full phrase; `search-utils.js` carries selected abbreviations into global legal-search expansion (including ĐMC).
+
+
+### Lazy data management
+
+Backup v8 and “Đã xóa gần đây” are isolated in `assets/lazy/workspace-data.js`. The main shell loads a small wrapper only; the optional chunk is fetched when the work area or backup/recovery actions are first used. The service worker caches same-origin static assets after that first request. CI budgets shell JavaScript and lazy JavaScript separately.
+
+
+### Search engine V3
+
+The ordered shell keeps a small `search-fuzzy.js` loader. Search V3 lives in `assets/lazy/search-engine.js` and remains fully browser-side/offline-capable: it does not send queries to an external AI/search service.
+
+The engine combines corpus-frequency (IDF) weighting, typo tolerance, phrase/proximity scoring, environmental-law concept aliases, user-goal detection, explicit document-kind intent, shorthand legal-reference matching and semantic snippet selection. Query interpretation is surfaced in the result UI so users can see which concepts/goals affected ranking. The chunk is loaded on search focus or idle time and can rerank an active query without blocking initial application startup.

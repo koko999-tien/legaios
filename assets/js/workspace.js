@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — workspace/case management and command palette runtime. */
 function caseNextActions(c){
   const actions=[];
   if(!c?.result)return [{label:"Mở lại sàng lọc để kiểm tra dữ liệu đầu vào.",kind:"go",value:"cls"}];
@@ -57,40 +56,28 @@ function showCase(id){
     <p class="note" style="margin-top:12px">Phiếu này giúp tổ chức dữ liệu và ưu tiên việc cần rà. Các nhãn ĐTM/GPMT ở đây không thay thế việc xác định đối tượng theo văn bản, phụ lục và hồ sơ thực tế.</p>`;
   logActivity("case",id,c.name);
 }
-function exportWorkspace(){
-  const data={app:"Căn cứ Pháp lý Môi trường",schema:"ccplmt-workspace-v6",exportedAt:new Date().toISOString(),saved,recent,notes,procDone,cases,expertBriefs,complianceProfiles:complianceBackupRows(),complianceAudit:complianceAuditBackup()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Can-cu-phap-ly-moi-truong-workspace.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+let workspaceDataLoad=null;
+function loadWorkspaceData(){
+  if(window.__ccplmtWorkspaceDataLoaded)return Promise.resolve();
+  if(workspaceDataLoad)return workspaceDataLoad;
+  workspaceDataLoad=new Promise((resolve,reject)=>{const s=document.createElement("script");s.src="assets/lazy/workspace-data.js";s.onload=resolve;s.onerror=()=>{workspaceDataLoad=null;reject(new Error("workspace data chunk failed"))};document.head.appendChild(s)});
+  return workspaceDataLoad;
 }
-function importWorkspace(file){
-  if(!file||file.size>10*1024*1024){toast('File sao lưu vượt giới hạn 10 MB');return}
-  const r=new FileReader();
-  r.onload=()=>{try{
-    const d=JSON.parse(r.result);
-    const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
-    const legacyApp=['Legal','OS'].join('');
-    if(!object(d)||!["Căn cứ Pháp lý Môi trường",legacyApp].includes(d.app)||!Array.isArray(d.saved)||!Array.isArray(d.recent)||!object(d.notes)||!object(d.procDone)||!Array.isArray(d.cases)||(d.expertBriefs!==undefined&&!Array.isArray(d.expertBriefs))||(d.complianceProfiles!==undefined&&!Array.isArray(d.complianceProfiles))||(d.complianceAudit!==undefined&&!Array.isArray(d.complianceAudit))){toast('Đây không phải bản sao lưu workspace hợp lệ. Dữ liệu hiện tại được giữ nguyên.');return}
-    const next={saved:d.saved.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),recent:d.recent.map(x=>safeId(x,'doc')).filter(id=>D.some(v=>v.id===id)),notes:Object.create(null),procDone:Object.create(null),cases:d.cases.slice(0,500).map(normalizeImportedCase),expertBriefs:(d.expertBriefs||[]).slice(0,500).map(normalizeExpertBrief),complianceProfiles:(d.complianceProfiles||[]).slice(0,300).map(normalizeComplianceProfile),complianceAudit:(d.complianceAudit||[]).slice(0,500).map(normalizeComplianceAuditEvent)};
-    Object.entries(d.notes).slice(0,1000).forEach(([k,v])=>{next.notes[safeId(k,'doc')]=safeImportedText(v,50000)});
-    Object.entries(d.procDone).slice(0,500).forEach(([k,v])=>{next.procDone[safeId(k,'proc')]=Array.isArray(v)?v.filter(x=>Number.isInteger(x)&&x>=0).slice(0,200):[]});
-    if(!confirm(`Thay thế workspace hiện tại bằng bản sao lưu (${next.complianceProfiles.length} hồ sơ tuân thủ, ${next.cases.length} hồ sơ sàng lọc, ${next.saved.length} mục đã lưu)? Hãy xuất JSON hiện tại trước nếu cần giữ lại.`)){toast('Đã hủy nhập workspace');return}
-    const entries=[['w3_saved',next.saved],['w3_recent',next.recent],['w3_notes',next.notes],['w3_proc',next.procDone],['w3_cases',next.cases],['v10_expert_briefs',next.expertBriefs],[COMPLIANCE_KEY,next.complianceProfiles],[COMPLIANCE_AUDIT_KEY,next.complianceAudit]];
-    if(!STORE.setBatch(entries)){toast('Không thể lưu bản nhập. Workspace đang mở chưa bị thay thế.');return}
-    ({saved,recent,notes,procDone,cases,expertBriefs}=next);complianceProfiles=next.complianceProfiles;complianceAudit=next.complianceAudit;currentComplianceId=complianceProfiles[0]?.id||null;
-    currentCaseId=null;
-    if($('caseDetail')){$('caseDetail').className='empty';$('caseDetail').textContent='Chọn hồ sơ để xem chi tiết.'}
-    renderWorkspace();renderComplianceWorkspace();renderComplianceHome();renderProcList();docs(curTopic(),$("q").value);toast("Đã nhập workspace");
-  }catch{toast("File JSON không hợp lệ")}};
-  r.onerror=()=>toast('Không đọc được file sao lưu. Dữ liệu hiện tại được giữ nguyên.');
-  r.readAsText(file);
-}
+function workspaceDataCall(name,args=[]){return loadWorkspaceData().then(()=>window[name](...args)).catch(e=>{console.error(e);toast("Không thể tải phần quản lý dữ liệu");throw e})}
+function workspaceTrashRows(){const v=window.workspaceTrashRowsV8?window.workspaceTrashRowsV8():STORE.get("v15_workspace_trash",[]);return Array.isArray(v)?v:[]}
+function workspaceTrashPush(...a){return workspaceDataCall("workspaceTrashPushV8",a)}
+function workspaceTrashRestore(id){return workspaceDataCall("workspaceTrashRestoreV8",[id])}
+function workspaceTrashClear(){return workspaceDataCall("workspaceTrashClearV8")}
+function renderWorkspaceTrash(){return workspaceDataCall("renderWorkspaceTrashV8")}
+function exportWorkspace(){return workspaceDataCall("exportWorkspaceV8").catch(()=>{})}
+function importWorkspace(file){return workspaceDataCall("importWorkspaceV8",[file]).catch(()=>{})}
 function cmdResults(q=""){
   const s=q.trim().toLowerCase();
   const docsR=D.filter(d=>!s||(d.ttl+" "+d.k+" "+plain(d.b)).toLowerCase().includes(s)).slice(0,6).map(d=>({kind:"doc",id:d.id,title:d.ttl,sub:`${d.k} · ${topicName(d.t)}`}));
   const procR=P.filter(p=>!s||(p.ttl+" "+p.st.flat().join(" ")).toLowerCase().includes(s)).slice(0,3).map(p=>({kind:"proc",id:p.id,title:p.ttl,sub:"Quy trình"}));
   const filesR=(typeof importedDocs!=="undefined"?importedDocs:[]).filter(f=>!s||(f.name+" "+(f.note||"")).toLowerCase().includes(s)).slice(0,3).map(f=>({kind:"file",id:f.id,title:f.name,sub:`Tài liệu đã nhập · .${f.ext||"file"}`}));
   const actions=[
-    {kind:"diag",id:"export",title:"Xuất chẩn đoán hệ thống",sub:"JSON kỹ thuật · không gồm nội dung hồ sơ, ghi chú hoặc tên file"}
+    {kind:"diag",id:"export",title:"Xuất thông tin kiểm tra hệ thống",sub:"JSON kỹ thuật · không gồm nội dung hồ sơ, ghi chú hoặc tên tài liệu"}
   ].filter(x=>!s||(x.title+" "+x.sub+" chẩn đoán lỗi diagnostic system").toLowerCase().includes(s));
   const pages=[
     ["lib","Kho văn bản"],["corekb","Văn bản trọng tâm"],["expert","Rà soát hồ sơ"],["proc","Lộ trình thủ tục"],["cls","Sàng lọc dự án"],["fee","Phí & nghĩa vụ"],["term","Thuật ngữ"],["import","Nhập tài liệu"],["work","Hồ sơ tuân thủ"],["memo","Căn cứ đã lưu"],["upd","Cập nhật pháp luật"],["info","Thông tin & chính sách"]

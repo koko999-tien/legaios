@@ -48,7 +48,7 @@
       <button data-go="work" type="button"><span class="nav-ico">▣</span><span>Hồ sơ tuân thủ</span></button>
     </div>
     <details class="nav-more" id="navMore">
-      <summary><span class="nav-ico">•••</span><span>Công cụ khác</span><span class="nav-more-arrow">⌄</span></summary>
+      <summary><span class="nav-ico">•••</span><span>Nghiệp vụ khác</span><span class="nav-more-arrow">⌄</span></summary>
       <div class="nav-more-body">
         <div class="nav-label">Tra cứu sâu</div>
         <button data-go="corekb" type="button"><span class="nav-ico">◫</span><span>Văn bản trọng tâm 2026</span></button>
@@ -132,9 +132,7 @@
     </div>
   </header>
 
-  <section id="homeCompliancePulse" class="home-compliance-pulse" aria-label="Tổng quan tuân thủ"></section>
-
-  <section class="home113-section home113-main-choice">
+    <section class="home113-section home113-main-choice">
     <div class="home113-section-head">
       <div>
         <div class="section-kicker">NGHIỆP VỤ</div>
@@ -152,7 +150,7 @@
         <div class="home113-card-body compact-card-body">
           <h3>Tra cứu văn bản và điều khoản</h3>
           <p>Tìm theo số hiệu, Điều/Khoản/Điểm hoặc nội dung; mở nguồn gốc để kiểm tra trước khi áp dụng.</p>
-          <div class="card-mini-list"><span>Số hiệu</span><span>Điều khoản</span><span>Nguồn gốc</span></div>
+          <div class="card-mini-list"><span>Số hiệu</span><span>Điều khoản</span><span>Nguồn chính thức</span></div>
         </div>
         <div class="home113-card-foot"><span>Mở kho văn bản</span><b>→</b></div>
       </button>
@@ -178,12 +176,14 @@
         <div class="home113-card-body compact-card-body">
           <h3 id="homeResumeTitle">Theo dõi nghĩa vụ và thời hạn</h3>
           <p id="homeResumeCopy">Theo dõi Sổ nghĩa vụ, người phụ trách, căn cứ, thời hạn và tài liệu chứng minh theo từng hồ sơ.</p>
-          <div class="card-mini-list"><span>Nghĩa vụ</span><span>Deadline</span><span>Bằng chứng</span></div>
+          <div class="card-mini-list"><span>Nghĩa vụ</span><span>Thời hạn</span><span>Tài liệu</span></div>
         </div>
         <div class="home113-card-foot"><span id="homeResumeFoot">Mở hồ sơ tuân thủ</span><b>→</b></div>
       </button>
     </div>
   </section>
+
+  <section id="homeCompliancePulse" class="home-compliance-pulse" aria-label="Tổng quan tuân thủ"></section>
 
   <details class="home114-details home-tools-disclosure">
     <summary><span><b>Công cụ nghiệp vụ khác</b><small>Thủ tục, cập nhật pháp luật, nhập tài liệu, phí và các tiện ích hỗ trợ.</small></span><span>⌄</span></summary>
@@ -200,7 +200,7 @@
     <div class="home113-support-grid compact-support-grid">
       <button class="home113-tile compact-tile" data-go="upd" type="button" aria-label="Mở Cập nhật pháp luật">
         <span class="home113-tile-icon">↻</span>
-        <div><b>Cập nhật pháp luật</b><small>Ưu tiên thay đổi và văn bản cần đọc theo hồ sơ cơ sở/dự án của bạn.</small></div>
+        <div><b>Cập nhật pháp luật</b><small>Ưu tiên thay đổi và văn bản cần đọc theo hồ sơ cơ sở hoặc dự án.</small></div>
         <span class="home113-tile-go">→</span>
       </button>
 
@@ -212,7 +212,7 @@
 
       <button class="home113-tile import-tile compact-tile" data-go="import" type="button" aria-label="Mở Nhập PDF / Word">
         <span class="home113-tile-icon">⇩</span>
-        <div><b>Nhập PDF / Word</b><small>Lưu, đọc, tìm kiếm nhanh và liên kết tài liệu người dùng tải vào hệ thống.</small></div>
+        <div><b>Nhập PDF / Word</b><small>Lưu, đọc, tìm kiếm nhanh và liên kết tài liệu đã nhập vào hệ thống.</small></div>
         <span class="home113-tile-go">→</span>
       </button>
 
@@ -236,7 +236,7 @@
 
       <button class="home113-tile compact-tile" data-go="proc" type="button" aria-label="Mở Lộ trình thủ tục">
         <span class="home113-tile-icon">≣</span>
-        <div><b>Lộ trình thủ tục</b><small>Đi từng bước theo checklist và lưu tiến độ xử lý thủ tục.</small></div>
+        <div><b>Lộ trình thủ tục</b><small>Theo dõi từng bước và lưu tiến độ xử lý thủ tục.</small></div>
         <span class="home113-tile-go">→</span>
       </button>
 
@@ -493,7 +493,7 @@
         <label><span>Điểm</span><input id="refPoint" placeholder="a"></label>
         <button class="btn bp" id="refFind" type="button">Tìm căn cứ</button>
       </div>
-      <p class="citation-note">Nếu tóm tắt của hệ thống chưa chứa đúng Điều/Khoản/Điểm, hệ thống sẽ không giả vờ có toàn văn mà sẽ hướng bạn mở nguồn chính thức.</p>
+      <p class="citation-note">Nếu tóm tắt chưa chứa đúng Điều/Khoản/Điểm, kết quả sẽ dẫn tới nguồn chính thức thay vì hiển thị nội dung chưa được kiểm chứng.</p>
     </div>
 
     <div class="search-intelligence">
@@ -522,7 +522,7 @@
             <select id="scopeF" aria-label="Phạm vi"><option value="all">Tất cả phạm vi</option><option value="2026">Mới / liên quan 2026</option><option value="core">Chuỗi pháp lý cốt lõi</option><option value="consolidated">Văn bản hợp nhất</option></select>
             <select id="yearF" aria-label="Năm"><option value="all">Tất cả năm</option></select>
             <select id="effectF" aria-label="Dữ liệu hiệu lực"><option value="all">Tất cả dữ liệu hiệu lực</option><option value="dated">Có ngày hiệu lực</option><option value="partial">Có ghi chú hết hiệu lực một phần</option><option value="unknown">Chưa có dữ liệu hiệu lực</option></select>
-            <select id="sourceF" aria-label="Nguồn"><option value="all">Tất cả trạng thái nguồn</option><option value="verified">Có liên kết nguồn</option><option value="prof">Đã kiểm chứng chuyên gia</option></select>
+            <select id="sourceF" aria-label="Nguồn"><option value="all">Tất cả trạng thái nguồn</option><option value="verified">Có liên kết nguồn</option><option value="prof">Đã đối chiếu thủ công</option></select>
             <select id="typeF" aria-label="Loại văn bản"><option value="all">Tất cả loại</option></select>
             <select id="sortF" aria-label="Sắp xếp"><option value="default">Ưu tiên dữ liệu</option><option value="az">Tên A → Z</option><option value="za">Tên Z → A</option></select>
             <label class="date-filter-v13" title="Chỉ lọc theo ngày hiệu lực có trong metadata; không tự kết luận văn bản đã hết hiệu lực"><span>Mốc áp dụng</span><input id="asOfF" type="date" aria-label="Mốc áp dụng theo metadata"></label>
@@ -530,13 +530,17 @@
           <p class="advanced-search-note">“Dữ liệu hiệu lực” phản ánh metadata đang có trong kho, không tự xác nhận tình trạng pháp lý hiện hành. Khi áp dụng, cần mở nguồn chính thức và kiểm tra văn bản sửa đổi, thay thế, chuyển tiếp.</p>
         </div>
       </details>
+      <section class="active-filter-panel" id="activeFilters" aria-live="polite">
+        <div class="active-filter-head"><span>Tiêu chí đang áp dụng</span><button id="clearActiveFilters" type="button">Xóa tất cả</button></div>
+        <div class="active-filter-list" id="activeFilterList"></div>
+      </section>
       <div class="library-actions">
         <div class="segmented" id="viewMode"><button class="on" data-view="list" type="button">Danh sách</button><button data-view="grid" type="button">Lưới</button></div>
         <div class="segmented library-density-toggle" id="libraryDensity"><button class="on" data-libdensity="compact" type="button">Gọn</button><button data-libdensity="detail" type="button">Chi tiết</button></div>
         <button class="btn bs" id="savedOnly" type="button">☆ Đã lưu</button>
-        <button class="btn bs" id="toggleAssist" type="button">? Mẹo</button>
+        <button class="btn bs" id="toggleAssist" type="button">Hướng dẫn</button>
         <button class="btn bs" id="resetFilters" type="button">Xóa bộ lọc</button>
-        <span class="library-hint"><b>Gọn</b> chỉ hiện phần cần quyết định; bấm <b>Xem nhanh</b> khi cần đọc thêm.</span>
+        <span class="library-hint"><b>Gọn</b> chỉ hiện thông tin chính; chọn <b>Tóm tắt</b> để xem thêm nội dung.</span>
       </div>
       <div class="results-head-v11">
         <div class="count-wrap-v1323"><p class="count" id="dcount"></p><span class="update-chip-v1323">+7 nguồn chính thức · 10/09/2026</span></div>
@@ -547,7 +551,7 @@
 
     <aside class="library-assist-v11">
       <section class="assist-card-v11">
-        <div class="section-kicker">Gợi ý tìm</div>
+        <div class="section-kicker">Tham chiếu tra cứu</div>
         <h3>Điều khoản có trong chỉ mục</h3>
         <div id="popularRefs" class="popular-refs"></div>
       </section>
@@ -812,7 +816,7 @@
 
 <section id="import" class="page"><div class="wrap">
   <div class="section-head"><div><div class="section-kicker">Hồ sơ</div><h1>Nhập &amp; quản lý tài liệu</h1><p class="lead">Đưa PDF, Word và các tài liệu dự án vào hệ thống để lưu cục bộ, xem lại, ghi chú và liên kết với hồ sơ.</p></div><div class="section-actions"><button class="btn bs" id="importIndexExport" type="button">Xuất danh mục JSON</button><button class="btn bs" id="importClearAll" type="button">Xóa toàn bộ</button></div></div>
-  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong hệ thống; “Nhập tài liệu” là file cá nhân của bạn. File Word/PDF nhập vào không tự được coi là văn bản pháp luật đã xác minh.</div></div>
+  <div class="legal-tip"><span>i</span><div><b>Phân biệt hai kho:</b> “Kho văn bản pháp luật” là dữ liệu pháp lý đã được tổ chức trong hệ thống; “Nhập tài liệu” là kho file cá nhân đã nhập. File Word/PDF trong kho này không tự được coi là văn bản pháp luật đã xác minh.</div></div>
   <div class="import-hero">
     <div class="import-card">
       <div class="dropzone" id="importDrop" tabindex="0"><div class="drop-icon">⇩</div><b>Kéo file vào đây hoặc bấm để chọn</b><p>Hỗ trợ PDF, Word DOC/DOCX, ODT, RTF, TXT, Markdown, HTML, JSON và CSV. Có thể chọn nhiều file một lần.</p><div class="format-chips"><span class="format-chip">PDF</span><span class="format-chip">DOCX</span><span class="format-chip">DOC</span><span class="format-chip">ODT</span><span class="format-chip">RTF</span><span class="format-chip">TXT/MD</span><span class="format-chip">HTML</span><span class="format-chip">JSON/CSV</span></div></div>
@@ -911,37 +915,37 @@
     </section>
     <section class="info-card" id="infoPrivacy">
       <div class="section-kicker">Quyền riêng tư &amp; dữ liệu cục bộ</div>
-      <h2>Dữ liệu công việc chủ yếu nằm trong trình duyệt của bạn</h2>
-      <p>Ở phiên bản hiện tại, Hồ sơ tuân thủ, Sổ nghĩa vụ, deadline, tham chiếu bằng chứng, hồ sơ sàng lọc, ghi chú, tiến độ đọc, văn bản đã lưu và tài liệu bạn nhập được lưu cục bộ bằng bộ nhớ trình duyệt/IndexedDB. Xóa dữ liệu trình duyệt có thể làm mất các nội dung này nếu bạn chưa xuất bản sao lưu.</p>
-      <ul><li>File PDF/Word nhập vào không tự trở thành dữ liệu pháp luật đã xác minh.</li><li>Khi mở nguồn chính thức hoặc GitHub để phản hồi, bạn rời khỏi website này và chịu chính sách của dịch vụ bên ngoài.</li><li>Gói diagnostics được thiết kế không chứa nội dung hồ sơ, ghi chú, tên file nhập hoặc lịch sử tìm kiếm.</li></ul>
+      <h2>Dữ liệu công việc được lưu cục bộ trên trình duyệt</h2>
+      <p>Ở phiên bản hiện tại, Hồ sơ tuân thủ, Sổ nghĩa vụ, thời hạn, tài liệu tham chiếu, hồ sơ sàng lọc, ghi chú, tiến độ đọc, văn bản đã lưu và tài liệu đã nhập được lưu cục bộ bằng bộ nhớ trình duyệt/IndexedDB. Xóa dữ liệu trình duyệt có thể làm mất các nội dung này nếu chưa có bản sao lưu.</p>
+      <ul><li>File PDF/Word nhập vào không tự trở thành dữ liệu pháp luật đã xác minh.</li><li>Khi mở nguồn chính thức hoặc GitHub để phản hồi, phiên làm việc sẽ chuyển sang dịch vụ bên ngoài và áp dụng chính sách của dịch vụ đó.</li><li>Tệp kiểm tra hệ thống không chứa nội dung hồ sơ, ghi chú, tên tài liệu nhập hoặc lịch sử tìm kiếm.</li></ul>
     </section>
     <section class="info-card" id="infoTerms">
       <div class="section-kicker">Điều khoản sử dụng</div>
       <h2>Tóm tắt giúp tra cứu nhanh, không thay thế văn bản gốc</h2>
-      <p>Nội dung trên website không phải tư vấn pháp lý, kết luận thẩm định hay quyết định của cơ quan có thẩm quyền. Dữ liệu có thể chưa phản ánh đầy đủ mọi sửa đổi, văn bản hợp nhất, phụ lục hoặc điều khoản chuyển tiếp tại thời điểm bạn sử dụng.</p>
+      <p>Nội dung trên website không phải tư vấn pháp lý, kết luận thẩm định hay quyết định của cơ quan có thẩm quyền. Dữ liệu có thể chưa phản ánh đầy đủ mọi sửa đổi, văn bản hợp nhất, phụ lục hoặc điều khoản chuyển tiếp tại thời điểm sử dụng.</p>
       <ul><li>Luôn kiểm tra văn bản gốc và tình trạng hiệu lực trước khi trích dẫn hoặc ra quyết định.</li><li>Không suy ra nghĩa vụ pháp lý chỉ từ nhãn, tóm tắt hoặc kết quả sàng lọc tự động.</li><li>Nếu phát hiện sai nguồn, hiệu lực hoặc nội dung, hãy gửi phản hồi để dữ liệu được rà lại.</li></ul>
     </section>
     <section class="info-card" id="infoFeedback">
       <div class="section-kicker">Phản hồi dữ liệu</div>
       <h2>Phát hiện sai thì báo ngay tại văn bản</h2>
-      <p>Mỗi trang văn bản có nút <b>Báo lỗi dữ liệu</b>. Biểu mẫu sẽ điền sẵn số hiệu/tên văn bản để bạn mô tả lỗi về nguồn, hiệu lực, tóm tắt hoặc liên kết. Bạn có thể chỉ sao chép báo cáo hoặc mở GitHub Issue để gửi công khai.</p>
+      <p>Mỗi trang văn bản có nút <b>Báo lỗi dữ liệu</b>. Biểu mẫu điền sẵn số hiệu và tên văn bản để mô tả lỗi về nguồn, hiệu lực, tóm tắt hoặc liên kết. Có thể sao chép báo cáo hoặc mở GitHub Issue để gửi công khai.</p>
       <button class="btn bp" id="openGeneralFeedback" type="button">Gửi phản hồi chung</button>
     </section>
   </div>
 </div></section>
 
 <section id="work" class="page"><div class="wrap">
-  <div class="section-head"><div><div class="section-kicker">Workspace tuân thủ</div><h1>Hồ sơ tuân thủ</h1><p class="lead">Biến quy định thành việc cần làm: lưu bối cảnh cơ sở/dự án, theo dõi nhánh pháp lý, deadline và căn cứ cần đối chiếu. Dữ liệu vẫn ở trình duyệt của bạn.</p></div><div class="section-actions"><button class="btn bs" data-compliance-undo-last type="button">↶ Hoàn tác</button><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ tuân thủ</button></div></div>
+  <div class="section-head"><div><div class="section-kicker">Quản lý tuân thủ</div><h1>Hồ sơ tuân thủ</h1><p class="lead">Lưu thông tin cơ sở hoặc dự án, theo dõi căn cứ, nghĩa vụ, thời hạn và tài liệu liên quan. Dữ liệu được lưu trên trình duyệt hiện tại.</p></div><div class="section-actions"><button class="btn bs" data-compliance-undo-last type="button">↶ Hoàn tác</button><button class="btn bp" data-compliance-new type="button">+ Tạo hồ sơ tuân thủ</button></div></div>
 
   <section class="compliance-workspace" id="workCompliance">
     <div class="compliance-workspace-head">
-      <div><div class="section-kicker">Tổng quan tuân thủ</div><h2>Việc gì đang cần chú ý?</h2><p>Đây là bảng tổ chức công việc, không phải kết luận doanh nghiệp/cơ sở đã đạt hay chưa đạt tuân thủ.</p></div>
+      <div><div class="section-kicker">Tổng quan tuân thủ</div><h2>Tình trạng hồ sơ</h2><p>Tổng hợp hồ sơ, nghĩa vụ và các mốc cần theo dõi. Nội dung này không thay thế kết luận tuân thủ của cơ quan có thẩm quyền.</p></div>
       <button class="btn bs" data-go="upd" type="button">Mở Cập nhật pháp luật</button>
     </div>
     <div class="compliance-stats" id="complianceStats"></div>
 
     <details class="compliance-editor" id="complianceEditor">
-      <summary><span><b>Tạo / chỉnh sửa hồ sơ</b><small>Khai dữ liệu nền một lần để ưu tiên đúng nhánh cần kiểm tra.</small></span><span>⌄</span></summary>
+      <summary><span><b>Tạo / chỉnh sửa hồ sơ</b><small>Khai thông tin nền để xác định các nội dung cần rà soát.</small></span><span>⌄</span></summary>
       <div class="compliance-editor-body">
         <input id="complianceEditorId" type="hidden">
         <div class="compliance-form-grid">
@@ -951,9 +955,9 @@
           <label><span>Địa điểm</span><input id="cpLocation" placeholder="Tỉnh/thành, KCN hoặc khu vực"></label>
           <label><span>Giai đoạn</span><select id="cpPhase"><option value="">Chưa xác định</option><option value="preparation">Chuẩn bị</option><option value="construction">Thi công</option><option value="operation">Vận hành</option><option value="change">Thay đổi / mở rộng</option><option value="closure">Đóng cửa / kết thúc</option></select></label>
           <label><span>Số GPMT (nếu có)</span><input id="cpGpmtNumber" placeholder="Nhập theo giấy phép gốc"></label>
-          <label><span>Ngày hết hạn GPMT do bạn khai báo</span><input id="cpGpmtExpires" type="date"></label>
+          <label><span>Ngày hết hạn GPMT (theo hồ sơ)</span><input id="cpGpmtExpires" type="date"></label>
         </div>
-        <div class="compliance-signal-head"><b>Tín hiệu môi trường</b><span>Chọn “Chưa rõ” nếu chưa đủ dữ liệu; hệ thống sẽ coi đó là việc cần xác minh.</span></div>
+        <div class="compliance-signal-head"><b>Thông tin môi trường</b><span>Chọn “Chưa rõ” nếu chưa đủ dữ liệu; mục này sẽ được đưa vào danh sách cần xác minh.</span></div>
         <div class="compliance-signal-grid">
           <label><span>Nước thải</span><select id="cp-water"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
           <label><span>Khí thải / bụi</span><select id="cp-air"><option value="unknown">Chưa rõ</option><option value="yes">Có</option><option value="no">Không</option></select></label>
@@ -978,8 +982,8 @@
 
   <div class="workspace-jump">
     <button data-jump="workCompliance" type="button">Tuân thủ</button>
-    <button data-jump="workActivity" type="button">Nhịp làm việc</button>
-    <button data-jump="workExpert" type="button">Phiếu chuyên gia</button>
+    <button data-jump="workActivity" type="button">Công việc gần đây</button>
+    <button data-jump="workExpert" type="button">Phiếu rà soát</button>
     <button data-jump="workCases" type="button">Hồ sơ</button>
     <button data-jump="workSaved" type="button">Văn bản đã lưu</button><button data-go="memo" type="button">Căn cứ đã lưu</button>
     <button data-jump="workNotes" type="button">Ghi chú</button>
@@ -990,14 +994,14 @@
       <div class="workspace-card"><b id="wkCases">0</b><small>Hồ sơ sàng lọc</small></div>
       <div class="workspace-card"><b id="wkSaved">0</b><small>Văn bản đã lưu</small></div>
       <div class="workspace-card"><b id="wkNotes">0</b><small>Ghi chú</small></div>
-      <div class="workspace-card"><b id="wkProgress">0%</b><small>Tiến độ quy trình</small></div><div class="workspace-card"><b id="wkFiles">0</b><small>Tài liệu đã nhập</small></div><div class="workspace-card"><b id="wkExpert">0</b><small>Phiếu chuyên gia</small></div>
+      <div class="workspace-card"><b id="wkProgress">0%</b><small>Tiến độ quy trình</small></div><div class="workspace-card"><b id="wkFiles">0</b><small>Tài liệu đã nhập</small></div><div class="workspace-card"><b id="wkExpert">0</b><small>Phiếu rà soát</small></div>
     </div>
     <section class="workspace-activity" id="workActivity">
       <div class="workspace-block-head">
         <div>
           <div class="section-kicker">Theo dõi công việc</div>
-          <h2>Nhịp làm việc của bạn</h2>
-          <p>Hoạt động gần đây và những việc có thể tiếp tục được gom về Workspace để trang Tổng quan gọn hơn.</p>
+          <h2>Công việc gần đây</h2>
+          <p>Hoạt động gần đây và các việc đang tiếp tục được tổng hợp tại đây để trang Tổng quan giữ bố cục gọn.</p>
         </div>
       </div>
       <div class="dash-grid workspace-dash">
@@ -1029,14 +1033,15 @@
     <div>
       <div class="card" id="workBackup" style="margin-bottom:12px">
         <div class="k">Dữ liệu cá nhân</div>
-        <h3 style="margin-top:5px">Sao lưu workspace</h3>
-        <p style="color:var(--m);font-size:13px">Xuất Hồ sơ tuân thủ, Sổ nghĩa vụ, deadline, tham chiếu bằng chứng, audit trail, hồ sơ sàng lọc, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục và phiếu rà soát thành JSON. Nhập JSON sẽ thay thế các dữ liệu này sau khi bạn xác nhận.</p>
-        <p style="color:var(--m);font-size:12px">Bản này lưu tên/ID tham chiếu bằng chứng nhưng chưa gồm file PDF/Word đã nhập, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc và cài đặt giao diện. Sau khi khôi phục trên thiết bị khác, bằng chứng có thể hiện “không có trên thiết bị” cho tới khi bạn nhập lại file gốc. Dữ liệu chỉ lưu trong trình duyệt hiện tại; tên miền preview và website chính không dùng chung dữ liệu.</p>
+        <h3 style="margin-top:5px">Sao lưu dữ liệu</h3>
+        <p style="color:var(--m);font-size:13px">Bản sao lưu gồm Hồ sơ tuân thủ, Sổ giấy phép, Sổ nghĩa vụ, thời hạn, hồ sơ sàng lọc, mục đã lưu, ghi chú, căn cứ hồ sơ, tiến độ đọc, thiết lập giao diện và lịch sử công việc.</p>
+        <p style="color:var(--m);font-size:12px">Nội dung file PDF/Word đã nhập không nằm trong JSON. Bản sao lưu chỉ giữ danh sách tham chiếu để nhận biết file cần nhập lại trên thiết bị mới. Dữ liệu của preview và website chính vẫn tách biệt theo từng tên miền.</p>
         <div class="row">
           <button class="btn bp" id="exportW" type="button">Xuất JSON</button>
           <button class="btn bs" id="importW" type="button">Nhập JSON</button>
           <input id="importFile" type="file" accept=".json,application/json" hidden>
         </div>
+        <div id="workspaceTrash"></div>
       </div>
       <h2 id="workCases" style="margin-top:18px">Hồ sơ sàng lọc đã lưu</h2>
       <input class="case-search" id="caseQ" placeholder="Tìm hồ sơ…">
@@ -1044,7 +1049,7 @@
     </div>
     <div>
       <h2 style="margin-top:0">Chi tiết hồ sơ</h2>
-      <div id="caseDetail" class="empty">Chưa chọn hồ sơ sàng lọc. Bạn có thể tạo Hồ sơ tuân thủ ở phần đầu trang hoặc mở một hồ sơ sàng lọc đã lưu.</div>
+      <div id="caseDetail" class="empty">Chưa chọn hồ sơ sàng lọc. Có thể tạo Hồ sơ tuân thủ ở phần đầu trang hoặc mở một hồ sơ sàng lọc đã lưu.</div>
       <h2 id="workSaved">Văn bản đã lưu</h2>
       <div class="docs" id="savedList"></div>
       <section class="notes-center" id="workNotes"><div class="notes-center-head"><div><div class="k">Ghi chú</div><h2>Trung tâm ghi chú</h2></div><button class="btn bs" id="clearQuickNote" type="button">Xóa ghi chú nhanh</button></div><div class="g2"><div class="card"><b>Ghi chú nhanh</b><textarea class="case-notes" id="workspaceQuickNote" placeholder="Ghi ý tưởng, việc cần kiểm tra, số hiệu cần đọc…"></textarea><small class="autosave">Tự động lưu trên trình duyệt</small></div><div class="card"><b>Ghi chú theo văn bản</b><div id="articleNotesList" class="note-index"></div></div></div></section>
@@ -1054,7 +1059,7 @@
 
 <section id="upd" class="page"><div class="wrap">
   <div class="section-head"><div><div class="section-kicker">Theo dõi thay đổi</div><h1>Cập nhật pháp luật</h1><p class="lead">Theo dõi văn bản mới, lịch hiệu lực và ưu tiên nội dung cần đọc theo Hồ sơ tuân thủ đang có trên thiết bị này.</p></div><div class="data-fresh">Mốc rà soát 10/09/2026</div></div>
-  <div class="update-stats" id="updateStats"></div><div class="lawhub-tabs" id="lawHubTabs"><button class="on" data-lawtab="updates" type="button">Dòng thời gian</button><button data-lawtab="upcoming" type="button">Sắp có hiệu lực</button><button data-lawtab="impact" type="button">Theo hồ sơ</button><button data-lawtab="core" type="button">Chuỗi cốt lõi</button><button data-lawtab="verify" type="button">Đối chiếu nguồn</button><button data-lawtab="sources" type="button">Nguồn chính thức</button><button data-lawtab="data" type="button">Kho dữ liệu</button></div>
+  <div class="update-stats" id="updateStats"></div><div class="lawhub-tabs" id="lawHubTabs"><button class="on" data-lawtab="updates" type="button">Dòng thời gian</button><button data-lawtab="upcoming" type="button">Sắp có hiệu lực</button><button data-lawtab="impact" type="button">Theo hồ sơ</button><button data-lawtab="watch" type="button">Đang theo dõi</button><button data-lawtab="core" type="button">Chuỗi cốt lõi</button><button data-lawtab="verify" type="button">Đối chiếu nguồn</button><button data-lawtab="sources" type="button">Nguồn chính thức</button><button data-lawtab="data" type="button">Kho dữ liệu</button></div>
   <div class="lawhub-panel" data-lawpanel="updates">
     <details class="lawhub-callout warnbox compact-callout"><summary><b>Cơ chế thủ tục cần chú ý</b><span>Mở chi tiết ⌄</span></summary><p>NQ 66.19/2026/NQ-CP liên quan cắt giảm, phân quyền và đơn giản hóa TTHC. Khi áp dụng cho hồ sơ cụ thể cần mở văn bản gốc để kiểm tra phạm vi và điều khoản chuyển tiếp.</p></details>
     <div class="update-filter" id="updateFilter"><button class="on" data-year="all" type="button">Tất cả</button><button data-year="2024" type="button">2024</button><button data-year="2025" type="button">2025</button><button data-year="2026" type="button">2026</button></div>
@@ -1062,6 +1067,7 @@
   </div>
   <div class="lawhub-panel" data-lawpanel="upcoming" hidden><div class="lawhub-callout"><b>Lịch hiệu lực</b><p style="margin:5px 0 0;font-size:12px">Danh sách tính theo ngày trên thiết bị. Ưu tiên kiểm tra văn bản sắp có hiệu lực và những văn bản vừa có hiệu lực trong 60 ngày gần nhất.</p></div><div class="upcoming-list" id="upcomingList"></div></div>
   <div class="lawhub-panel" data-lawpanel="impact" hidden><div class="lawhub-callout"><b>Đọc cập nhật theo công việc</b><p style="margin:5px 0 0;font-size:12px">Một thay đổi pháp luật có thể ảnh hưởng nhiều thủ tục. Các thay đổi được gom theo luồng công việc để tránh chỉ nhìn theo ngày ban hành.</p></div><div id="complianceRadarHub" class="compliance-radar-hub"></div><div class="impact-grid" id="impactGrid"></div></div>
+  <div class="lawhub-panel" data-lawpanel="watch" hidden><div class="lawhub-callout"><b>Hàng rà soát văn bản</b><p style="margin:5px 0 0;font-size:12px">Theo dõi văn bản cần đọc lại, ghi ngày xem lại nội bộ và gắn với Hồ sơ tuân thủ. Đây là công cụ quản lý công việc, không tự xác định văn bản áp dụng.</p></div><div id="lawWatchList"></div></div>
 
   <div class="lawhub-panel" data-lawpanel="core" hidden><div class="lawhub-callout"><b>Chuỗi BVMT cốt lõi</b><p style="margin:5px 0 0;font-size:12px">Không nên đọc NĐ 08/2022 một mình: cần ghép với NĐ 05/2025, NĐ 48/2026 và Luật 146/2025. Mẫu/hướng dẫn ở TT 02/2022 cũng đã có các lần sửa trong 2025–2026.</p></div><div class="core-map" id="coreMapHub"></div></div>
   
@@ -1092,6 +1098,28 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<div class="modal-bg" id="permitModal" role="dialog" aria-modal="true" aria-label="Sổ giấy phép">
+  <div class="modal">
+    <div class="modal-head"><div><div class="k">Hồ sơ tuân thủ</div><b>Sổ giấy phép</b></div><button class="mini" data-permit-close type="button" aria-label="Đóng">×</button></div>
+    <div class="modal-body">
+      <input id="permitEditorId" type="hidden">
+      <div class="obligation-form-grid">
+        <label><span>Loại</span><select id="permitType"><option value="gpmt">Giấy phép môi trường (GPMT)</option><option value="water">Giấy phép / chấp thuận về tài nguyên nước</option><option value="waste">Giấy phép / hồ sơ về chất thải</option><option value="resource">Giấy phép tài nguyên / khoáng sản liên quan</option><option value="construction">Giấy phép / chấp thuận công trình liên quan</option><option value="other">Giấy phép / quyết định khác</option></select></label>
+        <label><span>Trạng thái theo dõi</span><select id="permitStatus"><option value="unknown">Chưa xác định</option><option value="active">Đang theo dõi</option><option value="pending">Đang làm thủ tục</option><option value="replaced">Đã được thay thế</option><option value="closed">Đã kết thúc</option></select></label>
+        <label class="wide"><span>Tên / mô tả giấy phép</span><input id="permitTitle" placeholder="Ví dụ: Giấy phép môi trường của Nhà máy A"></label>
+        <label><span>Số giấy phép / quyết định</span><input id="permitNumber" placeholder="Số, ký hiệu"></label><label><span>Cơ quan cấp</span><input id="permitIssuer" placeholder="Cơ quan / đơn vị ban hành"></label>
+        <label><span>Ngày cấp</span><input id="permitIssueDate" type="date"></label><label><span>Ngày hết hạn</span><input id="permitExpiryDate" type="date"></label><label><span>Mốc rà soát nội bộ</span><input id="permitReviewDate" type="date"></label>
+        <label class="wide"><span>Tài liệu gốc / tài liệu liên quan</span><select id="permitFileIds" multiple size="4"></select><small>Bản sao lưu dữ liệu chỉ lưu ID và tên tham chiếu; tài liệu gốc vẫn ở kho tài liệu trên thiết bị.</small></label>
+        <label class="wide"><span>Liên kết Sổ nghĩa vụ</span><select id="permitObligationIds" multiple size="4"></select><small>Dùng để truy ngược điều kiện giấy phép sang việc đang theo dõi.</small></label>
+      </div>
+      <label class="obligation-note-field"><span>Điều kiện / nội dung cần theo dõi</span><textarea id="permitConditions" rows="3" placeholder="Tóm tắt để theo dõi; không thay thế nội dung file gốc."></textarea></label>
+      <label class="obligation-note-field"><span>Ghi chú</span><textarea id="permitNote" rows="2"></textarea></label>
+      <p class="micro-note">Trạng thái và mốc thời gian do người dùng cập nhật. Cần đối chiếu tài liệu gốc trước khi sử dụng.</p>
+      <div class="obligation-editor-actions"><button class="btn bs" data-permit-cancel type="button">Hủy</button><button class="btn bp" data-permit-save type="button">Lưu Sổ giấy phép</button></div>
+    </div>
+  </div>
+</div>
+
 <div class="compare-bar" id="compareBar">
   <span id="compareText">Đã chọn 0/2 văn bản</span>
   <span style="display:flex;gap:6px">
@@ -1113,18 +1141,18 @@
 
 
 <div class="right-drawer" id="previewDrawer" aria-hidden="true">
-  <div class="drawer-head"><div><div class="k">Xem nhanh</div><b id="previewTitle">Văn bản</b></div><button class="mini" id="previewClose" type="button">×</button></div>
+  <div class="drawer-head"><div><div class="k">Tóm tắt</div><b id="previewTitle">Văn bản</b></div><button class="mini" id="previewClose" type="button">×</button></div>
   <div class="drawer-body" id="previewBody"></div>
 </div>
 <div class="drawer-scrim" id="drawerScrim"></div>
 
 <div class="right-drawer settings-drawer" id="settingsDrawer" aria-hidden="true">
-  <div class="drawer-head"><div><div class="k">Căn cứ pháp lý</div><b>Tùy chỉnh giao diện</b></div><button class="mini" id="settingsClose" type="button">×</button></div>
+  <div class="drawer-head"><div><div class="k">Căn cứ pháp lý</div><b>Thiết lập giao diện</b></div><button class="mini" id="settingsClose" type="button">×</button></div>
   <div class="drawer-body">
     <div class="setting-group"><b>Kích thước chữ</b><div class="segmented" id="fontScale"><button data-scale="small" type="button">Nhỏ</button><button class="on" data-scale="normal" type="button">Vừa</button><button data-scale="large" type="button">Lớn</button></div></div>
     <div class="setting-group"><b>Mật độ giao diện</b><div class="segmented" id="densityMode"><button data-density="compact" type="button">Gọn</button><button class="on" data-density="comfortable" type="button">Thoáng</button></div></div>
     <div class="setting-group"><b>Thanh bên</b><button class="btn bs" id="settingsSidebar" type="button">Thu gọn / mở rộng</button></div>
-    <div class="setting-group"><b>Chế độ đọc</b><p>Trong trang văn bản có thể tăng/giảm chữ và bật Focus để ẩn phần phụ.</p></div>
+    <div class="setting-group"><b>Chế độ đọc</b><p>Trong trang văn bản có thể tăng hoặc giảm cỡ chữ và bật chế độ tập trung để ẩn phần phụ.</p></div>
     <button class="btn bs" id="resetPrefs" type="button">Khôi phục mặc định</button>
   </div>
 </div>
@@ -1154,8 +1182,8 @@
     <div class="modal-body">
       <div class="feedback-context" id="feedbackContext">Phản hồi chung</div>
       <label class="feedback-field"><span>Loại vấn đề</span><select id="feedbackType"><option value="Nguồn / liên kết">Nguồn / liên kết</option><option value="Hiệu lực / sửa đổi">Hiệu lực / sửa đổi</option><option value="Tóm tắt nội dung">Tóm tắt nội dung</option><option value="Thiếu văn bản / quan hệ">Thiếu văn bản / quan hệ</option><option value="Giao diện / kỹ thuật">Giao diện / kỹ thuật</option><option value="Khác">Khác</option></select></label>
-      <label class="feedback-field"><span>Mô tả</span><textarea id="feedbackNote" rows="6" placeholder="Nêu chỗ sai hoặc thông tin cần kiểm tra lại. Nếu có thể, ghi kèm nguồn chính thức bạn đã đối chiếu."></textarea></label>
-      <p class="feedback-privacy">Nội dung chưa được gửi đi khi bạn đang gõ. Chỉ khi bấm “Mở GitHub để gửi”, trình duyệt mới mở trang GitHub với nội dung đã điền sẵn.</p>
+      <label class="feedback-field"><span>Mô tả</span><textarea id="feedbackNote" rows="6" placeholder="Nêu chỗ sai hoặc thông tin cần kiểm tra lại. Nếu có thể, ghi kèm nguồn chính thức đã đối chiếu."></textarea></label>
+      <p class="feedback-privacy">Nội dung chưa được gửi trong quá trình nhập. Chỉ khi bấm “Mở GitHub để gửi”, trình duyệt mới mở trang GitHub với nội dung đã điền sẵn.</p>
       <div class="feedback-actions"><button class="btn bs" id="feedbackCopy" type="button">Sao chép báo cáo</button><button class="btn bp" id="feedbackGitHub" type="button">Mở GitHub để gửi ↗</button></div>
     </div>
   </div>
@@ -1185,6 +1213,7 @@
 <script src="assets/js/library.js"></script>
 <script src="assets/js/procedures.js"></script>
 <script src="assets/js/compliance-core.js"></script>
+<script src="assets/js/permits.js"></script>
 <script src="assets/js/compliance.js"></script>
 <script src="assets/js/workspace.js"></script>
 <script src="assets/js/legal-hub.js"></script>

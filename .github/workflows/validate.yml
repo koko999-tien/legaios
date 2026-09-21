@@ -27,6 +27,9 @@ jobs:
       - name: Verify V14 module structure
         run: node tools/check-v14-structure.mjs
 
+      - name: Gate core legal-data release metadata
+        run: node tools/legal-data-release-gate.mjs
+
       - name: Generate self-contained static preview copy
         run: node tools/extract-single-file.mjs index.html .tmp/refactor-preview
 

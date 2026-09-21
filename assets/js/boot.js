@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — application boot and event wiring. */
 document.addEventListener("click",e=>{const stat=e.target.closest("[data-core-stat]");if(stat){e.preventDefault();renderCoreKbStatDetail(stat.dataset.coreStat)}});
 
 
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   let savedTheme=null;try{savedTheme=window.localStorage.getItem("w1th")}catch{}
   const th=savedTheme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
   document.body.setAttribute("data-theme",th);
-  // Critical navigation is bound before optional UI initialization so the app remains clickable even if a secondary widget fails.
   if(!window.__legalosNavBound){
     window.__legalosNavBound=true;
     document.body.addEventListener("click",e=>{
@@ -38,20 +36,33 @@ document.addEventListener("DOMContentLoaded",()=>{
   renderProcList();
   renderTerms();
     renderUpdates("all");
-  // Navigation uses the single delegated handler bound at startup.
   $("menuBtn").onclick=()=>{const on=$("nav").classList.toggle("open");$("navScrim").classList.toggle("on",on)};$("navScrim").onclick=()=>{$("nav").classList.remove("open");$("navScrim").classList.remove("on")};
   $("theme").onclick=()=>{const n=document.body.getAttribute("data-theme")==="dark"?"light":"dark";document.body.setAttribute("data-theme",n);try{window.localStorage.setItem("w1th",n)}catch{}};
   $("sidebarCollapse").onclick=()=>{uiPrefs.sidebar=!uiPrefs.sidebar;saveUIPrefs()};
   $("settingsSidebar").onclick=()=>{uiPrefs.sidebar=!uiPrefs.sidebar;saveUIPrefs()};
   $("settingsBtn").onclick=()=>openDrawer('settingsDrawer');$("settingsClose").onclick=closeDrawers;
   $("quickNoteBtn").onclick=()=>{syncQuickNote(quickNote);openDrawer('quickNoteDrawer');setTimeout(()=>$("quickNoteArea").focus(),0)};$("quickNoteClose").onclick=closeDrawers;$("drawerScrim").onclick=closeDrawers;$("previewClose").onclick=closeDrawers;
-  $("quickNoteArea").oninput=e=>syncQuickNote(e.target.value);$("workspaceQuickNote").oninput=e=>syncQuickNote(e.target.value);$("clearQuickNote").onclick=()=>{syncQuickNote('');toast('Đã xóa ghi chú nhanh')};
+  $("quickNoteArea").oninput=e=>syncQuickNote(e.target.value);$("workspaceQuickNote").oninput=e=>syncQuickNote(e.target.value);$("clearQuickNote").onclick=()=>{const v=quickNote;if(!v.trim()){syncQuickNote('');return}workspaceTrashPush("quick-note",v,"Ghi chú nhanh").then(()=>{syncQuickNote('');toast('Đã chuyển ghi chú vào Đã xóa gần đây')}).catch(()=>{})};
   $("fontScale").onclick=e=>{const b=e.target.closest('[data-scale]');if(b){uiPrefs.scale=b.dataset.scale;saveUIPrefs()}};$("densityMode").onclick=e=>{const b=e.target.closest('[data-density]');if(b){uiPrefs.density=b.dataset.density;saveUIPrefs()}};
   $("resetPrefs").onclick=()=>{uiPrefs={scale:'normal',density:'comfortable',sidebar:false};saveUIPrefs();toast('Đã khôi phục giao diện mặc định')};
   $("viewMode").onclick=e=>{const b=e.target.closest('[data-view]');if(b){libraryView=b.dataset.view;STORE.set('v8_library_view',libraryView);applyLibraryView()}};
   if($("libraryDensity"))$("libraryDensity").onclick=e=>{const b=e.target.closest('[data-libdensity]');if(b){libraryDensity=b.dataset.libdensity;STORE.set('v13_library_density',libraryDensity);applyLibraryView()}};
   if($("toggleAssist"))$("toggleAssist").onclick=()=>{libraryAssistOpen=!libraryAssistOpen;STORE.set('v13_library_assist',libraryAssistOpen);applyLibraryView()};
   $("savedOnly").onclick=()=>{savedOnlyMode=!savedOnlyMode;STORE.set('v8_saved_only',savedOnlyMode);vs()};$("resetFilters").onclick=resetLibraryFilters;
+  if($("clearActiveFilters"))$("clearActiveFilters").onclick=resetLibraryFilters;
+  if($("activeFilterList"))$("activeFilterList").onclick=e=>{
+    const b=e.target.closest("[data-clear-filter]");if(!b)return;
+    const key=b.dataset.clearFilter;
+    if(key==="q")$("q").value="";
+    else if(key==="topic")document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t==="all"));
+    else if(key==="saved"){savedOnlyMode=false;STORE.set("v8_saved_only",false)}
+    else if(key==="asOf")$("asOfF").value="";
+    else {
+      const ids={scope:"scopeF",year:"yearF",effect:"effectF",source:"sourceF",type:"typeF"};
+      if(ids[key]&&$(ids[key]))$(ids[key]).value="all";
+    }
+    vs(false);
+  };
   if($("asOfF"))$("asOfF").onchange=()=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value)};
   $("procWizardStart").onclick=()=>openWizard($("procWizardSelect").value,0);$("wizardClose").onclick=closeWizard;$("wizardModal").onclick=e=>{if(e.target===$("wizardModal"))closeWizard()};
   if($("openShortcuts"))$("openShortcuts").onclick=()=>$("shortcutsModal")?.classList.add('on');if($("shortcutsClose"))$("shortcutsClose").onclick=()=>$("shortcutsModal")?.classList.remove('on');if($("shortcutsModal"))$("shortcutsModal").onclick=e=>{if(e.target===$("shortcutsModal"))$("shortcutsModal").classList.remove('on')};
@@ -76,15 +87,15 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>$(b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}));
 
 
-  // Import center
   $('importChooseBtn').onclick=()=>$('importDocsInput').click();$('importDrop').onclick=()=>$('importDocsInput').click();$('importDrop').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('importDocsInput').click()}};$('importDocsInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
   ['dragenter','dragover'].forEach(ev=>$('importDrop').addEventListener(ev,e=>{e.preventDefault();$('importDrop').classList.add('drag')}));['dragleave','drop'].forEach(ev=>$('importDrop').addEventListener(ev,e=>{$('importDrop').classList.remove('drag');if(ev==='drop'){e.preventDefault();importFiles(e.dataTransfer.files)}}));
   $('importQ').oninput=debounce(renderImportList,80);$('importTypeF').onchange=renderImportList;$('importCatF').onchange=renderImportList;$('importRefresh').onclick=refreshImportedDocs;$('importIndexExport').onclick=exportImportIndex;$('importClearAll').onclick=clearImported;
   document.body.addEventListener('click',e=>{const o=e.target.closest('[data-file-open]');if(o){showImportDetail(o.dataset.fileOpen);return}const d=e.target.closest('[data-file-download]');if(d){downloadImported(d.dataset.fileDownload);return}const del=e.target.closest('[data-file-delete]');if(del){deleteImported(del.dataset.fileDelete);return}const ha=e.target.closest('[data-home-action]');if(ha){const a=ha.dataset.homeAction;if(a==='cmd')openCmd();else if(a==='quicknote'){$('quickNoteBtn').click()}else if(a==='settings')openDrawer('settingsDrawer');else if(a==='lawdata'){go('upd');setTimeout(()=>renderLawHubTab('data'),30)}else if(a==='sources'){go('upd');setTimeout(()=>renderLawHubTab('sources'),30)}return}});
   $('backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});window.addEventListener('scroll',()=>{$('backTop').classList.toggle('on',window.scrollY>700)},{passive:true});
 
-  if($("topics"))$("topics").onclick=e=>{const t=e.target.closest("[data-t]");if(!t)return;document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t===t.dataset.t));docs(t.dataset.t);go("lib")};
-  $("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;document.querySelectorAll("#chips .chip").forEach(x=>x.classList.toggle("on",x===c));docs(c.dataset.t,$("q").value)};
+  const jumpLib=()=>innerWidth<=820&&setTimeout(()=>$("dcount")?.scrollIntoView({behavior:"smooth",block:"center"}),30);
+  if($("topics"))$("topics").onclick=e=>{const t=e.target.closest("[data-t]");if(!t)return;document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",c.dataset.t===t.dataset.t));docs(t.dataset.t);go("lib");jumpLib()};
+  $("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;document.querySelectorAll("#chips .chip").forEach(x=>x.classList.toggle("on",x===c));docs(c.dataset.t,$("q").value);jumpLib()};
   if($("topicFilterQ"))$("topicFilterQ").addEventListener("input",debounce(e=>renderLibraryTopicFilters(e.target.value),90));
   const vs=(remember=false)=>{const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value);if(remember&&$("q").value.trim())addLegalSearchHistory($("q").value)};
   $("qBtn").onclick=()=>vs(true);$("q").addEventListener("keydown",e=>{if(e.key==="Enter")vs(true)});
@@ -155,13 +166,13 @@ document.addEventListener("DOMContentLoaded",()=>{
     logActivity("fee","air","Tính phí khí thải");
   };
   document.body.addEventListener("click",e=>{
-    const s=e.target.closest("[data-save]");if(s){e.preventDefault();e.stopPropagation();saveDoc(s.dataset.save);if(document.querySelector("#art.page.on"))openDoc(s.dataset.save);return}
+    const s=e.target.closest("[data-save]");if(s){e.preventDefault();e.stopPropagation();saveDoc(s.dataset.save);if(document.querySelector("#art.page.on"))openDoc(s.dataset.save);return}const lw=e.target.closest("[data-law-watch]");if(lw){e.preventDefault();workspaceDataCall("lawWatchAddV16",[lw.dataset.lawWatch]);return}
     const o=e.target.closest("[data-open]");if(o&&!o.closest("#docs")){openDoc(o.dataset.open);return}
     const st=e.target.closest("[data-step]");if(st){const [pid,si]=st.dataset.step.split(":");const i=+si;const arr=procDone[pid]||[];procDone[pid]=arr.includes(i)?arr.filter(x=>x!==i):[...arr,i].sort((a,b)=>a-b);STORE.set("w3_proc",procDone);openProc(pid);renderProcList();return}
     const pr=e.target.closest("[data-proc-reset]");if(pr){procDone[pr.dataset.procReset]=[];STORE.set("w3_proc",procDone);openProc(pr.dataset.procReset);renderProcList();toast("Đã đặt lại quy trình");return}
     const c=e.target.closest("[data-case]");if(c){showCase(c.dataset.case);return}
     const ctc=e.target.closest("[data-case-to-compliance]");if(ctc){const row=cases.find(x=>x.id===ctc.dataset.caseToCompliance);if(row)createComplianceFromCase(row);return}
-    const del=e.target.closest("[data-delcase]");if(del){cases=cases.filter(x=>x.id!==del.dataset.delcase);STORE.set("w3_cases",cases);currentCaseId=null;renderWorkspace();$("caseDetail").className="empty";$("caseDetail").textContent="Đã xóa hồ sơ.";toast("Đã xóa hồ sơ");return}
+    const del=e.target.closest("[data-delcase]");if(del){const old=cases.find(x=>x.id===del.dataset.delcase);if(old&&confirm("Xóa hồ sơ sàng lọc “"+old.name+"”? Có thể khôi phục trong mục Đã xóa gần đây."))workspaceTrashPush("case",old,"Hồ sơ sàng lọc · "+old.name).then(()=>{cases=cases.filter(x=>x.id!==old.id);STORE.set("w3_cases",cases);currentCaseId=null;renderWorkspace();$("caseDetail").className="empty";$("caseDetail").textContent="Đã xóa hồ sơ.";toast("Đã chuyển hồ sơ vào Đã xóa gần đây")}).catch(()=>{});return}
     const os=e.target.closest("[data-open-proc]");if(os){openProc(os.dataset.openProc);return}
     const oc=e.target.closest("[data-open-case]");if(oc){go("work");setTimeout(()=>showCase(oc.dataset.openCase),0);return}
     const cp=e.target.closest("[data-copy-step]");if(cp){const [pid,si]=cp.dataset.copyStep.split(":");const p=P.find(x=>x.id===pid);const s=p?.st[+si];if(s){navigator.clipboard?.writeText(`${s[0]}\n${s[1]}`).then(()=>toast("Đã sao chép bước")).catch(()=>toast("Không thể sao chép"))}return}
@@ -176,6 +187,8 @@ document.addEventListener("DOMContentLoaded",()=>{
     const cform=e.target.closest("[data-core-form]");if(cform){openDoc("vbhn55",`Mẫu số ${cform.dataset.coreForm}`);return}
     const ac=e.target.closest("[data-add-citation]");if(ac){const [doc,article,clause,point]=ac.dataset.addCitation.split("|");addCitationV13(doc,article||null,clause||null,point||null);return}
     const rc=e.target.closest("[data-remove-citation]");if(rc){removeCitationV13(rc.dataset.removeCitation);return}
+    const tr=e.target.closest("[data-trash-restore]");if(tr){workspaceTrashRestore(tr.dataset.trashRestore);return}
+    if(e.target.closest("[data-trash-clear]")){workspaceTrashClear();return}
     const cq=e.target.closest("[data-core-query]");if(cq){coreQueryToLibrary(cq.dataset.coreQuery);return}
     const sex=e.target.closest("[data-search-example]");if(sex){go("lib");setTimeout(()=>{$("q").value=sex.dataset.searchExample;const p=parseLegalQuery(sex.dataset.searchExample);setLegalSearchMode(p.article||p.clause||p.point?"ref":"smart");const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value);addLegalSearchHistory($("q").value)},50);return}
     const sh=e.target.closest("[data-search-history]");if(sh){$("q").value=sh.dataset.searchHistory;const on=document.querySelector("#chips .chip.on");docs(on?on.dataset.t:"all",$("q").value);return}

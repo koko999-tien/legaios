@@ -139,7 +139,7 @@ try {
   assert(await activePage('home'), 'Home page is not active after startup');
 
   // New users should see three plain-language starting points before advanced tools.
-  assert((await page.locator('#home h1').textContent() || '').trim() === 'Tra cứu căn cứ. Theo dõi việc phải làm.', 'Home does not lead with the concrete legal-workbench proposition');
+  assert((await page.locator('#home h1').textContent() || '').trim() === 'Tra cứu pháp luật và quản lý hồ sơ môi trường', 'Home does not lead with the concrete legal-workbench proposition');
   const academicIdentity = await page.evaluate(() => {
     const root = getComputedStyle(document.documentElement);
     const h1 = getComputedStyle(document.querySelector('#home .academic-hero-copy h1'));
@@ -272,10 +272,20 @@ try {
   assert(libraryUx.groups >= 3, `Expected grouped library filters, found ${libraryUx.groups}`);
   assert(libraryUx.collapsed >= 1, 'Library filter groups should reduce long-scroll fatigue by collapsing secondary groups');
   assert(libraryUx.tagSize >= 9, `Compact library metadata is still too small: ${libraryUx.tagSize}px`);
-  assert(['Mở chi tiết','Đến đoạn khớp'].includes(libraryUx.openText), `Primary document action is unclear: ${libraryUx.openText}`);
+  assert(['Mở chi tiết','Mở vị trí khớp'].includes(libraryUx.openText), `Primary document action is unclear: ${libraryUx.openText}`);
   assert(libraryUx.openTitle.length > 10, 'Primary document action is missing explanatory hover text');
-  assert(libraryUx.previewText === 'Xem nhanh', `Quick-preview action changed unexpectedly: ${libraryUx.previewText}`);
+  assert(libraryUx.previewText === 'Tóm tắt', `Summary action changed unexpectedly: ${libraryUx.previewText}`);
   assert(libraryUx.previewTitle.includes('tóm tắt'), 'Quick-preview action does not explain that it shows a summary');
+
+  // Advanced legal-search facets should expose and remove active criteria without resetting the whole search.
+  if (!(await page.locator('#advancedSearch').evaluate(el => el.open))) await page.locator('#advancedSearch > summary').click();
+  await page.locator('#scopeF').selectOption('core');
+  await page.waitForTimeout(80);
+  assert((await page.locator('#activeFilterList').innerText()).includes('Chuỗi pháp lý cốt lõi'), 'Active-filter panel did not expose the selected scope');
+  assert(await page.locator('#activeFilterList [data-clear-filter="scope"]').count()===1, 'Active-filter scope chip is missing');
+  await page.locator('#activeFilterList [data-clear-filter="scope"]').click();
+  await page.waitForTimeout(80);
+  assert(await page.locator('#scopeF').inputValue()==='all', 'Removing an active-filter chip did not reset only that criterion');
   assert(await page.locator('#advancedSearch').count() === 1, 'Advanced legal search panel is missing');
   assert(await page.locator('#effectF option[value="partial"]').count() === 1, 'Effect-metadata filter is missing the partial-effect option');
   if (!(await page.locator('#advancedSearch').evaluate(el => el.open))) await page.locator('#advancedSearch > summary').click();

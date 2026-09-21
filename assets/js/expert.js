@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — expert dossier review, completeness analysis and saved expert briefs. */
 function phaseLabel(v){return({plan:"Chuẩn bị / đầu tư mới",construction:"Thi công / xây dựng",operation:"Đang vận hành",change:"Thay đổi / mở rộng",closure:"Đóng cửa / phục hồi"})[v]||"Chưa xác định"}
 function sectorLabel(v){return({industrial:"Sản xuất / công nghiệp",mining:"Địa chất / khoáng sản",waste:"Xử lý chất thải",energy:"Điện / năng lượng",agri:"Nông nghiệp / chăn nuôi / thủy sản",infra:"Hạ tầng / giao thông / đô thị",tourism:"Du lịch / dịch vụ",other:"Khác"})[v]||"Chưa xác định"}
 function ynLabel(v){return v==="yes"?"Có":v==="no"?"Không":"Chưa rõ"}
@@ -140,7 +139,7 @@ function renderExpertResult(d,a){
 function analyzeExpert(){
   const d=collectExpertForm(),a=expertAnalyzeData(d);
   renderExpertResult(d,a);
-  logActivity("case","expert",`Phiếu chuyên gia: ${d.name||sectorLabel(d.sector)}`);
+  logActivity("case","expert",`Phiếu rà soát: ${d.name||sectorLabel(d.sector)}`);
 }
 function clearExpertForm(){
   ["expName","expLocation","expScale"].forEach(id=>{if($(id))$(id).value=""});
@@ -155,7 +154,7 @@ function saveExpertBrief(){
   const b={id:"eb"+Date.now(),createdAt:new Date().toISOString(),...lastExpertAnalysis};
   expertBriefs=[b,...expertBriefs].slice(0,50);
   STORE.set("v10_expert_briefs",expertBriefs);
-  renderExpertBriefs();renderWorkspaceStats();toast("Đã lưu phiếu chuyên gia");
+  renderExpertBriefs();renderWorkspaceStats();toast("Đã lưu phiếu rà soát");
 }
 function renderExpertBriefs(){
   if(!$("expertBriefList"))return;

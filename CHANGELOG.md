@@ -23,6 +23,21 @@
 - Split library/document reader logic into `assets/js/library.js`.
 - Split procedure checklist/progress logic into `assets/js/procedures.js`.
 
+### Search V3
+- Reworked browser-side legal search from mostly lexical scoring into a lightweight semantic-ranking layer with corpus-frequency (IDF) weighting.
+- Added natural-language concept and goal detection for environmental-law queries without sending search text to an external service.
+- Added explicit legal-document-kind ranking for QCVN, consolidated documents, decrees, circulars, laws, decisions and resolutions.
+- Added shorthand legal-reference recognition such as `NĐ 08`, `TT 02` and `Luật 72`.
+- Added semantic snippets and visible concept/intent metadata on result cards.
+- Hardened Vietnamese fuzzy matching against short-token collisions after accent folding.
+- Expanded search-quality regression coverage for current wastewater standards, consolidated NĐ 08, wastewater-monitoring questions and rare phrases such as “chì trong sơn”.
+
+### Hardening
+- Fixed Search V2 acronym expansion so “ĐMC” can rank the core environmental-law corpus from its recognized expanded phrase, with an engine/UI regression test.
+- Made the legal-data freshness gate age against the actual CI date instead of a fixed 20/09/2026 baseline.
+- Bumped the PWA shell cache after the search-engine fix and added a deployment Content-Security-Policy compatible with the current static/Blob preview model.
+- Synchronized PR/preview, workspace-v8 and module-location documentation.
+
 ### Safety
 - Each permanent extraction is validated before commit.
 - Temporary write-enabled extraction workflows are removed immediately after use.

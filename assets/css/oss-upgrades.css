@@ -118,7 +118,6 @@ color:#586174!important;
 }
 
 @supports(content-visibility:auto){
-#docs>.doc,
 #importList>.import-file,
 #memoList>.memo-item-v13,
 .indexed-law-article,
@@ -126,7 +125,6 @@ color:#586174!important;
 content-visibility:auto;
 contain-intrinsic-size:auto 180px;
 }
-#docs>.doc{contain-intrinsic-size:auto 150px}
 #importList>.import-file{contain-intrinsic-size:auto 132px}
 #memoList>.memo-item-v13{contain-intrinsic-size:auto 220px}
 .indexed-law-article,.clause-row-v13{contain-intrinsic-size:auto 260px}
@@ -185,12 +183,10 @@ nav.links.side-nav button{
 min-height:var(--tap-min);
 }
 
-
 header.site #settingsBtn{
 display:grid!important;
 place-items:center;
 }
-
 
 .tag,.legal-badge,.role-badge,.doc-state{
 font-size:10px!important;

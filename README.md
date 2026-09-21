@@ -5,7 +5,7 @@ Căn cứ Pháp lý Môi trường is a browser-based environmental compliance w
 ## Live environments
 
 - Production: `https://legalos-vn.netlify.app`
-- V14 Deploy Preview: `https://deploy-preview-1--legalos-vn.netlify.app`
+- V14 Deploy Preview (draft PR #3): `https://deploy-preview-3--legalos-vn.netlify.app`
 
 ## Branch workflow
 
@@ -36,11 +36,13 @@ assets/js/search-data.js
 assets/js/search-runtime.js
 assets/js/search-fuzzy.js
 assets/js/ui-shell.js
+assets/js/ui-utils.js
 assets/js/activity-workspace.js
 assets/js/project-tools.js
 assets/js/library.js
 assets/js/procedures.js
 assets/js/compliance-core.js
+assets/js/permits.js
 assets/js/compliance.js
 assets/js/workspace.js
 assets/js/legal-hub.js
@@ -50,26 +52,42 @@ assets/js/oss-upgrades.js
 assets/js/library-search.js
 assets/js/classifier.js
 assets/js/boot.js
+assets/lazy/search-engine.js
+assets/lazy/workspace-data.js
 ```
 
-`boot.js` connects the modules. Progressive enhancements, fuzzy search and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete stylesheet and script order.
+`boot.js` connects the ordered shell modules. `search-fuzzy.js` lazy-loads the local Search V3 semantic-ranking engine, while `workspace.js` lazy-loads backup/recovery data management. Progressive enhancements and IndexedDB resilience are declared explicitly in `index.html`; `navigation.js` no longer injects hidden runtime dependencies. `index.html` is the source of truth for the complete shell stylesheet and script order.
 
 See [product priorities](docs/PRODUCT_PRIORITIES.md) for the current improvements, backup limitations and remaining release checks.
+
+## Search V3
+
+Legal search remains entirely client-side: queries and local search state are not sent to an external AI/search API. Search V3 improves relevance with corpus-aware term weighting, Vietnamese typo tolerance, domain concepts and user-intent detection.
+
+- Rare/specific terms receive more weight than generic legal/environment words.
+- Natural-language questions can combine concepts such as wastewater + monitoring instead of flattening the whole sentence into equal keywords.
+- Search recognizes goals such as applicability, procedure/dossier, authority, deadline/frequency, penalties, standards/QCVN, current/amended law and reporting.
+- Explicit document-kind requests (QCVN, consolidated document, decree, circular, law, decision, resolution) receive dedicated ranking boosts.
+- Shorthand references such as `NĐ 08`, `TT 02`, `Luật 72` and similar forms are understood even when the year is omitted.
+- Semantic snippets and visible concept/intent badges explain why a result matched.
+- Short folded Vietnamese tokens are excluded from fuzzy matching to avoid false matches such as `trắc` → `trách`.
+
 
 ## Product model
 
 The application deliberately avoids presenting automated screening as a legal conclusion.
 
 - **Hồ sơ tuân thủ** stores facility/project context locally.
+- **Sổ giấy phép** stores multiple GPMT/related permits per profile, including permit number, issuer, issue/expiry/review dates, original-file references, conditions and obligation links. Legacy single-GPMT fields migrate into the register.
 - **Sổ nghĩa vụ** stores user-managed obligation status, legal source, structured Điều/Khoản/Điểm/Phụ lục references, owner, sourced/manual deadline and evidence references.
 - **Lịch tuân thủ** renders user-entered/sourced dates plus projected occurrences for user-configured monthly, quarterly or yearly tracking. Completing a recurring period records history and advances the next due date.
-- **Audit trail + Undo** records create/update/delete/toggle/recurring-period actions for profiles, obligations and manual deadlines. The most recent undoable change can be restored from its stored snapshot.
+- **Audit trail + Undo** records create/update/delete/toggle/recurring-period actions for profiles, permits, obligations and manual deadlines. The most recent undoable change can be restored from its stored snapshot.
 - **Nhánh cần đối chiếu** maps declared signals to legal topics/documents that should be reviewed.
 - **Cập nhật pháp luật** prioritizes documents using the active compliance profile, but does not claim that a document certainly applies.
 - **Kho Thuật ngữ** includes common environmental abbreviations such as ĐMC, ĐTM, GPMT, CTNH, TNN, CTR, BĐKH, BOD/COD/TSS and related technical/legal terms.
 - Dates such as a GPMT expiry are treated as user-declared tracking data unless independently verified from an authoritative source.
 - Dossier review and screening results can be converted into a compliance profile instead of being re-entered.
-- Workspace export schema `ccplmt-workspace-v6` includes compliance profiles, obligation-register entries, recurring cadence/history, manual/user-declared deadlines, evidence references and the compliance audit trail. Imported file bytes remain outside the JSON backup.
+- Workspace export schema `ccplmt-workspace-v8` includes compliance profiles (with Sổ giấy phép/Sổ nghĩa vụ), recurring cadence/history, manual/user-declared deadlines, audit history, law-watch rows, saved/recent items, document notes, procedure progress, screening/expert briefs, quick notes, citation baskets, reading progress, interface preferences and the local recovery list. Older workspace exports remain importable. The imported-document store in IndexedDB, including file bytes, remains outside workspace JSON.
 
 ## Validation
 
@@ -86,3 +104,16 @@ It checks structural HTML assumptions, referenced local assets, JavaScript synta
 Structural refactoring does **not** certify the accuracy or currency of the built-in legal content. Legal-data verification is tracked separately in Issue #2 and should not be mixed into code-only refactor commits.
 
 See `docs/ARCHITECTURE.md` for the migration plan and safety rules.
+
+### Legal-data release gate
+
+Core environmental-law records carry an official source, a human-readable audit note, and a checked date. `tools/legal-data-release-gate.mjs` blocks validation if a core record loses that audit trail, points outside approved official-source domains, or is more than 90 days old relative to the CI run date. `LEGAL_DATA_AUDIT_AS_OF=YYYY-MM-DD` is available only as an explicit reproducibility override.
+
+### Hàng rà soát văn bản
+
+Từ trang chi tiết văn bản có thể chọn **Theo dõi** để đưa văn bản vào `Cập nhật pháp luật → Đang theo dõi`. Mỗi mục có trạng thái Cần rà/Đang rà/Đã rà, ngày xem lại nội bộ, ghi chú và liên kết Hồ sơ tuân thủ. Từ hàng rà soát có thể mở lại văn bản hoặc chuyển sang Sổ nghĩa vụ. Danh sách này là công cụ quản lý công việc, không phải kết luận văn bản chắc chắn áp dụng cho hồ sơ.
+
+
+## Licensing
+
+This repository does not currently grant an open-source license. Public visibility alone is not permission to copy, modify, or redistribute the code. A LICENSE file should be added only after the repository owner chooses the intended licensing terms.

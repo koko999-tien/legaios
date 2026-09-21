@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — compliance profiles, deadlines and profile-aware radar. */
 const COMPLIANCE_KEY="ccplmt_compliance_profiles_v1";
 const COMPLIANCE_AUDIT_KEY="ccplmt_compliance_audit_v1";
 const COMPLIANCE_FEATURES=[
@@ -23,6 +22,29 @@ function complianceId(prefix){
 }
 function complianceSignal(v){return ["yes","no","unknown"].includes(v)?v:"unknown"}
 function complianceText(v,max){max=max||500;return String(v==null?"":v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").trim().slice(0,max)}
+function normalizeCompliancePermit(row,now){
+  row=row||{};now=now||new Date().toISOString();
+  const files=Array.isArray(row.fileRefs)?row.fileRefs.slice(0,20).map(function(x){x=x||{};return {id:complianceText(x.id||"",160),name:complianceText(x.name||"",300)}}).filter(function(x){return x.id||x.name}):[];
+  const obligations=Array.isArray(row.obligationIds)?row.obligationIds.slice(0,100).map(function(x){return complianceText(x||"",120)}).filter(Boolean):[];
+  const date=function(v){return /^\d{4}-\d{2}-\d{2}$/.test(String(v||""))?String(v):""};
+  return {
+    id:complianceText(row.id||complianceId("permit"),120),
+    type:["gpmt","water","waste","resource","construction","other"].includes(row.type)?row.type:"other",
+    title:complianceText(row.title||"",240),
+    number:complianceText(row.number||"",180),
+    issuer:complianceText(row.issuer||"",240),
+    issueDate:date(row.issueDate),
+    expiryDate:date(row.expiryDate),
+    reviewDate:date(row.reviewDate),
+    status:["unknown","active","pending","replaced","closed"].includes(row.status)?row.status:"unknown",
+    fileRefs:files,
+    obligationIds:obligations,
+    conditions:complianceText(row.conditions||"",5000),
+    note:complianceText(row.note||"",3000),
+    createdAt:complianceText(row.createdAt||now,60),
+    updatedAt:complianceText(row.updatedAt||now,60)
+  };
+}
 function normalizeComplianceProfile(row){
   row=row||{};
   const now=new Date().toISOString(),features={};
@@ -39,6 +61,13 @@ function normalizeComplianceProfile(row){
       createdAt:complianceText(x.createdAt||now,60)
     };
   }).filter(function(x){return !!x.title}):[];
+  const hasPermitList=Array.isArray(row.permits);
+  let permits=hasPermitList?row.permits.slice(0,100).map(function(x){return normalizeCompliancePermit(x,now)}):[];
+  const legacyPermit=row.permit||{};
+  if(!hasPermitList&&(legacyPermit.gpmtNumber||legacyPermit.expires)){
+    permits=[normalizeCompliancePermit({type:"gpmt",title:"Giấy phép môi trường",number:legacyPermit.gpmtNumber||"",expiryDate:legacyPermit.expires||"",status:"unknown",note:"Được chuyển từ trường GPMT của phiên bản workspace trước."},now)];
+  }
+  const primaryGpmt=permits.find(function(x){return x.type==="gpmt"})||null;
   const obligations=Array.isArray(row.obligations)?row.obligations.slice(0,300).map(function(x){
     x=x||{};
     const evidence=Array.isArray(x.evidence)?x.evidence.slice(0,30).map(function(ev){
@@ -85,9 +114,10 @@ function normalizeComplianceProfile(row){
     phase:complianceText(row.phase||"",80),
     features:features,
     permit:{
-      gpmtNumber:complianceText(row.permit&&row.permit.gpmtNumber||"",160),
-      expires:/^\d{4}-\d{2}-\d{2}$/.test(String(row.permit&&row.permit.expires||""))?String(row.permit.expires):""
+      gpmtNumber:primaryGpmt?primaryGpmt.number:complianceText(legacyPermit.gpmtNumber||"",160),
+      expires:primaryGpmt?primaryGpmt.expiryDate:(/^\d{4}-\d{2}-\d{2}$/.test(String(legacyPermit.expires||""))?String(legacyPermit.expires):"")
     },
+    permits:permits,
     deadlines:deadlines,
     obligations:obligations,
     note:complianceText(row.note||"",4000),
@@ -115,7 +145,7 @@ function normalizeComplianceAuditEvent(e){
     id:complianceText(e.id||complianceId("audit"),120),
     at:complianceText(e.at||new Date().toISOString(),60),
     action:complianceText(e.action||"update",60),
-    entityType:["profile","obligation","deadline"].includes(e.entityType)?e.entityType:"profile",
+    entityType:["profile","obligation","deadline","permit"].includes(e.entityType)?e.entityType:"profile",
     profileId:complianceText(e.profileId||"",120),
     entityId:complianceText(e.entityId||"",120),
     summary:complianceText(e.summary||"Thay đổi dữ liệu tuân thủ",500),
@@ -159,6 +189,9 @@ function complianceNormalizedObligationSnapshot(v){
 function complianceNormalizedDeadlineSnapshot(v){
   if(!v)return null;const p=normalizeComplianceProfile({name:"snapshot",deadlines:[v]});return p.deadlines[0]||null;
 }
+function complianceNormalizedPermitSnapshot(v){
+  if(!v)return null;return normalizeCompliancePermit(v,new Date().toISOString());
+}
 function complianceUndoLast(profileId){
   const ev=complianceLatestUndoable(profileId);
   if(!ev){toast("Không có thay đổi nào để hoàn tác");return false}
@@ -182,6 +215,10 @@ function complianceUndoLast(profileId){
       const restored=complianceNormalizedDeadlineSnapshot(ev.before),i=p.deadlines.findIndex(function(x){return x.id===ev.entityId});
       if(restored){if(i>=0)p.deadlines[i]=restored;else p.deadlines.unshift(restored)}
       else p.deadlines=p.deadlines.filter(function(x){return x.id!==ev.entityId});
+    }else if(ev.entityType==="permit"){
+      const restored=complianceNormalizedPermitSnapshot(ev.before),i=p.permits.findIndex(function(x){return x.id===ev.entityId});
+      if(restored){if(i>=0)p.permits[i]=restored;else p.permits.unshift(restored)}
+      else p.permits=p.permits.filter(function(x){return x.id!==ev.entityId});
     }
     p.updatedAt=new Date().toISOString();
     currentComplianceId=p.id;
@@ -227,7 +264,11 @@ function complianceTasks(p){
   const tasks=[],pct=complianceCompleteness(p),unknown=complianceUnknowns(p);
   if(pct<75)tasks.push({id:"profile-completeness",title:"Bổ sung dữ liệu nền của hồ sơ",date:"",kind:"system",done:false,note:"Độ đầy đủ hiện tại "+pct+"%."});
   if(unknown.length)tasks.push({id:"profile-unknowns",title:"Xác minh "+Math.min(3,unknown.length)+" tín hiệu còn chưa rõ",date:"",kind:"system",done:false,note:unknown.slice(0,5).join(" · ")});
-  if(p.permit.expires)tasks.push({id:"gpmt-expiry",title:p.permit.gpmtNumber?"Kiểm tra thời hạn GPMT "+p.permit.gpmtNumber:"Kiểm tra thời hạn GPMT",date:p.permit.expires,kind:"permit",done:false,note:"Ngày này do người dùng khai báo; cần đối chiếu giấy phép gốc."});
+  (p.permits||[]).forEach(function(x){
+    const label=(x.title||x.number||"giấy phép");
+    if(x.reviewDate)tasks.push({id:"permit-review:"+x.id,title:"Rà soát "+label,date:x.reviewDate,kind:"permit",done:false,note:"Mốc rà soát do người dùng khai báo trong Permit Register."});
+    if(x.expiryDate)tasks.push({id:"permit-expiry:"+x.id,title:"Kiểm tra ngày hết hạn "+label,date:x.expiryDate,kind:"permit",done:false,note:"Ngày hết hạn lấy từ dữ liệu người dùng nhập; cần đối chiếu giấy phép/file gốc."});
+  });
   return tasks.concat(p.deadlines);
 }
 function complianceUrgent(p){
@@ -295,7 +336,11 @@ function complianceCalendarItems(p){
   p.deadlines.filter(function(x){return !x.done&&x.date}).forEach(function(x){
     rows.push({id:"task:"+x.id,date:x.date,title:x.title,type:"task",source:"Deadline thủ công",refId:x.id});
   });
-  if(p.permit.expires)rows.push({id:"permit:gpmt",date:p.permit.expires,title:p.permit.gpmtNumber?"Kiểm tra thời hạn GPMT "+p.permit.gpmtNumber:"Kiểm tra thời hạn GPMT",type:"permit",source:"Ngày do người dùng khai báo từ hồ sơ",refId:""});
+  (p.permits||[]).forEach(function(x){
+    const label=x.title||x.number||"Giấy phép";
+    if(x.reviewDate)rows.push({id:"permit-review:"+x.id,date:x.reviewDate,title:"Rà soát "+label,type:"permit",source:"Mốc rà soát do người dùng khai báo",refId:x.id});
+    if(x.expiryDate)rows.push({id:"permit-expiry:"+x.id,date:x.expiryDate,title:"Kiểm tra ngày hết hạn "+label,type:"permit",source:"Ngày người dùng nhập từ giấy phép/file gốc",refId:x.id});
+  });
   p.obligations.filter(function(o){return (o.status==="verify"||o.status==="active")&&o.dueDate}).forEach(function(o){
     complianceFutureOccurrences(o,o.recurrence==="none"?1:4).forEach(function(date,index){
       rows.push({

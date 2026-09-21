@@ -104,7 +104,51 @@ try {
   await page.waitForFunction(() => !document.getElementById('nav')?.classList.contains('open'));
   await page.waitForFunction(() => !document.getElementById('navScrim')?.classList.contains('on'));
 
-  console.log('Mobile sidebar opens cleanly, accepts real taps, and closes without a stale scrim.');
+  const cdp=await page.context().newCDPSession(page);
+  await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+  async function assertTouchSwipeScrollsPage(selector,label){
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.waitForTimeout(80);
+    const box=await page.locator(selector).boundingBox();
+    assert(box,`Missing mobile scroll surface: ${label}`);
+    const x=Math.max(12,Math.min(378,box.x+Math.min(box.width*.5,180)));
+    const startY=Math.max(300,Math.min(760,box.y+Math.min(box.height*.65,470)));
+    const endY=Math.max(150,startY-330);
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y:startY,radiusX:2,radiusY:2,force:1}]});
+    for(let i=1;i<=7;i++){
+      const y=startY+(endY-startY)*(i/7);
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y,radiusX:2,radiusY:2,force:1}]});
+      await page.waitForTimeout(18);
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.waitForTimeout(280);
+    const y=await page.evaluate(()=>window.scrollY);
+    assert(y>20,`${label} trapped vertical touch scrolling; page scrollY=${y}`);
+  }
+
+  await assertTouchSwipeScrollsPage('#lib .library-filters','Library filter panel');
+
+  await page.evaluate(()=>window.go?.('lib'));
+  await page.waitForFunction(()=>document.getElementById('lib')?.classList.contains('on'));
+  const sourceGeometry=await page.locator('#docs .official-source-action').first().evaluate(el=>{
+    const r=el.getBoundingClientRect();return {width:r.width,height:r.height,text:el.textContent.trim()};
+  });
+  assert(sourceGeometry.width>160,`Official source action collapsed on mobile: ${sourceGeometry.width}x${sourceGeometry.height}`);
+  assert(sourceGeometry.height<90,`Official source action became vertical/tall on mobile: ${sourceGeometry.width}x${sourceGeometry.height}`);
+
+  const chem=page.locator('#chips .chip').filter({hasText:'Hóa chất'}).first();
+  await chem.scrollIntoViewIfNeeded();
+  await chem.click();
+  await page.waitForTimeout(450);
+  const resultJump=await page.locator('#dcount').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,text:el.textContent.trim(),scrollY:window.scrollY}});
+  assert(resultJump.scrollY>20,'Choosing a mobile topic did not move the page to results');
+  assert(resultJump.top>80&&resultJump.bottom<820,`Result count was not brought into view after choosing Hóa chất: top=${resultJump.top}, bottom=${resultJump.bottom}`);
+
+  await page.evaluate(()=>window.go?.('expert'));
+  await page.waitForFunction(()=>document.getElementById('expert')?.classList.contains('on'));
+  await assertTouchSwipeScrollsPage('#expert .expert-side','Review side panel');
+
+  console.log('Mobile sidebar opens cleanly, accepts real taps, closes without a stale scrim, and touch swipes scroll the page through Library/Review panels.');
 } finally {
   await browser.close();
 }

@@ -22,14 +22,30 @@ try{
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Unrelated JSON changed existing notes');
   assert(confirmations===0,'Invalid JSON should be rejected before confirmation');
 
+  // Seed v8-only data before export so backup/restore coverage includes the extended workspace state.
+  await page.evaluate(async id=>{
+    syncQuickNote('Backup quick note QA');
+    uiPrefs={scale:'large',density:'comfortable',sidebar:true};saveUIPrefs();
+    readingProgressSave('qa-backup-reading',42,'Backup section');readingProgressFlush();
+    citationBasketV13=[{doc:id,article:'39',clause:'',point:'',label:'Căn cứ QA',text:'Nội dung QA',note:'Ghi chú căn cứ QA',source:'',addedAt:new Date().toISOString()}];
+    STORE.set('v13_citation_basket',citationBasketV13);
+    await workspaceDataCall('lawWatchAddV16',[id]);
+  },id);
+
   // Use the app's own export to prove backward-compatible import, not a fabricated schema.
   const downloadPromise=page.waitForEvent('download');
   await page.evaluate(()=>exportWorkspace());
   const download=await downloadPromise;
   const backup=JSON.parse(await readFile(await download.path(),'utf8'));
+  assert(backup.schema==='ccplmt-workspace-v8','Workspace backup did not upgrade to schema v8');
+  assert(backup.quickNote==='Backup quick note QA','Workspace backup omitted quick note');
+  assert(backup.uiPrefs?.scale==='large'&&backup.uiPrefs?.sidebar===true,'Workspace backup omitted UI preferences');
+  assert(backup.readingProgress?.['qa-backup-reading']?.pct===42,'Workspace backup omitted reading progress');
+  assert(Array.isArray(backup.citationBasket)&&backup.citationBasket[0]?.label==='Căn cứ QA','Workspace backup omitted citation basket');
+  assert(Array.isArray(backup.lawWatch)&&backup.lawWatch[0]?.docId===id,'Workspace backup omitted legal-review watchlist');
   backup.notes={[id]:'Restored note'};
   await upload(backup);
-  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã hủy nhập workspace');
+  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã hủy khôi phục dữ liệu');
   assert(confirmations===1,'Valid workspace import must request confirmation');
   assert(JSON.stringify(await notes())===JSON.stringify(original),'Cancelled import changed notes');
 
@@ -52,10 +68,31 @@ try{
   assert(JSON.stringify(before)===JSON.stringify(after),'Failed import left partial storage changes');
   await page.evaluate(()=>{Storage.prototype.setItem=window.__testStorageSet;delete window.__testStorageSet});
   await upload(backup);
-  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã nhập workspace');
+  await page.waitForFunction(()=>document.getElementById('toast').textContent==='Đã khôi phục dữ liệu');
   assert(!await page.locator('#storageWarning').count(),'Successful retry did not clear the storage warning');
   await page.reload({waitUntil:'networkidle'});
   assert(JSON.parse((await notes()).disk)[id]==='Restored note','Imported notes did not survive reload');
+  const restoredExtras=await page.evaluate(()=>({
+    quickNote,
+    scale:uiPrefs.scale,
+    sidebar:uiPrefs.sidebar,
+    reading:readingProgressStore()['qa-backup-reading']?.pct||0,
+    citation:citationBasketV13[0]?.label||'',
+    lawWatch:(JSON.parse(localStorage.getItem('v16_law_watchlist')||'[]')[0]||{}).docId||''
+  }));
+  assert(restoredExtras.quickNote==='Backup quick note QA','Restored quick note did not survive reload');
+  assert(restoredExtras.scale==='large'&&restoredExtras.sidebar===true,'Restored UI preferences did not survive reload');
+  assert(restoredExtras.reading===42,'Restored reading progress did not survive reload');
+  assert(restoredExtras.citation==='Căn cứ QA','Restored citation basket did not survive reload');
+  assert(restoredExtras.lawWatch===id,'Restored legal-review watchlist did not survive reload');
+  const trashProbe=await page.evaluate(async()=>{
+    await workspaceTrashPush('quick-note','Recover QA','Ghi chú nhanh QA');
+    const id=workspaceTrashRows()[0]?.id||'';
+    syncQuickNote('');
+    await workspaceTrashRestore(id);
+    return {quickNote,remaining:workspaceTrashRows().length};
+  });
+  assert(trashProbe.quickNote==='Recover QA'&&trashProbe.remaining===0,'Recovery trash did not restore and remove the recovered item');
 
   // The last position within the throttle window must survive without another scroll.
   await page.evaluate(()=>{
@@ -77,5 +114,5 @@ try{
     const rows=JSON.parse(localStorage.getItem('v14_reading_progress'));
     return rows['qa-reading-a'].pct===85&&rows['qa-reading-b'].pct===31;
   }),'Switching documents mixed or lost reading progress');
-  console.log('Data safety passed: invalid/cancelled import, quota rollback, warning/retry, export/import reload, trailing and pagehide reading saves.');
+  console.log('Data safety passed: invalid/cancelled import, quota rollback, v8 extended backup/restore including legal watchlist, recovery trash, trailing and pagehide reading saves.');
 }finally{await browser.close()}

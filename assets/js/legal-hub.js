@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — legal-pack/data-vault, core knowledge, terminology and update hub. */
 const LEGAL_PACK_KEY="legalos_v6_pack";
 function docYear(d){const m=metaOf(d.id);const s=m.issued||m.eff||d.ttl;const x=String(s).match(/(20\d{2})/);return x?x[1]:""}
 function renderYearFilter(){if(!$('yearF'))return;const years=[...new Set(D.map(docYear).filter(Boolean))].sort((a,b)=>b.localeCompare(a));$('yearF').innerHTML='<option value="all">Tất cả năm</option>'+years.map(y=>`<option value="${y}">${y}</option>`).join('')}
@@ -27,7 +26,7 @@ function coreKbGroupOf(id){const g=CORE_READING_CHAIN.find(x=>x.docs.includes(id
 function coreKbDocStatus(id){
   const p=professorVerified(id),m=metaOf(id),st=CORE_CONTENT_STATUS[id]||{};
   const upcoming=m.eff&&parseVNDate(m.eff)&&parseVNDate(m.eff)>new Date("2026-09-10T23:59:59");
-  return {verified:!!p,reviewed:st.summary==="reviewed",upcoming,label:upcoming?`Hiệu lực ${m.eff}`:(p?"Đã đối chiếu nguồn":(m.src?"Có nguồn":"Chưa đối chiếu"))};
+  return {verified:!!p,reviewed:st.summary==="reviewed",upcoming,label:upcoming?`Hiệu lực ${m.eff}`:(p?`Đối chiếu ${p.checked}`:(m.src?"Có nguồn":"Chưa đối chiếu"))};
 }
 function closeCoreKbStatDetail(){
   const box=$("coreKbStatDetail");if(!box)return;box.hidden=true;box.innerHTML="";coreKbStatOpen=null;
@@ -202,6 +201,6 @@ function renderImpact(){if(!$('impactGrid'))return;$('impactGrid').innerHTML=IMP
 function renderLawHubTab(tab){
   document.querySelectorAll('[data-lawtab]').forEach(b=>b.classList.toggle('on',b.dataset.lawtab===tab));
   document.querySelectorAll('[data-lawpanel]').forEach(p=>p.hidden=p.dataset.lawpanel!==tab);
-  if(tab==='upcoming')renderUpcoming();if(tab==='impact'){renderImpact();if(typeof renderComplianceRadar==='function')renderComplianceRadar('complianceRadarHub')}if(tab==='core')renderCoreMap('coreMapHub');if(tab==='verify')renderVerifiedAudit();if(tab==='sources')renderOfficialSources();if(tab==='data')renderDataVault();renderUpdateStats();
+  if(tab==='upcoming')renderUpcoming();if(tab==='impact'){renderImpact();if(typeof renderComplianceRadar==='function')renderComplianceRadar('complianceRadarHub')}if(tab==='watch')workspaceDataCall('renderLawWatchV16');if(tab==='core')renderCoreMap('coreMapHub');if(tab==='verify')renderVerifiedAudit();if(tab==='sources')renderOfficialSources();if(tab==='data')renderDataVault();renderUpdateStats();
 }
 function is2026Doc(d){const m=metaOf(d.id);return (m.eff||'').endsWith('2026')||/2026/.test(d.ttl)}
