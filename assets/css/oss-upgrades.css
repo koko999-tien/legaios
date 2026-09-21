@@ -185,12 +185,10 @@ nav.links.side-nav button{
 min-height:var(--tap-min);
 }
 
-
 header.site #settingsBtn{
 display:grid!important;
 place-items:center;
 }
-
 
 .tag,.legal-badge,.role-badge,.doc-state{
 font-size:10px!important;

@@ -1,4 +1,39 @@
 /* Căn cứ Pháp lý Môi trường — document-library search result rendering. */
+function librarySelectLabel(id){
+  const el=$(id);if(!el)return "";
+  return el.selectedOptions?.[0]?.textContent?.trim()||el.value||"";
+}
+function libraryActiveFilters(topic="all",q=""){
+  const rows=[];
+  if(q.trim())rows.push({key:"q",label:`Từ khóa: “${q.trim()}”`});
+  if(topic!=="all")rows.push({key:"topic",label:`Lĩnh vực: ${topicName(topic)}`});
+  const defs=[
+    ["scopeF","scope","Phạm vi"],["yearF","year","Năm"],["effectF","effect","Hiệu lực"],
+    ["sourceF","source","Nguồn"],["typeF","type","Loại văn bản"]
+  ];
+  defs.forEach(([id,key,prefix])=>{const el=$(id);if(el&&el.value&&el.value!=="all")rows.push({key,label:`${prefix}: ${librarySelectLabel(id)}`})});
+  if($("asOfF")?.value)rows.push({key:"asOf",label:`Mốc áp dụng: ${$("asOfF").value.split("-").reverse().join("/")}`});
+  if(savedOnlyMode)rows.push({key:"saved",label:"Chỉ văn bản đã lưu"});
+  return rows;
+}
+function renderLibraryActiveFilters(topic="all",q=""){
+  const host=$("activeFilterList"),panel=$("activeFilters");if(!host||!panel)return;
+  const rows=libraryActiveFilters(topic,q);
+  panel.classList.toggle("empty",!rows.length);
+  host.replaceChildren();
+  if(rows.length){
+    rows.forEach(x=>{
+      const b=document.createElement("button"),label=document.createElement("span"),close=document.createElement("b");
+      b.className="active-filter-chip";b.type="button";b.dataset.clearFilter=x.key;b.title="Bỏ tiêu chí này";
+      label.textContent=x.label;close.textContent="×";close.setAttribute("aria-hidden","true");
+      b.append(label,close);host.append(b);
+    });
+  }else{
+    const empty=document.createElement("span");empty.className="active-filter-empty";empty.textContent="Chưa áp dụng bộ lọc nâng cao.";host.append(empty);
+  }
+  if(rows.some(x=>!["q","topic","saved"].includes(x.key)))$("advancedSearch")?.setAttribute("open","");
+}
+
 function docs(topic="all",q=""){
   const qq=q.trim(),type=$("typeF")?.value||"all",sort=$("sortF")?.value||"default",scope=$("scopeF")?.value||"all",year=$("yearF")?.value||"all",effect=$("effectF")?.value||"all",source=$("sourceF")?.value||"all",asOf=$("asOfF")?.value||"";
   let list=D.filter(d=>{
@@ -20,6 +55,7 @@ function docs(topic="all",q=""){
   $("dcount").textContent=`${list.length} văn bản${qq?` phù hợp với “${q.trim()}”`:""}`;
   $("clearQ").classList.toggle("on",!!q.trim());
   renderSearchCoach(list,q);
+  renderLibraryActiveFilters(topic,q);
 
   $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs})=>{
     const m=metaOf(d.id),rank=qq?Math.max(1,Math.min(99,Math.round(score/3))):0;
@@ -47,6 +83,7 @@ function docs(topic="all",q=""){
         <div class="doc-tools doc-tools-v11">
           <button class="goto-match" data-open-match="${d.id}" data-query="${esc(q)}" type="button" title="${qq?"Mở đúng đoạn liên quan trong trang văn bản":"Mở trang chi tiết của văn bản"}">${qq?"Đến đoạn khớp":"Mở chi tiết"}</button>
           <button class="btn bs preview-btn" data-preview="${d.id}" type="button" title="Xem tóm tắt ngay trong danh sách">Xem nhanh</button>
+          ${m.src?`<a class="btn bs official-source-action" href="${m.src}" target="_blank" rel="noopener" title="Mở văn bản tại nguồn chính thức">Nguồn chính thức ↗</a>`:""}
           <button class="mini" data-save="${d.id}" type="button" title="${saved.includes(d.id)?"Bỏ lưu":"Lưu"}">${saved.includes(d.id)?"★":"☆"}</button>
         </div>
       </div>

@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — document library filters, saved/recent documents and article reader. */
 const LIB_FILTER_GROUPS=[
  {id:"env",label:"Môi trường",topics:["bvmt","khi","thai","knk","hc","phi"]},
  {id:"resource",label:"Tài nguyên",topics:["nuoc","dat","ks","kttv"]},

@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — legal search, clause rendering and citation-memo runtime. */
 function clauseKey(doc,article){return `${doc}:${article}`}
 function clauseArticle(doc,article){return CLAUSE_PACK_V13[clauseKey(doc,article)]||null}
 function allClauseNodesForDoc(doc){

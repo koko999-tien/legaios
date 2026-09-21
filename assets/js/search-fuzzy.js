@@ -1,5 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — typo-tolerant legal search inspired by Fuse.js token-search ideas.
-   This is a small local implementation: no CDN/runtime dependency, tuned for the current legal dataset. */
 (function(){
   'use strict';
   if(typeof legalSearchScore!=='function'||typeof searchEligible!=='function')return;

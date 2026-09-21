@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — shared safety and legal-search helpers. Loaded before app.js. */
 function esc(s=""){
   return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 }

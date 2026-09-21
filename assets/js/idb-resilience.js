@@ -1,5 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — resilient IndexedDB wrapper inspired by Dexie.js design patterns.
-   Keeps one versioned connection, uses explicit transactions, and falls back to session memory. */
 (function(){
   'use strict';
   if(typeof IMPORT_DB_NAME==='undefined'||typeof IMPORT_DB_STORE==='undefined')return;

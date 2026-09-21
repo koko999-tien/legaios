@@ -1,4 +1,3 @@
-/* Căn cứ Pháp lý Môi trường — legal-pack/data-vault, core knowledge, terminology and update hub. */
 const LEGAL_PACK_KEY="legalos_v6_pack";
 function docYear(d){const m=metaOf(d.id);const s=m.issued||m.eff||d.ttl;const x=String(s).match(/(20\d{2})/);return x?x[1]:""}
 function renderYearFilter(){if(!$('yearF'))return;const years=[...new Set(D.map(docYear).filter(Boolean))].sort((a,b)=>b.localeCompare(a));$('yearF').innerHTML='<option value="all">Tất cả năm</option>'+years.map(y=>`<option value="${y}">${y}</option>`).join('')}

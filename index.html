@@ -530,6 +530,10 @@
           <p class="advanced-search-note">“Dữ liệu hiệu lực” phản ánh metadata đang có trong kho, không tự xác nhận tình trạng pháp lý hiện hành. Khi áp dụng, cần mở nguồn chính thức và kiểm tra văn bản sửa đổi, thay thế, chuyển tiếp.</p>
         </div>
       </details>
+      <section class="active-filter-panel" id="activeFilters" aria-live="polite">
+        <div class="active-filter-head"><span>Tiêu chí đang áp dụng</span><button id="clearActiveFilters" type="button">Xóa tất cả</button></div>
+        <div class="active-filter-list" id="activeFilterList"></div>
+      </section>
       <div class="library-actions">
         <div class="segmented" id="viewMode"><button class="on" data-view="list" type="button">Danh sách</button><button data-view="grid" type="button">Lưới</button></div>
         <div class="segmented library-density-toggle" id="libraryDensity"><button class="on" data-libdensity="compact" type="button">Gọn</button><button data-libdensity="detail" type="button">Chi tiết</button></div>
@@ -1030,7 +1034,7 @@
       <div class="card" id="workBackup" style="margin-bottom:12px">
         <div class="k">Dữ liệu cá nhân</div>
         <h3 style="margin-top:5px">Sao lưu workspace</h3>
-        <p style="color:var(--m);font-size:13px">Xuất Hồ sơ tuân thủ, Sổ nghĩa vụ, deadline, tham chiếu bằng chứng, audit trail, hồ sơ sàng lọc, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục và phiếu rà soát thành JSON. Nhập JSON sẽ thay thế các dữ liệu này sau khi bạn xác nhận.</p>
+        <p style="color:var(--m);font-size:13px">Xuất Hồ sơ tuân thủ, Permit Register, Sổ nghĩa vụ, deadline, tham chiếu bằng chứng, audit trail, hồ sơ sàng lọc, mục đã lưu, lịch sử mở, ghi chú theo văn bản, tiến độ thủ tục và phiếu rà soát thành JSON. Nhập JSON sẽ thay thế các dữ liệu này sau khi bạn xác nhận.</p>
         <p style="color:var(--m);font-size:12px">Bản này lưu tên/ID tham chiếu bằng chứng nhưng chưa gồm file PDF/Word đã nhập, ghi chú nhanh, căn cứ hồ sơ, tiến độ đọc và cài đặt giao diện. Sau khi khôi phục trên thiết bị khác, bằng chứng có thể hiện “không có trên thiết bị” cho tới khi bạn nhập lại file gốc. Dữ liệu chỉ lưu trong trình duyệt hiện tại; tên miền preview và website chính không dùng chung dữ liệu.</p>
         <div class="row">
           <button class="btn bp" id="exportW" type="button">Xuất JSON</button>
@@ -1091,6 +1095,28 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="permitModal" role="dialog" aria-modal="true" aria-label="Permit Register">
+  <div class="modal">
+    <div class="modal-head"><div><div class="k">Hồ sơ tuân thủ</div><b>Permit Register</b></div><button class="mini" data-permit-close type="button" aria-label="Đóng">×</button></div>
+    <div class="modal-body">
+      <input id="permitEditorId" type="hidden">
+      <div class="obligation-form-grid">
+        <label><span>Loại</span><select id="permitType"><option value="gpmt">Giấy phép môi trường (GPMT)</option><option value="water">Giấy phép / chấp thuận về tài nguyên nước</option><option value="waste">Giấy phép / hồ sơ về chất thải</option><option value="resource">Giấy phép tài nguyên / khoáng sản liên quan</option><option value="construction">Giấy phép / chấp thuận công trình liên quan</option><option value="other">Giấy phép / quyết định khác</option></select></label>
+        <label><span>Trạng thái theo dõi</span><select id="permitStatus"><option value="unknown">Chưa xác định</option><option value="active">Đang theo dõi</option><option value="pending">Đang làm thủ tục</option><option value="replaced">Đã được thay thế</option><option value="closed">Đã kết thúc</option></select></label>
+        <label class="wide"><span>Tên / mô tả giấy phép</span><input id="permitTitle" placeholder="Ví dụ: Giấy phép môi trường của Nhà máy A"></label>
+        <label><span>Số giấy phép / quyết định</span><input id="permitNumber" placeholder="Số, ký hiệu"></label><label><span>Cơ quan cấp</span><input id="permitIssuer" placeholder="Cơ quan / đơn vị ban hành"></label>
+        <label><span>Ngày cấp</span><input id="permitIssueDate" type="date"></label><label><span>Ngày hết hạn</span><input id="permitExpiryDate" type="date"></label><label><span>Mốc rà soát nội bộ</span><input id="permitReviewDate" type="date"></label>
+        <label class="wide"><span>File gốc / tài liệu liên quan</span><select id="permitFileIds" multiple size="4"></select><small>Chỉ lưu ID và tên tham chiếu trong backup workspace; file gốc vẫn ở kho tài liệu trên thiết bị.</small></label>
+        <label class="wide"><span>Liên kết Sổ nghĩa vụ</span><select id="permitObligationIds" multiple size="4"></select><small>Dùng để truy ngược điều kiện giấy phép sang việc đang theo dõi.</small></label>
+      </div>
+      <label class="obligation-note-field"><span>Điều kiện / nội dung cần theo dõi</span><textarea id="permitConditions" rows="3" placeholder="Tóm tắt để theo dõi; không thay thế nội dung file gốc."></textarea></label>
+      <label class="obligation-note-field"><span>Ghi chú</span><textarea id="permitNote" rows="2"></textarea></label>
+      <p class="micro-note">Trạng thái và mốc thời gian do người dùng quản lý. Hệ thống không tự kết luận hiệu lực giấy phép hoặc tự suy ra thời hạn pháp lý.</p>
+      <div class="obligation-editor-actions"><button class="btn bs" data-permit-cancel type="button">Hủy</button><button class="btn bp" data-permit-save type="button">Lưu Permit Register</button></div>
+    </div>
+  </div>
+</div>
 
 <div class="compare-bar" id="compareBar">
   <span id="compareText">Đã chọn 0/2 văn bản</span>
@@ -1185,6 +1211,7 @@
 <script src="assets/js/library.js"></script>
 <script src="assets/js/procedures.js"></script>
 <script src="assets/js/compliance-core.js"></script>
+<script src="assets/js/permits.js"></script>
 <script src="assets/js/compliance.js"></script>
 <script src="assets/js/workspace.js"></script>
 <script src="assets/js/legal-hub.js"></script>
