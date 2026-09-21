@@ -15,7 +15,6 @@ const COMPLIANCE_TRACKS=[
   {id:"landbio",label:"Đất · rừng · đa dạng sinh học",features:["land","bio"],query:"đất rừng đa dạng sinh học yếu tố nhạy cảm",refs:["ldat","ln","ddsh"],reason:"Hồ sơ có tín hiệu về đất/rừng hoặc đa dạng sinh học."},
   {id:"chemical",label:"Hóa chất",features:["chemical"],query:"hóa chất môi trường sự cố chất thải",refs:["lhc","nd24_2026_chem","nd25_2026_chem"],reason:"Hồ sơ có hoạt động hóa chất cần rà thêm căn cứ chuyên ngành."}
 ];
-
 function complianceId(prefix){
   prefix=prefix||"cp";
   try{return prefix+"-"+crypto.randomUUID()}catch{return prefix+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8)}
@@ -129,7 +128,6 @@ let complianceProfiles=STORE.get(COMPLIANCE_KEY,[]);
 if(!Array.isArray(complianceProfiles))complianceProfiles=[];
 complianceProfiles=complianceProfiles.slice(0,300).map(normalizeComplianceProfile);
 let currentComplianceId=complianceProfiles[0]&&complianceProfiles[0].id||null;
-
 function complianceClone(v){return v==null?null:JSON.parse(JSON.stringify(v))}
 function complianceSafeSnapshot(v){
   if(v==null)return null;
@@ -158,9 +156,8 @@ function normalizeComplianceAuditEvent(e){
 let complianceAudit=STORE.get(COMPLIANCE_AUDIT_KEY,[]);
 if(!Array.isArray(complianceAudit))complianceAudit=[];
 complianceAudit=complianceAudit.slice(0,500).map(normalizeComplianceAuditEvent);
-
 function complianceProfile(id){id=id||currentComplianceId;return complianceProfiles.find(function(x){return x.id===id})||null}
-function saveComplianceAudit(){complianceAudit=complianceAudit.slice(0,500).map(normalizeComplianceAuditEvent);STORE.set(COMPLIANCE_AUDIT_KEY,complianceAudit)}
+function saveComplianceAudit(){const a=STORE.get(COMPLIANCE_AUDIT_KEY,[]);complianceAudit=[...new Map([...(Array.isArray(a)?a:[]),...complianceAudit].map(e=>(e=normalizeComplianceAuditEvent(e),[e.id,e]))).values()].sort((a,b)=>(b.at||"").localeCompare(a.at||"")).slice(0,500);STORE.set(COMPLIANCE_AUDIT_KEY,complianceAudit)}
 function complianceRecordAudit(action,entityType,profileId,entityId,summary,before,after,undoable){
   const ev=normalizeComplianceAuditEvent({
     id:complianceId("audit"),at:new Date().toISOString(),action:action,entityType:entityType,

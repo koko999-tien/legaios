@@ -2,9 +2,13 @@ name: Browser smoke test
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, 'feat/**']
   pull_request:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -60,6 +64,36 @@ jobs:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/ux-polish-smoke.mjs
 
+      - name: Verify shareable URL routing
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/url-routing-smoke.mjs
+
+      - name: Verify local activity audit trail
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/activity-audit-smoke.mjs
+
+      - name: Verify IndexedDB workspace recovery
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/workspace-recovery-smoke.mjs
+
+      - name: Verify extended keyboard shortcuts
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/extended-shortcuts-smoke.mjs
+
+      - name: Verify B2B legal experience
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/b2b-experience-smoke.mjs
+
+      - name: Verify project lifecycle dashboard
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/project-lifecycle-smoke.mjs
+
       - name: Verify core legal trust metadata
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
@@ -69,6 +103,16 @@ jobs:
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/search-quality.mjs
+
+      - name: Verify Search V4 official-source boundary
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/official-search-smoke.mjs
+
+      - name: Verify grounded AI citation-only boundary
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/grounded-ai-smoke.mjs
 
       - name: Verify structured legal comparison
         env:
@@ -99,6 +143,16 @@ jobs:
         env:
           LEGALOS_URL: http://127.0.0.1:4173/
         run: node tools/compliance-smoke.mjs
+
+      - name: Verify compliance calendar ICS export
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/calendar-export-smoke.mjs
+
+      - name: Verify full backup folder
+        env:
+          LEGALOS_URL: http://127.0.0.1:4173/
+        run: node tools/full-backup-smoke.mjs
 
       - name: Verify real mobile sidebar interaction
         env:

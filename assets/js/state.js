@@ -31,7 +31,7 @@ const STORE={
   }
 };
 document.addEventListener('DOMContentLoaded',()=>STORE.showWarning(),{once:true});
-const MULTITAB_DATA_KEYS=new Set(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1','v8_quick_note','v13_citation_basket','v13_citation_meta','v14_reading_progress','v15_workspace_trash','v16_law_watchlist']);
+const MULTITAB_DATA_KEYS=new Set(['w3_saved','w3_recent','w3_notes','w3_proc','w3_cases','v10_expert_briefs','ccplmt_compliance_profiles_v1','ccplmt_compliance_audit_v1','v8_quick_note','v13_citation_basket','v13_citation_meta','v14_reading_progress','v15_workspace_trash','v16_law_watchlist','v15_compliance_revision','v15_official_candidates','v17_project_lifecycle']);
 function showExternalDataChangeNotice(){
   if(document.getElementById('externalDataChange'))return;
   const notice=document.createElement('div');notice.id='externalDataChange';notice.setAttribute('role','status');

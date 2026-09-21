@@ -5,11 +5,19 @@ const root=process.cwd();
 const KB=1024;
 const limits={
   index:100*KB,
-  cssTotal:220*KB,
+  cssTotal:230*KB,
   jsTotal:500*KB,
   shellTotal:850*KB,
   largestJs:170*KB,
-  lazyJsTotal:40*KB
+  lazyJsTotal:53*KB,
+  optionalJsTotal:12*KB,
+  backupJsTotal:16*KB,
+  routeJsTotal:8*KB,
+  activityJsTotal:12*KB,
+  recoveryJsTotal:16*KB,
+  shortcutsJsTotal:4*KB,
+  experienceJsTotal:32*KB,
+  lifecycleJsTotal:24*KB
 };
 
 async function walk(dir){
@@ -33,9 +41,25 @@ const index=await stat(join(root,'index.html'));
 const css=await walk(join(root,'assets','css'));
 const js=await walk(join(root,'assets','js'));
 const lazy=await walk(join(root,'assets','lazy'));
+const optional=await walk(join(root,'assets','optional'));
+const backup=await walk(join(root,'assets','backup'));
+const route=await walk(join(root,'assets','route'));
+const activity=await walk(join(root,'assets','activity'));
+const recovery=await walk(join(root,'assets','recovery'));
+const shortcuts=await walk(join(root,'assets','shortcuts'));
+const experience=await walk(join(root,'assets','experience'));
+const lifecycle=await walk(join(root,'assets','lifecycle'));
 const cssTotal=css.reduce((n,x)=>n+x.size,0);
 const jsTotal=js.reduce((n,x)=>n+x.size,0);
 const lazyJsTotal=lazy.reduce((n,x)=>n+x.size,0);
+const optionalJsTotal=optional.reduce((n,x)=>n+x.size,0);
+const backupJsTotal=backup.reduce((n,x)=>n+x.size,0);
+const routeJsTotal=route.reduce((n,x)=>n+x.size,0);
+const activityJsTotal=activity.reduce((n,x)=>n+x.size,0);
+const recoveryJsTotal=recovery.reduce((n,x)=>n+x.size,0);
+const shortcutsJsTotal=shortcuts.reduce((n,x)=>n+x.size,0);
+const experienceJsTotal=experience.reduce((n,x)=>n+x.size,0);
+const lifecycleJsTotal=lifecycle.reduce((n,x)=>n+x.size,0);
 const shellTotal=index.size+cssTotal+jsTotal;
 const largest=[...js].sort((a,b)=>b.size-a.size)[0];
 
@@ -44,10 +68,26 @@ assertBudget('index.html',index.size,limits.index);
 assertBudget('CSS total',cssTotal,limits.cssTotal);
 assertBudget('JavaScript shell total',jsTotal,limits.jsTotal);
 assertBudget('Lazy JavaScript total',lazyJsTotal,limits.lazyJsTotal);
+assertBudget('Optional JavaScript total',optionalJsTotal,limits.optionalJsTotal);
+assertBudget('Backup JavaScript total',backupJsTotal,limits.backupJsTotal);
+assertBudget('Route JavaScript total',routeJsTotal,limits.routeJsTotal);
+assertBudget('Activity JavaScript total',activityJsTotal,limits.activityJsTotal);
+assertBudget('Recovery JavaScript total',recoveryJsTotal,limits.recoveryJsTotal);
+assertBudget('Shortcuts JavaScript total',shortcutsJsTotal,limits.shortcutsJsTotal);
+assertBudget('Experience JavaScript total',experienceJsTotal,limits.experienceJsTotal);
+assertBudget('Lifecycle JavaScript total',lifecycleJsTotal,limits.lifecycleJsTotal);
 assertBudget('HTML + CSS + JS shell',shellTotal,limits.shellTotal);
 assertBudget(`largest JS (${relative(root,largest.path)})`,largest.size,limits.largestJs);
 
 console.log(`  shell JS files: ${js.length}`);
 console.log(`  lazy JS files: ${lazy.length}`);
+console.log(`  optional JS files: ${optional.length}`);
+console.log(`  backup JS files: ${backup.length}`);
+console.log(`  route JS files: ${route.length}`);
+console.log(`  activity JS files: ${activity.length}`);
+console.log(`  recovery JS files: ${recovery.length}`);
+console.log(`  shortcuts JS files: ${shortcuts.length}`);
+console.log(`  experience JS files: ${experience.length}`);
+console.log(`  lifecycle JS files: ${lifecycle.length}`);
 console.log(`  CSS files: ${css.length}`);
 console.log('Căn cứ Pháp lý Môi trường performance budget passed.');

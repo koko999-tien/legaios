@@ -153,3 +153,19 @@ Backup v8 and “Đã xóa gần đây” are isolated in `assets/lazy/workspace
 The ordered shell keeps a small `search-fuzzy.js` loader. Search V3 lives in `assets/lazy/search-engine.js` and remains fully browser-side/offline-capable: it does not send queries to an external AI/search service.
 
 The engine combines corpus-frequency (IDF) weighting, typo tolerance, phrase/proximity scoring, environmental-law concept aliases, user-goal detection, explicit document-kind intent, shorthand legal-reference matching and semantic snippet selection. Query interpretation is surfaced in the result UI so users can see which concepts/goals affected ranking. The chunk is loaded on search focus or idle time and can rerank an active query without blocking initial application startup.
+
+
+### Search V4 — official-source discovery
+
+V15 adds an opt-in web-discovery layer without changing the trust level of the local legal corpus. `search-fuzzy.js` lazily loads `assets/lazy/official-search.js` and its CSS. Only an explicit user click sends the current query to `/.netlify/functions/official-search`; workspace/profile/note/imported-file data is not included. The function only returns HTTPS links on a strict government/legal-source allowlist and marks the payload `verified:false`. Web results remain visually separate from Search V3 results and cannot silently become verified corpus entries. See `docs/SEARCH_V4.md`.
+
+Workspace restore now uses an in-app preview before replacement, including counts for profiles, permits, obligations, saved documents, citations and reading progress. The compliance calendar supports 30-day, 90-day and 12-month horizons; the chosen horizon is stored locally.
+
+
+### Grounded AI — citation-only QA
+
+V16 foundation adds an optional AI layer in the **Căn cứ hồ sơ** workspace. The main application shell does not contain provider logic: `assets/optional/grounded-ai-loader.js` mounts the panel and loads `assets/optional/grounded-ai.js` only when the user interacts with it. Optional JavaScript has its own CI performance budget and is excluded from the core shell budget.
+
+The browser sends only the user question plus up to 12 saved citation summaries. Citation notes, general memo notes, compliance profiles, permit/obligation data, imported files, search history and Search V4 review candidates are not included. The Netlify function `netlify/functions/grounded-ai.mjs` keeps `GEMINI_API_KEY` server-side, caps payload sizes and calls the Gemini Interactions API. The model system instruction requires source-only answers with numbered citation markers and an explicit insufficient-evidence response. See `docs/GROUNDED_AI.md`.
+
+Search V4 web candidates now have a separate local review queue. Adding a result to the queue does not upgrade its trust level: it remains “chưa kiểm định”, is stored separately from the legal corpus, can be attached to a compliance profile for review, and is included in workspace backup/restore.

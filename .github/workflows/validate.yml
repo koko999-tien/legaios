@@ -2,9 +2,13 @@ name: Validate Căn cứ Pháp lý Môi trường
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, 'feat/**']
   pull_request:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -29,6 +33,29 @@ jobs:
 
       - name: Gate core legal-data release metadata
         run: node tools/legal-data-release-gate.mjs
+
+      - name: Check V15/V16 lazy, optional and serverless modules
+        shell: bash
+        run: |
+          node --check assets/lazy/official-search.js
+          node --check assets/lazy/workspace-data.js
+          node --check assets/optional/grounded-ai-loader.js
+          node --check assets/optional/grounded-ai.js
+          node --check assets/optional/calendar-export-loader.js
+          node --check assets/optional/calendar-export.js
+          node --check assets/backup/full-backup-loader.js
+          node --check assets/backup/full-backup.js
+          node --check assets/route/url-router.js
+          node --check assets/activity/audit-trail.js
+          node --check assets/recovery/workspace-recovery.js
+          node --check assets/shortcuts/extended-shortcuts.js
+          node --check assets/experience/legaltech-experience.js
+          node --check assets/lifecycle/project-lifecycle.js
+          node --check netlify/functions/official-search.mjs
+          node --check netlify/functions/grounded-ai.mjs
+
+      - name: Verify grounded AI server boundary
+        run: node tools/grounded-ai-function-smoke.mjs
 
       - name: Generate self-contained static preview copy
         run: node tools/extract-single-file.mjs index.html .tmp/refactor-preview

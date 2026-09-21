@@ -32,6 +32,15 @@ try{
   assert(migrationProbe.legacyCount===1&&migrationProbe.legacyNumber==='OLD-GPMT-01','Legacy single-GPMT data did not migrate into Permit Register');
   assert(migrationProbe.clearedCount===0,'An explicitly empty Permit Register resurrected legacy GPMT data');
 
+  const mergeProbe=await page.evaluate(()=>{
+    const older=normalizeComplianceProfile({id:'same',name:'Local older',updatedAt:'2026-09-20T10:00:00.000Z'});
+    const newer=normalizeComplianceProfile({id:'same',name:'Disk newer',updatedAt:'2026-09-20T11:00:00.000Z'});
+    const other=normalizeComplianceProfile({id:'other',name:'Local other',updatedAt:'2026-09-20T09:00:00.000Z'});
+    const merged=complianceMergeProfilesV15([newer],[older,other]);
+    return {same:merged.find(x=>x.id==='same')?.name||'',hasOther:merged.some(x=>x.id==='other')};
+  });
+  assert(mergeProbe.same==='Disk newer'&&mergeProbe.hasOther,'Cross-tab compliance merge did not preserve the newer profile and independent rows');
+
   assert(await page.locator('#homeCompliancePulse [data-compliance-new]').count()===1,'Empty home state does not invite the first compliance profile');
 
   await go('work');
@@ -48,6 +57,7 @@ try{
   await page.locator('#cpGpmtNumber').fill('GPMT-QA-01');
   await page.locator('#cpGpmtExpires').fill(isoAfter(20));
   await page.locator('[data-compliance-save]').click();
+  assert(await page.evaluate(()=>Number(JSON.parse(localStorage.getItem('v15_compliance_revision')||'{}').rev||0)>=1),'Compliance revision metadata was not persisted');
 
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('ccplmt_compliance_profiles_v1')||'[]').length===1);
   assert((await page.locator('#complianceProfileList').innerText()).includes('Nhà máy QA'),'Saved compliance profile is missing from the workspace');
@@ -123,6 +133,9 @@ try{
   const calendarText=(await page.locator('.compliance-calendar').innerText()).toLowerCase();
   assert(calendarText.includes('xác minh nghĩa vụ quan trắc nước thải'),'Compliance calendar omitted the recurring obligation');
   assert(calendarText.includes('dự kiến theo chu kỳ hàng tháng'),'Compliance calendar does not distinguish projected recurring occurrences');
+  await page.locator('[data-calendar-horizon="365"]').click();
+  assert(await page.locator('[data-calendar-horizon="365"]').evaluate(el=>el.classList.contains('on')),'12-month calendar horizon did not persist in the rendered controls');
+  assert(await page.evaluate(()=>JSON.parse(localStorage.getItem('v15_compliance_calendar_horizon'))===365),'Calendar horizon preference was not persisted');
 
   const recurrenceBefore=await page.evaluate(()=>{
     const p=complianceProfiles[0],o=p.obligations[0];
