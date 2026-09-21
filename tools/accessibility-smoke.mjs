@@ -57,6 +57,8 @@ try {
   if (await firstDoc.count()) {
     await firstDoc.click();
     await mobile.waitForFunction(() => document.getElementById('art')?.classList.contains('on'));
+    // Audit the settled page state; the page-entry opacity animation can otherwise create a transient false-positive contrast reading.
+    await mobile.waitForTimeout(250);
     await audit(mobile, 'mobile article');
   }
 
