@@ -710,3 +710,11 @@ color:#1e58c7!important;
 min-height:32px!important;
 padding:5px 9px!important;
 }
+
+@media(max-width:960px){
+  #viewMode button,
+  #libraryDensity button{
+    min-height:32px!important;
+    padding:6px 10px!important;
+  }
+}

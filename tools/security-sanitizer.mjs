@@ -8,6 +8,7 @@ function assert(condition,message){if(!condition)throw new Error(message)}
 
 try{
   await page.goto(baseURL,{waitUntil:'networkidle'});
+  await page.waitForFunction(()=>typeof window.sanitizeImportedLegalHtml==='function');
   const results=await page.evaluate(()=>{
     const payloads=[
       '<script>alert(1)</script><p onclick="alert(1)">Nội dung</p>',
@@ -20,7 +21,7 @@ try{
       '<template><img src=x onerror=alert(1)></template><p>Template</p>',
       '<a href="https://example.com/path" target="evil" rel="opener">Nguồn tốt</a>'
     ];
-    return payloads.map(raw=>({raw,clean:sanitizeImportedLegalHtml(raw)}));
+    return payloads.map(raw=>({raw,clean:window.sanitizeImportedLegalHtml(raw)}));
   });
 
   for(const {clean} of results){

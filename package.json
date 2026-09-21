@@ -1,0 +1,15 @@
+{
+  "name": "legalos-environmental-law-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "validate": "node tools/check-html.mjs index.html && node tools/check-v14-structure.mjs && git diff --check",
+    "test:browser": "node tools/browser-smoke.mjs && node tools/data-safety-smoke.mjs && node tools/compliance-smoke.mjs && node tools/accessibility-smoke.mjs",
+    "test:security": "node tools/security-sanitizer.mjs && node tools/diagnostics-smoke.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "playwright": "^1.55.0"
+  }
+}

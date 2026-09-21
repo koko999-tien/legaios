@@ -204,6 +204,8 @@ try{
   const fs=await import('node:fs/promises');
   const exported=JSON.parse(await fs.readFile(path,'utf8'));
   assert(exported.schema==='ccplmt-workspace-v7','Workspace export schema was not upgraded for Permit Register');
+  assert(Array.isArray(exported.documentIndex),'Workspace export omitted the imported-document index');
+  assert(exported.documentIndex.every(file=>!Object.prototype.hasOwnProperty.call(file,'blob')),'Workspace export embedded file bytes instead of metadata only');
   assert(Array.isArray(exported.complianceProfiles)&&exported.complianceProfiles[0]?.name==='Nhà máy QA','Workspace export omitted compliance profiles');
   assert(exported.complianceProfiles[0]?.obligations?.length===1,'Workspace export omitted obligation register entries');
   assert(exported.complianceProfiles[0]?.obligations?.[0]?.owner==='Bộ phận Môi trường','Workspace export omitted obligation ownership');

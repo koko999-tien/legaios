@@ -137,9 +137,10 @@ try {
   const structuredData=await page.locator('script[type="application/ld+json"]').textContent();
   assert(structuredData && JSON.parse(structuredData).name === 'Căn cứ Pháp lý Môi trường', 'WebSite structured data is missing or invalid');
   assert(await activePage('home'), 'Home page is not active after startup');
+  await page.waitForFunction(() => document.getElementById('homeDocMetric')?.textContent && document.getElementById('homeDocMetric').textContent !== '—');
 
   // New users should see three plain-language starting points before advanced tools.
-  assert((await page.locator('#home h1').textContent() || '').trim() === 'Tra cứu căn cứ. Theo dõi việc phải làm.', 'Home does not lead with the concrete legal-workbench proposition');
+  assert((await page.locator('#home h1').textContent() || '').trim() === 'Tra cứu pháp luật và quản lý hồ sơ môi trường', 'Home does not lead with the concrete legal-workbench proposition');
   const academicIdentity = await page.evaluate(() => {
     const root = getComputedStyle(document.documentElement);
     const h1 = getComputedStyle(document.querySelector('#home .academic-hero-copy h1'));

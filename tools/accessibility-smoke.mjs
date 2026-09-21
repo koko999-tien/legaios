@@ -48,11 +48,11 @@ try {
 
   await mobile.evaluate(() => window.go?.('lib'));
   await mobile.waitForFunction(() => document.getElementById('lib')?.classList.contains('on'));
-  await audit(mobile, 'mobile library');
-
   await mobile.locator('#q').fill('72/2020/QH14');
   await mobile.locator('#qBtn').click();
   await mobile.waitForTimeout(150);
+  await mobile.locator('#docs .doc').first().scrollIntoViewIfNeeded();
+  await audit(mobile, 'mobile library');
   const firstDoc = mobile.locator('#docs [data-open]').first();
   if (await firstDoc.count()) {
     await firstDoc.click();
