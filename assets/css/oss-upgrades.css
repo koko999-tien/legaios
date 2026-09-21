@@ -703,3 +703,10 @@ body:not([data-theme="dark"]) #lib .library-density-toggle button.on,
 body:not([data-theme="dark"]) #lib #docs .goto-match{
 color:#1e58c7!important;
 }
+
+#lib #docs button[data-open-match],
+#lib #docs button[data-preview],
+#lib #docs button[data-save]{
+min-height:32px!important;
+padding:5px 9px!important;
+}

@@ -3017,6 +3017,7 @@ button[data-go],button[data-home-action]{touch-action:manipulation;-webkit-tap-h
   #lib #docs.compact-view:not(.grid-view) .doc-tools-v11{
     display:grid !important;
     grid-template-columns:1fr 1fr 34px !important;
+    gap:6px !important;
     width:100% !important;
   }
   #lib #docs.compact-view:not(.grid-view) .doc-tools-v11 .goto-match,

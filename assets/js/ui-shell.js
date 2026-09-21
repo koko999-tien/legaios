@@ -40,10 +40,10 @@ function applyUIPrefs(){
 }
 function saveUIPrefs(){STORE.set('v8_ui_prefs',uiPrefs);applyUIPrefs()}
 function openDrawer(id){
-  ['previewDrawer','settingsDrawer','quickNoteDrawer'].forEach(x=>$(x)?.classList.toggle('on',x===id));
-  $('drawerScrim')?.classList.add('on');$(id)?.setAttribute('aria-hidden','false');
+  ['previewDrawer','settingsDrawer','quickNoteDrawer'].forEach(x=>{const drawer=$(x);if(!drawer)return;drawer.classList.toggle('on',x===id);drawer.setAttribute('aria-hidden',String(x!==id));drawer.inert=x!==id});
+  $('drawerScrim')?.classList.add('on');$(id)?.focus?.();
 }
-function closeDrawers(){['previewDrawer','settingsDrawer','quickNoteDrawer'].forEach(x=>{if($(x)){ $(x).classList.remove('on');$(x).setAttribute('aria-hidden','true')}});$('drawerScrim')?.classList.remove('on')}
+function closeDrawers(){['previewDrawer','settingsDrawer','quickNoteDrawer'].forEach(x=>{if($(x)){ $(x).classList.remove('on');$(x).setAttribute('aria-hidden','true');$(x).inert=true}});$('drawerScrim')?.classList.remove('on')}
 function renderCommandCenter(){
   if($('ccDocs'))$('ccDocs').textContent=`${D.length} văn bản · ${T.length} lĩnh vực`;
   if($('ccProc'))$('ccProc').textContent=`${P.length} lộ trình nghiệp vụ`;
