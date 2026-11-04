@@ -64,6 +64,14 @@ function profile(d){
  p.allSet=new Set(p.all);p.important=uniq([...p.title.tokens,...p.topic.tokens,...p.type.tokens,...p.rel.tokens,...p.structured.tokens]).slice(0,320);
  profiles.set(d.id,p);return p;
 }
+function hasTopicEvidence(a,p){
+ const terms=rawTokens(a.terms),direct=rawTokens(a.label);
+ const fields=[p.title,p.topic,p.type,p.structured];
+ if(fields.some(f=>a.re.test(f.text)))return true;
+ const evidence=uniq([...terms,...direct]).filter(t=>t.length>2&&!COMMON.has(t));
+ const matched=evidence.filter(t=>fields.some(f=>f.set.has(t)));
+ return matched.length>=Math.min(2,evidence.length);
+}
 function ensureCorpus(){
  if(corpusDf)return;corpusDf=new Map();
  for(const d of D)for(const t of profile(d).allSet)corpusDf.set(t,(corpusDf.get(t)||0)+1);
@@ -230,7 +238,14 @@ function scoreV2(d,q){
  if(professorVerified(d.id))score+=5;else if(metaOf(d.id).src)score+=2;
  if(!matched)score=Math.min(score,0);
  const quality=number||boost>=210||coverage===1?'high':boost>=120||coverage>=.75?'good':'related';
- return {...base,score,matched,quality,coverage,fuzzyHits,concepts:alias.labels,actions:action.labels,reasons:uniq([...reasons,...(base.reasons||[])]),refs:base.refs||[]};
+ const concepts=alias.labels.filter(label=>{const a=ALIASES.find(x=>x.label===label);return a&&hasTopicEvidence(a,p)});
+ const aliasDirect=m.aliases.some(a=>a.re.test(p.title.text)||a.re.test(p.topic.text)||a.re.test(p.structured.text));
+ const directEvidence=number||baseStrong||shortRef.hits>0||aliasDirect||
+  (m.primary.some(t=>t.length>=4&&p.title.set.has(t))&&coverage>=.5)||
+  (m.primary.length>1&&coverage>=.75&&(strongField>0||lexical>=58))||
+  (alias.hits>0&&hasTopicEvidence(m.aliases.find(a=>alias.labels.includes(a.label))||{},p));
+ const relation=matched&&!directEvidence;
+ return {...base,score:score+(relation?-90:0),matched,quality:relation?'related':quality,relation,coverage,fuzzyHits,concepts,actions:action.labels,reasons:uniq([...reasons,...(base.reasons||[])]),refs:base.refs||[]};
 }
 legalSearchScore=scoreV2;
 searchEligible=function(d,q){

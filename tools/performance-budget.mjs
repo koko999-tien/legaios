@@ -9,7 +9,7 @@ const limits={
   jsTotal:505*KB,
   shellTotal:850*KB,
   largestJs:170*KB,
-  lazyJsTotal:54*KB,
+  lazyJsTotal:55*KB,
   optionalJsTotal:12*KB,
   backupJsTotal:16*KB,
   routeJsTotal:8*KB,

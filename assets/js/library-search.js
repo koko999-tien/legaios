@@ -49,14 +49,14 @@ function docs(topic="all",q=""){
 
   if(sort==="az")list.sort((a,b)=>a.d.ttl.localeCompare(b.d.ttl,"vi"));
   else if(sort==="za")list.sort((a,b)=>b.d.ttl.localeCompare(a.d.ttl,"vi"));
-  else if(qq)list.sort((a,b)=>b.score-a.score);
+  else if(qq)list.sort((a,b)=>Number(!!a.relation)-Number(!!b.relation)||b.score-a.score);
 
   $("dcount").textContent=`${list.length} văn bản${qq?` phù hợp với “${q.trim()}”`:""}`;
   $("clearQ").classList.toggle("on",!!q.trim());
   renderSearchCoach(list,q);
   renderLibraryActiveFilters(topic,q);
 
-  $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs,concepts=[],actions=[]})=>{
+  $("docs").innerHTML=list.length?list.map(({d,score,reasons,refs,concepts=[],actions=[],relation=false})=>{
     const m=metaOf(d.id),rank=qq?Math.max(1,Math.min(99,Math.round(score/3))):0;
     const p=parseLegalQuery(q);
     const exactRef=qq&&(p.article||p.clause||p.point)&&reasons.some(x=>/Điều|Khoản|Điểm/.test(x));
@@ -66,7 +66,7 @@ function docs(topic="all",q=""){
         <label class="selectbox" title="Chọn để so sánh"><input type="checkbox" data-compare="${d.id}" ${compareSelected.includes(d.id)?"checked":""}></label>
         <button class="docmain" type="button" data-open="${d.id}">
           <div style="display:flex;gap:6px;align-items:flex-start;justify-content:space-between">
-            <b>${hi(d.ttl,q)}</b>${qq?`<span class="search-rank">${rank>=80?"Khớp cao":rank>=55?"Khớp":"Liên quan"}</span>`:""}
+            <b>${hi(d.ttl,q)}</b>${qq?`<span class="search-rank">${relation?"Tham khảo liên quan":rank>=80?"Khớp cao":rank>=55?"Khớp":"Liên quan"}</span>`:""}
           </div>
           <div class="meta">
             <span class="tag">${d.k}</span><span class="tag">${topicName(d.t)}</span>
