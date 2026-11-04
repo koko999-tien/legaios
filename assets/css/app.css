@@ -705,9 +705,9 @@
 
     
     @media(min-width:961px){
-      body.home-clean-v91 nav.links.side-nav{display:none!important}
+      body.home-clean-v91 nav.links.side-nav{display:block!important}
       body.home-clean-v91 main,
-      body.home-clean-v91 footer.site{margin-left:0!important}
+      body.home-clean-v91 footer.site{margin-left:var(--sidew)!important}
       body.home-clean-v91 .site-in{max-width:1320px;margin:0 auto}
       body.home-clean-v91 .sidebar-collapse{display:none!important}
     }
@@ -723,7 +723,7 @@
       .home-topics-details #topics.g3{grid-template-columns:repeat(2,1fr)}
     }
     @media(max-width:700px){
-      body.home-clean-v91 .mobile-quick{display:none!important}
+      body.home-clean-v91 .mobile-quick{display:grid!important}
       .home-search-v91 h1{font-size:25px}
       .home-primary-grid{grid-template-columns:1fr}
       .home-tools-grid{grid-template-columns:1fr 1fr}
@@ -835,9 +835,9 @@
 
     
     @media(min-width:961px){
-      body.home-clean-v91 nav.links.side-nav{display:none!important}
+      body.home-clean-v91 nav.links.side-nav{display:block!important}
       body.home-clean-v91 main,
-      body.home-clean-v91 footer.site{margin-left:0!important}
+      body.home-clean-v91 footer.site{margin-left:var(--sidew)!important}
       body.home-clean-v91 .site-in{max-width:1320px;margin:0 auto}
       body.home-clean-v91 .sidebar-collapse{display:none!important}
     }
@@ -855,7 +855,7 @@
       .home-law-v92 .law-now-grid{grid-template-columns:1fr}
     }
     @media(max-width:620px){
-      body.home-clean-v91 .mobile-quick{display:none!important}
+      body.home-clean-v91 .mobile-quick{display:grid!important}
       .entry-grid-v92{grid-template-columns:1fr}
       .entry-card-v92{min-height:86px}
       .entry-search-row-v92{display:grid;grid-template-columns:1fr}
@@ -2153,7 +2153,7 @@ input,select,textarea{max-width:100%}
 .compact-home-search{background:color-mix(in srgb,var(--c) 96%,var(--as));box-shadow:none}
 .compact-home-search input{background:var(--c)}
 .compact-primary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.compact-primary-card{min-height:222px;border-radius:16px!important;box-shadow:0 8px 26px rgba(16,24,40,.035)}
+.compact-primary-card{min-height:188px;border-radius:16px!important;box-shadow:0 8px 26px rgba(16,24,40,.035)}
 .compact-primary-card::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--a);opacity:.75}
 .compact-primary-card.professor-card::after{background:var(--text)}
 .compact-primary-card.procedure-card::after{background:var(--ok)}

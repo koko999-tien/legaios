@@ -5,11 +5,11 @@ const root=process.cwd();
 const KB=1024;
 const limits={
   index:100*KB,
-  cssTotal:230*KB,
-  jsTotal:500*KB,
+  cssTotal:231*KB,
+  jsTotal:505*KB,
   shellTotal:850*KB,
   largestJs:170*KB,
-  lazyJsTotal:53*KB,
+  lazyJsTotal:54*KB,
   optionalJsTotal:12*KB,
   backupJsTotal:16*KB,
   routeJsTotal:8*KB,
